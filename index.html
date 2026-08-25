@@ -1,11 +1,214 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-    <meta charset="UTF-8">
-    <title>Weather Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copilot Prognos - Torsby</title>
+
+<style>
+body{
+    font-family: Segoe UI, Arial;
+    background:#f4f6f8;
+    margin:20px;
+}
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+    margin-bottom:15px;
+}
+button{
+    background:#0078d4;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+th,td{
+    border:1px solid #ddd;
+    padding:8px;
+    text-align:center;
+}
+h1{
+    color:#0078d4;
+}
+</style>
+
 </head>
 <body>
-    <h1>Hej Magnus!</h1>
-    <p>GitHub Pages fungerar.</p>
+
+<h1>Copilot Prognos - Torsby</h1>
+
+<div class="card">
+    <button onclick="updateWeather()">Uppdatera</button>
+    <p id="status">Redo</p>
+</div>
+
+<div class="card">
+    <h2>Källor</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Källa</th>
+                <th>Temperatur</th>
+                <th>Regnrisk</th>
+            </tr>
+        </thead>
+
+        <tbody id="weatherTable">
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h2>Copilot Prognos</h2>
+    <div id="copilotResult">
+        Tryck på Uppdatera
+    </div>
+</div>
+
+<script>
+
+const LAT = 60.1333;
+const LON = 13.0000;
+
+async function updateWeather(){
+
+    document.getElementById("status").innerText="Hämtar data...";
+
+    try{
+
+        let sources = [];
+
+        // OPEN-METEO
+        const om = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m&hourly=precipitation_probability`
+        );
+
+        const omData = await om.json();
+
+        const omTemp = omData.current.temperature_2m;
+
+        const omRain =
+        Math.max(
+        ...omData.hourly.precipitation_probability.slice(0,24)
+        );
+
+        sources.push({
+            name:"Open-Meteo",
+            temp:omTemp,
+            rain:omRain
+        });
+
+        // SMHI
+        const smhi = await fetch(
+        "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/13.0/lat/60.13/data.json"
+        );
+
+        const smhiData = await smhi.json();
+
+        let temperature = null;
+
+        for (const p of smhiData.timeSeries[0].parameters){
+
+            if(p.name==="t"){
+                temperature = p.values[0];
+            }
+
+        }
+
+        sources.push({
+            name:"SMHI",
+            temp:temperature,
+            rain:"-"
+        });
+
+        // VISA TABELL
+
+        let html = "";
+
+        sources.forEach(row=>{
+
+            html += `
+            <tr>
+                <td>${row.name}</td>
+                <td>${row.temp} °C</td>
+                <td>${row.rain}%</td>
+            </tr>
+            `;
+
+        });
+
+        document.getElementById("weatherTable").innerHTML = html;
+
+        // COPILOTPROGNOS
+
+        const temps =
+        sources
+        .map(x=>Number(x.temp))
+        .filter(x=>!isNaN(x));
+
+        const rains =
+        sources
+        .map(x=>Number(x.rain))
+        .filter(x=>!isNaN(x));
+
+        const avgTemp =
+        (temps.reduce((a,b)=>a+b,0)/temps.length)
+        .toFixed(1);
+
+        let avgRain = "Saknas";
+
+        if(rains.length>0){
+
+            avgRain =
+            (
+            rains.reduce((a,b)=>a+b,0)
+            /
+            rains.length
+            )
+            .toFixed(0);
+
+        }
+
+        document.getElementById("copilotResult").innerHTML=`
+
+        <h3>Sammanvägd Copilot-Prognos</h3>
+
+        <p><b>Temperatur:</b> ${avgTemp} °C</p>
+
+        <p><b>Regnrisk:</b> ${avgRain}%</p>
+
+        <p><b>Datakällor:</b> ${sources.length}</p>
+
+        <p><b>Ort:</b> Torsby</p>
+
+        `;
+
+        document.getElementById("status").innerText =
+        "Uppdaterad " +
+        new Date().toLocaleString("sv-SE");
+
+    }
+    catch(error){
+
+        document.getElementById("status").innerText =
+        "Fel: " + error.message;
+
+    }
+
+}
+
+updateWeather();
+
+</script>
+
 </body>
 </html>
