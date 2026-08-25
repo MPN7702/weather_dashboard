@@ -2,398 +2,92 @@
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Copilot Vädercentral - Torsby</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Torsby Väder</title>
 
 <style>
-
 body{
-    font-family:Segoe UI,Arial,sans-serif;
-    background:#eef2f7;
+    background:#0f172a;
+    color:white;
+    font-family:Arial,sans-serif;
+    text-align:center;
     margin:0;
     padding:20px;
 }
 
-.container{
-    max-width:1400px;
-    margin:auto;
-}
-
 .card{
-    background:white;
-    border-radius:12px;
+    background:#1e293b;
+    max-width:600px;
+    margin:auto;
     padding:20px;
-    margin-bottom:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.15);
-}
-
-h1{
-    color:#0078d4;
-}
-
-button{
-    background:#0078d4;
-    color:white;
-    border:none;
     border-radius:10px;
-    padding:12px 20px;
-    cursor:pointer;
-    font-size:16px;
 }
 
-button:hover{
-    background:#005ea6;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th,td{
-    border:1px solid #ddd;
-    padding:10px;
-    text-align:center;
-}
-
-th{
-    background:#0078d4;
-    color:white;
-}
-
-.metric{
-    font-size:24px;
+.value{
+    font-size:32px;
+    font-weight:bold;
     margin:10px 0;
 }
 
-.green{color:green;}
-.orange{color:orange;}
-.red{color:red;}
-
+button{
+    padding:10px 20px;
+    cursor:pointer;
+}
 </style>
 </head>
-
 <body>
 
-<div class="container">
-
-<h1>🌦️ Copilot Vädercentral - Torsby</h1>
-
 <div class="card">
+    <h1>🌤 Copilot Weather Torsby</h1>
 
-<button onclick="updateWeather()">
-🔄 Uppdatera
-</button>
+    <button onclick="loadWeather()">
+        Uppdatera
+    </button>
 
-<p id="status">
-Redo
-</p>
+    <h2>Temperatur</h2>
+    <div id="temp" class="value">-</div>
 
-</div>
+    <h2>Vind</h2>
+    <div id="wind" class="value">-</div>
 
-<div class="card">
-
-<h2>Källor</h2>
-
-<table>
-
-<thead>
-<tr>
-<th>Källa</th>
-<th>Temperatur</th>
-<th>Regnrisk</th>
-</tr>
-</thead>
-
-<tbody id="weatherTable">
-</tbody>
-
-</table>
-
-</div>
-
-<div class="card">
-
-<h2>Copilot-Prognos</h2>
-
-<div id="copilotResult">
-
-Tryck på Uppdatera
-
-</div>
-
-</div>
-
-<div class="card">
-
-<h2>Riskcentral</h2>
-
-<div id="riskPanel">
-
-Väntar på data...
-
-</div>
-
-</div>
-
+    <h2>Status</h2>
+    <div id="status">Redo</div>
 </div>
 
 <script>
 
-const LAT = 60.1333;
-const LON = 13.0000;
+async function loadWeather() {
 
-async function updateWeather(){
+    document.getElementById("status").textContent =
+    "Hämtar data...";
 
-document.getElementById("status").innerText =
-"Hämtar väderdata...";
+    try {
 
-try{
+        const response = await fetch(
+            "https://api.open-meteo.com/v1/forecast?latitude=60.1333&longitude=13.0&current=temperature_2m,wind_speed_10m"
+        );
 
-let sources = [];
+        const data = await response.json();
 
+        document.getElementById("temp").textContent =
+            data.current.temperature_2m + " °C";
 
-/* OPEN METEO */
+        document.getElementById("wind").textContent =
+            data.current.wind_speed_10m + " m/s";
 
-const omResponse =
-await fetch(
-`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m&hourly=precipitation_probability`
-);
+        document.getElementById("status").textContent =
+            "Uppdaterad";
 
-const omData =
-await omResponse.json();
+    }
+    catch(err){
 
-const omTemp =
-omData.current.temperature_2m;
+        document.getElementById("status").textContent =
+            "Fel: " + err.message;
 
-const omRain =
-Math.max(
-...omData.hourly.precipitation_probability.slice(0,24)
-);
-
-sources.push({
-name:"Open-Meteo",
-temp:omTemp,
-rain:omRain
-});
-
-
-/* SMHI */
-
-const smhiResponse =
-await fetch(
-"https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/13.0/lat/60.13/data.json"
-);
-
-const smhiData =
-await smhiResponse.json();
-
-let smhiTemp = null;
-
-for(const p of smhiData.timeSeries[0].parameters){
-
-if(p.name==="t"){
-smhiTemp = p.values[0];
+    }
 }
 
-}
-
-sources.push({
-name:"SMHI",
-temp:smhiTemp,
-rain:"-"
-});
-
-
-/* TABELL */
-
-let tableHTML = "";
-
-sources.forEach(s=>{
-
-tableHTML += `
-<tr>
-<td>${s.name}</td>
-<td>${s.temp} °C</td>
-<td>${s.rain}%</td>
-</tr>
-`;
-
-});
-
-document.getElementById("weatherTable").innerHTML =
-tableHTML;
-
-
-/* BERÄKNINGAR */
-
-const temps =
-sources
-.map(x=>Number(x.temp))
-.filter(x=>!isNaN(x));
-
-const rains =
-sources
-.map(x=>Number(x.rain))
-.filter(x=>!isNaN(x));
-
-const avgTemp =
-(
-temps.reduce((a,b)=>a+b,0)
-/
-temps.length
-)
-.toFixed(1);
-
-let avgRain = 0;
-
-if(rains.length>0){
-
-avgRain =
-(
-rains.reduce((a,b)=>a+b,0)
-/
-rains.length
-).toFixed(0);
-
-}
-
-
-/* PROGNOSSÄKERHET */
-
-const maxTemp =
-Math.max(...temps);
-
-const minTemp =
-Math.min(...temps);
-
-const spread =
-maxTemp - minTemp;
-
-let confidence =
-100 - (spread * 10);
-
-if(confidence < 0){
-confidence = 0;
-}
-
-confidence =
-confidence.toFixed(0);
-
-
-/* ÅSKRISK */
-
-let thunderRisk = 0;
-
-if(avgRain >= 80){
-
-thunderRisk = 60;
-
-}
-else if(avgRain >= 60){
-
-thunderRisk = 40;
-
-}
-else if(avgRain >= 40){
-
-thunderRisk = 20;
-
-}
-else{
-
-thunderRisk = 5;
-
-}
-
-
-/* RISKNIVÅ */
-
-let riskColor = "#28a745";
-let riskText = "Låg";
-
-if(avgRain > 70){
-
-riskColor = "#dc3545";
-riskText = "Hög";
-
-}
-else if(avgRain > 40){
-
-riskColor = "#ffc107";
-riskText = "Mellan";
-
-}
-
-
-/* COPILOT RESULTAT */
-
-document.getElementById("copilotResult").innerHTML = `
-
-<div class="metric">
-🌡️ Temperatur: <b>${avgTemp} °C</b>
-</div>
-
-<div class="metric">
-☔ Regnrisk: <b>${avgRain}%</b>
-</div>
-
-<div class="metric">
-⛈️ Åskrisk: <b>${thunderRisk}%</b>
-</div>
-
-<div class="metric">
-📊 Prognossäkerhet: <b>${confidence}%</b>
-</div>
-
-<div class="metric">
-🛰️ Datakällor: <b>${sources.length}</b>
-</div>
-
-`;
-
-
-/* RISKPANEL */
-
-document.getElementById("riskPanel").innerHTML = `
-
-<div style="
-background:${riskColor};
-padding:20px;
-border-radius:12px;
-color:white;
-font-size:22px;
-font-weight:bold;
-">
-
-☔ Regnrisk: ${avgRain}%<br><br>
-
-⛈️ Åskrisk: ${thunderRisk}%<br><br>
-
-📊 Prognossäkerhet: ${confidence}%<br><br>
-
-⚠️ Risknivå: ${riskText}
-
-</div>
-
-`;
-
-document.getElementById("status").innerText =
-"Senast uppdaterad: " +
-new Date().toLocaleString("sv-SE");
-
-}
-catch(error){
-
-document.getElementById("status").innerText =
-"Fel: " + error.message;
-
-}
-
-}
-
-updateWeather();
+loadWeather();
 
 </script>
 
