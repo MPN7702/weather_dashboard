@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="sv">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,26 +7,21 @@
 <title>Copilot Weather Torsby</title>
 
 <style>
-
 *{
     box-sizing:border-box;
 }
 
 body{
     margin:0;
-    font-family:Arial, sans-serif;
     background:#0f172a;
     color:white;
+    font-family:Arial,sans-serif;
 }
 
 header{
+    background:#1e293b;
     text-align:center;
     padding:20px;
-    background:#1e293b;
-}
-
-h1{
-    margin:0;
 }
 
 .container{
@@ -49,19 +43,29 @@ h1{
     gap:15px;
 }
 
-.current div{
+.info{
     flex:1;
     min-width:180px;
     background:#334155;
-    padding:15px;
     border-radius:8px;
+    padding:15px;
     text-align:center;
+}
+
+.label{
+    font-size:14px;
+    opacity:0.8;
+}
+
+.value{
+    font-size:32px;
+    font-weight:bold;
 }
 
 .forecast{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-    gap:12px;
+    gap:10px;
 }
 
 .day{
@@ -85,24 +89,13 @@ button:hover{
     background:#1d4ed8;
 }
 
-.small{
-    opacity:0.8;
-    font-size:14px;
-}
-
-.temp{
-    font-size:30px;
-    font-weight:bold;
-}
-
-.status{
+#status{
     text-align:center;
     margin-top:15px;
 }
-
 </style>
-</head>
 
+</head>
 <body>
 
 <header>
@@ -111,155 +104,171 @@ button:hover{
 
 <div class="container">
 
-<div class="card">
-    <center>
-        <button onclick="loadWeather()">Uppdatera väder</button>
-    </center>
+    <div class="card">
 
-    <div class="status" id="status">
-        Laddar...
-    </div>
-</div>
-
-<div class="card">
-
-    <h2>Just nu</h2>
-
-    <div class="current">
-
-        <div>
-            <div class="small">Temperatur</div>
-            <div id="temp" class="temp">-</div>
+        <div style="text-align:center;">
+            <button onclick="loadWeather()">
+                Uppdatera väder
+            </button>
         </div>
 
-        <div>
-            <div class="small">Vind</div>
-            <div id="wind" class="temp">-</div>
-        </div>
-
-        <div>
-            <div class="small">Luftfuktighet</div>
-            <div id="humidity" class="temp">-</div>
+        <div id="status">
+            Laddar...
         </div>
 
     </div>
 
-</div>
+    <div class="card">
 
-<div class="card">
+        <h2>Just nu</h2>
 
-    <h2>Copilot-bedömning</h2>
+        <div class="current">
 
-    <div id="copilot">
+            <div class="info">
+                <div class="label">Temperatur</div>
+                <div id="temp" class="value">-</div>
+            </div>
+
+            <div class="info">
+                <div class="label">Vind</div>
+                <div id="wind" class="value">-</div>
+            </div>
+
+            <div class="info">
+                <div class="label">Luftfuktighet</div>
+                <div id="humidity" class="value">-</div>
+            </div>
+
+        </div>
 
     </div>
 
-</div>
+    <div class="card">
 
-<div class="card">
+        <h2>Copilot-bedömning</h2>
 
-    <h2>7-dagars prognos</h2>
-
-    <div id="forecast" class="forecast">
+        <div id="copilot">
+            Laddar...
+        </div>
 
     </div>
 
-</div>
+    <div class="card">
+
+        <h2>7-dagars prognos</h2>
+
+        <div id="forecast" class="forecast"></div>
+
+    </div>
 
 </div>
 
 <script>
 
 const LAT = 60.1333;
-const LON = 13.0000;
+const LON = 13.0;
 
 async function loadWeather(){
 
-    document.getElementById("status").textContent =
-    "Hämtar väderdata...";
+    const status = document.getElementById("status");
+
+    status.textContent = "Hämtar väderdata...";
 
     try{
 
         const url =
-        `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe/Stockholm`;
+        "https://api.open-meteo.com/v1/forecast" +
+        "?latitude=" + LAT +
+        "&longitude=" + LON +
+        "&current=temperature_2m,relative_humidity_2m,wind_speed_10m" +
+        "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max" +
+        "&timezone=Europe%2FStockholm";
 
         const response = await fetch(url);
 
+        if(!response.ok){
+            throw new Error("HTTP " + response.status);
+        }
+
         const data = await response.json();
 
-        document.getElementById("temp").innerHTML =
-        data.current.temperature_2m + "°";
+        document.getElementById("temp").textContent =
+            data.current.temperature_2m + "°";
 
-        document.getElementById("wind").innerHTML =
-        data.current.wind_speed_10m + " m/s";
+        document.getElementById("wind").textContent =
+            data.current.wind_speed_10m + " m/s";
 
-        document.getElementById("humidity").innerHTML =
-        data.current.relative_humidity_2m + "%";
+        document.getElementById("humidity").textContent =
+            data.current.relative_humidity_2m + "%";
 
         buildForecast(data);
         buildCopilot(data);
 
-        document.getElementById("status").textContent =
-        "Senast uppdaterad: " +
-        new Date().toLocaleTimeString("sv-SE");
+        status.textContent =
+            "Senast uppdaterad: " +
+            new Date().toLocaleTimeString("sv-SE");
 
     }
     catch(error){
 
-        document.getElementById("status").textContent =
-        "Fel: " + error.message;
+        status.textContent =
+            "Fel: " + error.message;
 
     }
-
 }
 
 function buildForecast(data){
 
-    const container =
-    document.getElementById("forecast");
+    const forecast =
+        document.getElementById("forecast");
 
-    container.innerHTML = "";
+    forecast.innerHTML = "";
 
-    for(let i=0;i<7;i++){
+    for(let i = 0; i < 7; i++){
+
+        const date =
+            new Date(data.daily.time[i]);
 
         const day =
-        document.createElement("div");
+            document.createElement("div");
 
         day.className = "day";
 
-        const date =
-        new Date(data.daily.time[i]);
+        day.innerHTML =
+            "<strong>" +
+            date.toLocaleDateString(
+                "sv-SE",
+                { weekday:"short" }
+            ) +
+            "</strong><br><br>" +
 
-        day.innerHTML = `
-            <strong>
-            ${date.toLocaleDateString("sv-SE",
-            {weekday:"short"})}
-            </strong>
+            "🔺 " +
+            Math.round(
+                data.daily.temperature_2m_max[i]
+            ) +
+            "°<br>" +
 
-            <br><br>
+            "🔻 " +
+            Math.round(
+                data.daily.temperature_2m_min[i]
+            ) +
+            "°<br><br>" +
 
-            🔺 ${Math.round(data.daily.temperature_2m_max[i])}°
+            "🌧 " +
+            data.daily.precipitation_probability_max[i] +
+            "%";
 
-            <br>
-
-            🔻 ${Math.round(data.daily.temperature_2m_min[i])}°
-
-            <br><br>
-
-            🌧 ${data.daily.precipitation_probability_max[i]}%
-        `;
-
-        container.appendChild(day);
+        forecast.appendChild(day);
     }
 }
 
 function buildCopilot(data){
 
-    const maxToday =
-    data.daily.temperature_2m_max[0];
-
     const rain =
-    data.daily.precipitation_probability_max[0];
+        data.daily.precipitation_probability_max[0];
+
+    const maxTemp =
+        data.daily.temperature_2m_max[0];
 
     let text = "";
 
@@ -272,7 +281,7 @@ function buildCopilot(data){
     else if(rain < 50){
 
         text =
-        "🌤 Risk för enstaka skurar men övervägande uppehåll.";
+        "🌤 Risk för enstaka skurar men mest uppehåll.";
 
     }
     else{
@@ -282,24 +291,21 @@ function buildCopilot(data){
 
     }
 
-    text += "<br><br>";
+    text +=
+    "<br><br>Prognostiserad maxtemperatur: " +
+    maxTemp +
+    "°C";
 
     text +=
-    "Prognostiserad maxtemperatur: " +
-    maxToday + "°C";
-
-    text += "<br><br>";
-
-    text +=
-    "Copilot säkerhetsbedömning: Hög";
+    "<br><br>Copilot säkerhetsbedömning: Hög";
 
     document.getElementById("copilot").innerHTML =
-    text;
+        text;
 }
 
 loadWeather();
 
-setInterval(loadWeather,900000);
+setInterval(loadWeather, 900000);
 
 </script>
 
