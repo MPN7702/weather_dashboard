@@ -4,308 +4,392 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Väder Torsby</title>
+<title>Copilot Vädercentral Torsby</title>
 
 <style>
-*{
-    box-sizing:border-box;
-}
-
 body{
+    font-family:Segoe UI,Arial,sans-serif;
+    background:#eef2f7;
     margin:0;
-    background:#0f172a;
-    color:white;
-    font-family:Arial,sans-serif;
-}
-
-header{
-    background:#1e293b;
-    text-align:center;
     padding:20px;
 }
 
 .container{
-    max-width:1000px;
+    max-width:1400px;
     margin:auto;
-    padding:20px;
 }
 
 .card{
-    background:#1e293b;
+    background:white;
     border-radius:12px;
     padding:20px;
     margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
 }
 
-.current{
-    display:flex;
-    flex-wrap:wrap;
-    gap:15px;
-}
-
-.info{
-    flex:1;
-    min-width:180px;
-    background:#334155;
-    border-radius:8px;
-    padding:15px;
-    text-align:center;
-}
-
-.label{
-    font-size:14px;
-    opacity:0.8;
-}
-
-.value{
-    font-size:32px;
-    font-weight:bold;
-}
-
-.forecast{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-    gap:10px;
-}
-
-.day{
-    background:#334155;
-    padding:12px;
-    border-radius:8px;
-    text-align:center;
+h1{
+    color:#0078d4;
 }
 
 button{
-    background:#2563eb;
+    background:#0078d4;
     color:white;
     border:none;
+    border-radius:10px;
     padding:12px 20px;
-    border-radius:8px;
     cursor:pointer;
     font-size:16px;
 }
 
 button:hover{
-    background:#1d4ed8;
+    background:#005ea6;
 }
 
-#status{
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #ddd;
+    padding:10px;
     text-align:center;
-    margin-top:15px;
+}
+
+th{
+    background:#0078d4;
+    color:white;
+}
+
+.value{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.small{
+    color:#666;
 }
 </style>
 
 </head>
 <body>
 
-<header>
-    <h1>🌤 Väder Torsby</h1>
-</header>
-
 <div class="container">
 
-    <div class="card">
+<h1>🌦️ Copilot Vädercentral - Torsby</h1>
 
-        <div style="text-align:center;">
-            <button onclick="loadWeather()">
-                Uppdatera väder
-            </button>
-        </div>
+<div class="card">
 
-        <div id="status">
-            Laddar...
-        </div>
+<button onclick="updateWeather()">
+🔄 Uppdatera
+</button>
 
-    </div>
+<p id="status">Redo</p>
 
-    <div class="card">
+</div>
 
-        <h2>Just nu</h2>
+<div class="card">
 
-        <div class="current">
+<h2>Datakällor</h2>
 
-            <div class="info">
-                <div class="label">Temperatur</div>
-                <div id="temp" class="value">-</div>
-            </div>
+<table>
 
-            <div class="info">
-                <div class="label">Vind</div>
-                <div id="wind" class="value">-</div>
-            </div>
+<thead>
+<tr>
+<th>Källa</th>
+<th>Temperatur</th>
+<th>Regnrisk</th>
+</tr>
+</thead>
 
-            <div class="info">
-                <div class="label">Luftfuktighet</div>
-                <div id="humidity" class="value">-</div>
-            </div>
+<tbody id="tableBody">
+</tbody>
 
-        </div>
+</table>
 
-    </div>
+</div>
 
-    <div class="card">
+<div class="card">
 
-        <h2>Copilot-bedömning</h2>
+<h2>Copilot-Prognos</h2>
 
-        <div id="copilot">
-            Laddar...
-        </div>
+<div id="copilot">
 
-    </div>
+Väntar på uppdatering...
 
-    <div class="card">
+</div>
 
-        <h2>7-dagars prognos</h2>
+</div>
 
-        <div id="forecast" class="forecast"></div>
+<div class="card">
 
-    </div>
+<h2>Riskcentral</h2>
+
+<div id="riskPanel">
+
+Ingen data ännu.
+
+</div>
+
+</div>
 
 </div>
 
 <script>
 
 const LAT = 60.1333;
-const LON = 13.0;
+const LON = 13.0000;
 
-async function loadWeather(){
+async function updateWeather(){
 
-    const status = document.getElementById("status");
+const status =
+document.getElementById("status");
 
-    status.textContent = "Hämtar väderdata...";
+status.innerText =
+"Hämtar data...";
 
-    try{
+try{
 
-        const url =
-        "https://api.open-meteo.com/v1/forecast" +
-        "?latitude=" + LAT +
-        "&longitude=" + LON +
-        "&current=temperature_2m,relative_humidity_2m,wind_speed_10m" +
-        "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max" +
-        "&timezone=Europe%2FStockholm";
+let sources = [];
 
-        const response = await fetch(url);
 
-        if(!response.ok){
-            throw new Error("HTTP " + response.status);
-        }
+// OPEN-METEO
 
-        const data = await response.json();
+const openMeteoResponse =
+await fetch(
+`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m&hourly=precipitation_probability`
+);
 
-        document.getElementById("temp").textContent =
-            data.current.temperature_2m + "°";
+const openMeteo =
+await openMeteoResponse.json();
 
-        document.getElementById("wind").textContent =
-            data.current.wind_speed_10m + " m/s";
+const omTemp =
+openMeteo.current.temperature_2m;
 
-        document.getElementById("humidity").textContent =
-            data.current.relative_humidity_2m + "%";
+const omRain =
+Math.max(
+...openMeteo.hourly.precipitation_probability.slice(0,24)
+);
 
-        buildForecast(data);
-        buildCopilot(data);
+sources.push({
+name:"Open-Meteo",
+temp:omTemp,
+rain:omRain
+});
 
-        status.textContent =
-            "Senast uppdaterad: " +
-            new Date().toLocaleTimeString("sv-SE");
 
-    }
-    catch(error){
+// SMHI
 
-        status.textContent =
-            "Fel: " + error.message;
+const smhiResponse =
+await fetch(
+"https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/13.0/lat/60.13/data.json"
+);
 
-    }
+const smhi =
+await smhiResponse.json();
+
+let smhiTemp = null;
+
+for(const p of smhi.timeSeries[0].parameters){
+
+if(p.name === "t"){
+
+smhiTemp = p.values[0];
+
 }
 
-function buildForecast(data){
-
-    const forecast =
-        document.getElementById("forecast");
-
-    forecast.innerHTML = "";
-
-    for(let i = 0; i < 7; i++){
-
-        const date =
-            new Date(data.daily.time[i]);
-
-        const day =
-            document.createElement("div");
-
-        day.className = "day";
-
-        day.innerHTML =
-            "<strong>" +
-            date.toLocaleDateString(
-                "sv-SE",
-                { weekday:"short" }
-            ) +
-            "</strong><br><br>" +
-
-            "🔺 " +
-            Math.round(
-                data.daily.temperature_2m_max[i]
-            ) +
-            "°<br>" +
-
-            "🔻 " +
-            Math.round(
-                data.daily.temperature_2m_min[i]
-            ) +
-            "°<br><br>" +
-
-            "🌧 " +
-            data.daily.precipitation_probability_max[i] +
-            "%";
-
-        forecast.appendChild(day);
-    }
 }
 
-function buildCopilot(data){
+sources.push({
+name:"SMHI",
+temp:smhiTemp,
+rain:"-"
+});
 
-    const rain =
-        data.daily.precipitation_probability_max[0];
 
-    const maxTemp =
-        data.daily.temperature_2m_max[0];
 
-    let text = "";
+// Fyll tabell
 
-    if(rain < 20){
+let html = "";
 
-        text =
-        "☀️ Hög sannolikhet för torrt och stabilt väder idag.";
+sources.forEach(source=>{
 
-    }
-    else if(rain < 50){
+html += `
+<tr>
+<td>${source.name}</td>
+<td>${source.temp} °C</td>
+<td>${source.rain}%</td>
+</tr>
+`;
 
-        text =
-        "🌤 Risk för enstaka skurar men mest uppehåll.";
+});
 
-    }
-    else{
+document.getElementById("tableBody").innerHTML =
+html;
 
-        text =
-        "🌧 Förhöjd risk för regn idag.";
 
-    }
 
-    text +=
-    "<br><br>Prognostiserad maxtemperatur: " +
-    maxTemp +
-    "°C";
+// Beräkna medel
 
-    text +=
-    "<br><br>Copilot säkerhetsbedömning: Hög";
+const temps =
+sources
+.map(s=>Number(s.temp))
+.filter(v=>!isNaN(v));
 
-    document.getElementById("copilot").innerHTML =
-        text;
+const rains =
+sources
+.map(s=>Number(s.rain))
+.filter(v=>!isNaN(v));
+
+const avgTemp =
+(
+temps.reduce((a,b)=>a+b,0)
+/
+temps.length
+)
+.toFixed(1);
+
+let avgRain = 0;
+
+if(rains.length>0){
+
+avgRain =
+(
+rains.reduce((a,b)=>a+b,0)
+/
+rains.length
+)
+.toFixed(0);
+
 }
 
-loadWeather();
 
-setInterval(loadWeather, 900000);
+
+// Prognossäkerhet
+
+const spread =
+Math.max(...temps)
+-
+Math.min(...temps);
+
+let confidence =
+100 - (spread * 10);
+
+if(confidence < 0){
+
+confidence = 0;
+
+}
+
+confidence =
+confidence.toFixed(0);
+
+
+
+// Enkel åskrisk
+
+let thunderRisk = 5;
+
+if(avgRain >= 80){
+
+thunderRisk = 60;
+
+}
+else if(avgRain >= 60){
+
+thunderRisk = 40;
+
+}
+else if(avgRain >= 40){
+
+thunderRisk = 20;
+
+}
+
+
+
+// Copilot prognos
+
+document.getElementById("copilot").innerHTML = `
+
+<div class="value">
+🌡️ ${avgTemp} °C
+</div>
+
+<p>
+☔ Regnrisk: <b>${avgRain}%</b>
+</p>
+
+<p>
+⛈️ Åskrisk: <b>${thunderRisk}%</b>
+</p>
+
+<p>
+📊 Prognossäkerhet: <b>${confidence}%</b>
+</p>
+
+<p class="small">
+Bygger på ${sources.length} datakällor
+</p>
+
+`;
+
+
+// Riskpanel
+
+let color = "#28a745";
+let level = "Låg";
+
+if(avgRain > 70){
+
+color = "#dc3545";
+level = "Hög";
+
+}
+else if(avgRain > 40){
+
+color = "#ffc107";
+level = "Mellan";
+
+}
+
+document.getElementById("riskPanel").innerHTML = `
+
+<div style="
+background:${color};
+color:white;
+padding:20px;
+border-radius:12px;
+font-size:22px;
+font-weight:bold;
+">
+
+☔ Regnrisk: ${avgRain}%<br><br>
+
+⛈️ Åskrisk: ${thunderRisk}%<br><br>
+
+📊 Säkerhet: ${confidence}%<br><br>
+
+⚠️ Risknivå: ${level}
+
+</div>
+`;
+
+status.innerText =
+"Senast uppdaterad: " +
+new Date().toLocaleString("sv-SE");
+
+}
+catch(error){
+
+status.innerText =
+"Fel: " + error.message;
+
+}
+
+}
+
+updateWeather();
 
 </script>
 
