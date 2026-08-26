@@ -117,9 +117,21 @@ Laddar...
 
 </div>
 
+<!-- ÄNDRING: Detta kort har flyttats högst upp, ändrat namn till Dagens väder och innehåller nu Copilot-bedömningen -->
 <div class="card">
 
-<h2>Just nu</h2>
+<h2>Dagens väder</h2>
+
+<div id="copilot">
+Laddar...
+</div>
+
+</div>
+
+<!-- ÄNDRING: Detta kort ligger nu under det övre och visar rådata från de olika källorna -->
+<div class="card">
+
+<h2>Rådata just nu</h2>
 
 <div class="current">
 
@@ -148,16 +160,6 @@ Laddar...
 <div id="rain" class="value">-</div>
 </div>
 
-</div>
-
-</div>
-
-<div class="card">
-
-<h2>Copilot-bedömning</h2>
-
-<div id="copilot">
-Laddar...
 </div>
 
 </div>
@@ -391,7 +393,7 @@ smhiThunder !== null
 
 <br><br>
 
-<b>COPILOT</b>
+<b>COPILOT SAMMANSTÄLLNING</b>
 <br>
 Temperatur: ${copilotTemp.toFixed(1)}°C
 <br>
@@ -463,4 +465,3 @@ setInterval(loadWeather,900000);
 
 </body>
 </html>
-``
