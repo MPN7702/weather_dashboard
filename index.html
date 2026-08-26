@@ -184,8 +184,8 @@ const status = document.getElementById("status");
 status.textContent = "Hämtar väderdata...";
 
 try{
-// ÅTERSTÄLLD: Mallsträng med korrekta backticks för att förhindra URL-fel [2]
-const openMeteoUrl = `https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+// KORRIGERING: Hårdkodade koordinater direkt i länken för att förhindra felaktig strängparsning i webbläsaren
+const openMeteoUrl = "https://open-meteo.com";
 
 const response = await fetch(openMeteoUrl);
 
@@ -212,25 +212,21 @@ try{
 
         const smhiData = await smhiResponse.json();
 
-        // KORRIGERING: Läser datastrukturen stabilt baserat på din nuvarande Worker-output [2]
         if(smhiData.timeSeries && smhiData.timeSeries.length > 0){
 
-            // Hämta första timmen om data ligger i en array, annars läs direkt [2]
-            const firstSlot = Array.isArray(smhiData.timeSeries) ? smhiData.timeSeries[0] : smhiData.timeSeries;
-            const current = firstSlot.data;
-
-            if(current) {
-                smhiTemp = current.air_temperature;
-                smhiWind = current.wind_speed;
-                smhiHumidity = current.relative_humidity;
-                smhiRain = current.probability_of_precipitation;
-                smhiThunder = current.thunderstorm_probability;
-                smhiPressure = current.air_pressure_at_mean_sea_level;
+            // Hämtar den första mätpunkten för rådata-tabellen i botten
+            const firstSlot = smhiData.timeSeries[0];
+            if(firstSlot && firstSlot.data) {
+                smhiTemp = firstSlot.data.air_temperature;
+                smhiWind = firstSlot.data.wind_speed;
+                smhiHumidity = firstSlot.data.relative_humidity;
+                smhiRain = firstSlot.data.probability_of_precipitation;
+                smhiThunder = firstSlot.data.thunderstorm_probability;
+                smhiPressure = firstSlot.data.air_pressure_at_mean_sea_level;
             }
 
-            // Mappa upp hela veckans dygnsvärden från SMHI-tidsserien [2]
-            const seriesArray = Array.isArray(smhiData.timeSeries) ? smhiData.timeSeries : [smhiData.timeSeries];
-            seriesArray.forEach(slot => {
+            // Sorterar och sparar alla dygnsmätningar från SMHI-prognosen
+            smhiData.timeSeries.forEach(slot => {
                 if (slot.time && slot.data) {
                     const dateKey = slot.time.split("T")[0];
                     if (!smhiForecastDays[dateKey]) {
@@ -341,7 +337,7 @@ for(let i = 0; i < 7; i++){
     <div class="day">
     <strong>${date.toLocaleDateString("sv-SE", {weekday:"short"})}</strong><br><br>
     🔺 ${Math.round(finalMax)}°<br>
-    🔻 ${Math.round(finalMin)}°br><br>
+    🔻 ${Math.round(finalMin)}°<br><br>
     🌧 ${finalRain}%
     </div>
     `;
