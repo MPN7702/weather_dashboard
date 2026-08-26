@@ -214,6 +214,9 @@ let smhiRain = null;
 let smhiThunder = null;
 let smhiPressure = null;
 
+// TILLÄGG ENBART HÄR: Objekt för att sortera och lagra SMHI:s dygnsvärden till veckoprognosen
+let smhiForecastDays = {};
+
 try{
 
     const smhiResponse =
@@ -252,6 +255,22 @@ try{
 
             smhiPressure =
             current.air_pressure_at_mean_sea_level;
+
+            // TILLÄGG ENBART HÄR: Samlar in och grupperar alla tillgängliga dygnsprognoser från SMHI per datum
+            smhiData.timeSeries.forEach(slot => {
+                if (slot.time && slot.data) {
+                    const dateKey = slot.time.split("T")[0]; // Ger formatet "YYYY-MM-DD"
+                    if (!smhiForecastDays[dateKey]) {
+                        smhiForecastDays[dateKey] = { temps: [], rains: [] };
+                    }
+                    if (slot.data.air_temperature !== undefined) {
+                        smhiForecastDays[dateKey].temps.push(slot.data.air_temperature);
+                    }
+                    if (slot.data.probability_of_precipitation !== undefined) {
+                        smhiForecastDays[dateKey].rains.push(slot.data.probability_of_precipitation);
+                    }
+                }
+            });
 
         }
 
@@ -391,8 +410,29 @@ let forecastHTML = "";
 
 for(let i = 0; i < 7; i++){
 
-const date =
-new Date(data.daily.time[i]);
+const dateStr = data.daily.time[i]; // Hämtar aktuellt datumsträng "YYYY-MM-DD"
+const date = new Date(dateStr);
+
+// ÄNDRING ENBART HÄR: Hämtar Open-Meteo-värdena och räknar ut genomsnitt i kombination med SMHI-prognosen
+let omMax = data.daily.temperature_2m_max[i];
+let omMin = data.daily.temperature_2m_min[i];
+let omRain = data.daily.precipitation_probability_max[i];
+
+let finalMax = omMax;
+let finalMin = omMin;
+let finalRain = omRain;
+
+if (smhiForecastDays[dateStr]) {
+    const smhiTemps = smhiForecastDays[dateStr].temps;
+    const smhiRains = smhiForecastDays[dateStr].rains;
+    if (smhiTemps.length > 0) {
+        finalMax = (omMax + Math.max(...smhiTemps)) / 2;
+        finalMin = (omMin + Math.min(...smhiTemps)) / 2;
+    }
+    if (smhiRains.length > 0) {
+        finalRain = Math.round((omRain + Math.max(...smhiRains)) / 2);
+    }
+}
 
 forecastHTML += `
 <div class="day">
@@ -403,11 +443,11 @@ ${date.toLocaleDateString(
 )}
 </strong>
 <br><br>
-🔺 ${Math.round(data.daily.temperature_2m_max[i])}°
+🔺 ${Math.round(finalMax)}°
 <br>
-🔻 ${Math.round(data.daily.temperature_2m_min[i])}°
+🔻 ${Math.round(finalMin)}°
 <br><br>
-🌧 ${data.daily.precipitation_probability_max[i]}%
+🌧 ${finalRain}%
 </div>
 `;
 
