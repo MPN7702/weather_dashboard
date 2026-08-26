@@ -207,136 +207,142 @@ const status = document.getElementById("status");
 status.textContent = "Hämtar väderdata...";
 
 try{
-// SÄKRAD URL: Hårdkodad sträng med Torsbys koordinater inbakade direkt för att förhindra skriptfel
-const openMeteoUrl = "https://open-meteo.com";
+    // Fixad hårdkodad Open-Meteo URL för Torsby
+    const openMeteoUrl = "https://open-meteo.com";
+    const response = await fetch(openMeteoUrl);
 
-const response = await fetch(openMeteoUrl);
+    if(!response.ok){
+        throw new Error("Open‑Meteo " + response.status);
+    }
+    const data = await response.json();
 
-if(!response.ok){
-    throw new Error("Open‑Meteo " + response.status);
-}
+    let smhiTemp = null;
+    let smhiWind = null;
+    let smhiHumidity = null;
+    let smhiRain = null;
+    let smhiThunder = null;
+    let smhiPressure = null;
 
-const data = await response.json();
+    try{
+        // NY ENPOINT: Direkt anrop till SMHI:s officiella öppna API för Torsby (Lat 60.1333, Lon 13.0 avrundat till 6 decimaler)
+        const smhiResponse = await fetch("https://smhi.se");
 
-let smhiTemp = null;
-let smhiWind = null;
-let smhiHumidity = null;
-let smhiRain = null;
-let smhiThunder = null;
-let smhiPressure = null;
+        if(smhiResponse.ok){
+            const smhiData = await smhiResponse.json();
 
-try{
-    const smhiResponse = await fetch("https://workers.dev");
+            if(smhiData.timeSeries && smhiData.timeSeries.length > 0){
+                // Hämtar den allra första tidspunkten (just nu)
+                const currentData = smhiData.timeSeries[0].parameters;
 
-    if(smhiResponse.ok){
-        const smhiData = await smhiResponse.json();
+                // SMHI mappar sina värden via specifika parameternamn (t.ex t, ws, r, pcat)
+                const tParam = currentData.find(p => p.name === "t");
+                const wsParam = currentData.find(p => p.name === "ws");
+                const rParam = currentData.find(p => p.name === "r");
+                const pcatParam = currentData.find(p => p.name === "pcat"); // Nederbördstyp
+                const mslParam = currentData.find(p => p.name === "msl"); // Lufttryck
 
-        if(
-            smhiData.timeSeries &&
-            smhiData.timeSeries.length > 0 &&
-            smhiData.timeSeries[0].data
-        ){
-            const current = smhiData.timeSeries[0].data;
-
-            smhiTemp = current.air_temperature !== undefined ? current.air_temperature : null;
-            smhiWind = current.wind_speed !== undefined ? current.wind_speed : null;
-            smhiHumidity = current.relative_humidity !== undefined ? current.relative_humidity : null;
-            smhiRain = current.probability_of_precipitation !== undefined ? current.probability_of_precipitation : null;
-            smhiThunder = current.thunderstorm_probability !== undefined ? current.thunderstorm_probability : null;
-            smhiPressure = current.air_pressure_at_mean_sea_level !== undefined ? current.air_pressure_at_mean_sea_level : null;
+                if(tParam) smhiTemp = tParam.values[0];
+                if(wsParam) smhiWind = wsParam.values[0];
+                if(rParam) smhiHumidity = rParam.values[0];
+                if(mslParam) smhiPressure = mslParam.values[0];
+                
+                // SMHI skickar inte ut %-regnrisk på samma sätt, vi tolkar dess regnkategori istället (0 = inget regn)
+                if(pcatParam) {
+                    smhiRain = pcatParam.values[0] > 0 ? 100 : 0; 
+                }
+                smhiThunder = 0; // Åskrisk saknas i grundmodellen för nuvarande timme
+            }
         }
     }
-}
-catch(smhiError){
-    console.error("SMHI-fel:", smhiError);
-}
+    catch(smhiError){
+        console.error("SMHI-fel:", smhiError);
+    }
 
-const temp = data.current.temperature_2m;
-const wind = data.current.wind_speed_10m;
-const humidity = data.current.relative_humidity_2m;
-const pressure = data.current.surface_pressure;
-const rain = data.daily.precipitation_probability_max[0];
+    const temp = data.current.temperature_2m;
+    const wind = data.current.wind_speed_10m;
+    const humidity = data.current.relative_humidity_2m;
+    const pressure = data.current.surface_pressure;
+    const rain = data.daily.precipitation_probability_max[0]; // Fixat index så det hämtar ett enskilt tal
 
-let openMeteoThunder = 0;
-if (rain > 30 && temp > 15 && humidity > 60) {
-    openMeteoThunder = Math.min(Math.round((humidity - 50) * (temp / 10) * (rain / 100)), 100);
-} else if (rain > 10) {
-    openMeteoThunder = Math.round(rain * 0.05);
-}
+    let openMeteoThunder = 0;
+    if (rain > 30 && temp > 15 && humidity > 60) {
+        openMeteoThunder = Math.min(Math.round((humidity - 50) * (temp / 10) * (rain / 100)), 100);
+    } else if (rain > 10) {
+        openMeteoThunder = Math.round(rain * 0.05);
+    }
 
-// Uppdatera jämförelserutorna
-document.getElementById("temp").textContent = temp + "°";
-document.getElementById("wind").textContent = wind + " m/s";
-document.getElementById("humidity").textContent = humidity + "%";
-document.getElementById("rain").textContent = rain + "%";
+    // Uppdatera jämförelserutorna i gränssnittet
+    document.getElementById("temp").textContent = temp + "°";
+    document.getElementById("wind").textContent = wind + " m/s";
+    document.getElementById("humidity").textContent = humidity + "%";
+    document.getElementById("rain").textContent = rain + "%";
 
-document.getElementById("smhiTemp").textContent = smhiTemp !== null ? smhiTemp + "°" : "N/A";
-document.getElementById("smhiWindVal").textContent = smhiWind !== null ? smhiWind + " m/s" : "N/A";
-document.getElementById("smhiHumVal").textContent = smhiHumidity !== null ? smhiHumidity + "%" : "N/A";
-document.getElementById("smhiRainVal").textContent = smhiRain !== null ? smhiRain + "%" : "N/A";
+    document.getElementById("smhiTemp").textContent = smhiTemp !== null ? smhiTemp + "°" : "N/A";
+    document.getElementById("smhiWindVal").textContent = smhiWind !== null ? smhiWind + " m/s" : "N/A";
+    document.getElementById("smhiHumVal").textContent = smhiHumidity !== null ? smhiHumidity + "%" : "N/A";
+    document.getElementById("smhiRainVal").textContent = smhiRain !== null ? (smhiRain > 0 ? "Ja" : "Nej") : "N/A";
 
-// Separerad text för Open-Meteo
-let meteoHTML = "";
-meteoHTML += "<b>Temperatur:</b> " + temp.toFixed(1) + "°C<br>";
-meteoHTML += "<b>Vindhastighet:</b> " + wind + " m/s<br>";
-meteoHTML += "<b>Luftfuktighet:</b> " + humidity + "%<br>";
-meteoHTML += "<b>Regnrisk:</b> " + rain + "%<br>";
-meteoHTML += "<b>Beräknad åskrisk:</b> " + openMeteoThunder + "%<br>";
-meteoHTML += "<b>Lufttryck:</b> " + pressure + " hPa";
-document.getElementById("meteo-details").innerHTML = meteoHTML;
+    // Text för Open-Meteo-kortet
+    let meteoHTML = "";
+    meteoHTML += "<b>Temperatur:</b> " + temp.toFixed(1) + "°C<br>";
+    meteoHTML += "<b>Vindhastighet:</b> " + wind + " m/s<br>";
+    meteoHTML += "<b>Luftfuktighet:</b> " + humidity + "%<br>";
+    meteoHTML += "<b>Regnrisk:</b> " + rain + "%<br>";
+    meteoHTML += "<b>Beräknad åskrisk:</b> " + openMeteoThunder + "%<br>";
+    meteoHTML += "<b>Lufttryck:</b> " + pressure + " hPa";
+    document.getElementById("meteo-details").innerHTML = meteoHTML;
 
-// Separerad text för SMHI
-let smhiHTML = "";
-if(smhiTemp !== null){
-    smhiHTML += "<b>Temperatur:</b> " + Number(smhiTemp).toFixed(1) + "°C<br>";
-    smhiHTML += "<b>Vindhastighet:</b> " + smhiWind + " m/s<br>";
-    smhiHTML += "<b>Luftfuktighet:</b> " + smhiHumidity + "%<br>";
-    smhiHTML += "<b>Regnrisk:</b> " + smhiRain + "%<br>";
-    smhiHTML += "<b>Åskrisk:</b> " + smhiThunder + "%<br>";
-    smhiHTML += "<b>Lufttryck:</b> " + smhiPressure + " hPa";
-} else {
-    smhiHTML = "<span style='color:#ef4444;'>Kunde inte hämta data från SMHI för tillfället.</span>";
-}
-document.getElementById("smhi-details").innerHTML = smhiHTML;
+    // Text för SMHI-kortet
+    let smhiHTML = "";
+    if(smhiTemp !== null){
+        smhiHTML += "<b>Temperatur:</b> " + Number(smhiTemp).toFixed(1) + "°C<br>";
+        smhiHTML += "<b>Vindhastighet:</b> " + smhiWind + " m/s<br>";
+        smhiHTML += "<b>Luftfuktighet (Relativ):</b> " + smhiHumidity + "%<br>";
+        smhiHTML += "<b>Aktivt regn just nu:</b> " + (smhiRain > 0 ? "Ja" : "Nej") + "<br>";
+        smhiHTML += "<b>Lufttryck (Havsnivå):</b> " + smhiPressure + " hPa";
+    } else {
+        smhiHTML = "<span style='color:#ef4444;'>Kunde inte hämta data från SMHI för tillfället.</span>";
+    }
+    document.getElementById("smhi-details").innerHTML = smhiHTML;
 
-// Copilot-bedömning
-let copilotTemp = temp;
-if(smhiTemp !== null){
-    copilotTemp = (temp + smhiTemp) / 2;
-}
+    // Medelbedömning
+    let copilotTemp = temp;
+    if(smhiTemp !== null){
+        copilotTemp = (temp + smhiTemp) / 2;
+    }
 
-let text = "";
-if(rain < 20){
-    text = "☀️ Hög sannolikhet för torrt och stabilt väder idag.";
-} else if(rain < 50){
-    text = "🌤 Risk för enstaka skurar men mest uppehåll.";
-} else {
-    text = "🌧 Förhöjd risk för regn idag.";
-}
+    let text = "";
+    if(rain < 20){
+        text = "☀️ Hög sannolikhet för torrt och stabilt väder idag.";
+    } else if(rain < 50){
+        text = "🌤 Risk för enstaka skurar men mest uppehåll.";
+    } else {
+        text = "🌧 Förhöjd risk för regn idag.";
+    }
 
-text += "<br><br><b>Beräknad medeltemperatur:</b> " + copilotTemp.toFixed(1) + "°C";
-text += "<br><b>Aktiva väderkällor:</b> " + (smhiTemp !== null ? "Open‑Meteo + SMHI" : "Endast Open‑Meteo");
-document.getElementById("copilot").innerHTML = text;
+    text += "<br><br><b>Beräknad medeltemperatur:</b> " + copilotTemp.toFixed(1) + "°C";
+    text += "<br><b>Aktiva väderkällor:</b> " + (smhiTemp !== null ? "Open‑Meteo + SMHI" : "Endast Open‑Meteo");
+    document.getElementById("copilot").innerHTML = text;
 
-// Prognosbygge
-let forecastHTML = "";
-for(let i = 0; i < 7; i++){
-    const date = new Date(data.daily.time[i]);
-    forecastHTML += `
-    <div class="day">
-    <strong>${date.toLocaleDateString("sv-SE", {weekday:"short"})}</strong>
-    <br><br>
-    🔺 ${Math.round(data.daily.temperature_2m_max[i])}°
-    <br>
-    🔻 ${Math.round(data.daily.temperature_2m_min[i])}°
-    <br><br>
-    🌧 ${data.daily.precipitation_probability_max[i]}%
-    </div>
-    `;
-}
-document.getElementById("forecast").innerHTML = forecastHTML;
+    // 7-dagars prognosbygge (Open-Meteo)
+    let forecastHTML = "";
+    for(let i = 0; i < 7; i++){
+        const date = new Date(data.daily.time[i]);
+        forecastHTML += `
+        <div class="day">
+        <strong>${date.toLocaleDateString("sv-SE", {weekday:"short"})}</strong>
+        <br><br>
+        🔺 ${Math.round(data.daily.temperature_2m_max[i])}°
+        <br>
+        🔻 ${Math.round(data.daily.temperature_2m_min[i])}°
+        <br><br>
+        🌧 ${data.daily.precipitation_probability_max[i]}%
+        </div>
+        `;
+    }
+    document.getElementById("forecast").innerHTML = forecastHTML;
 
-status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE");
+    status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE");
 
 }
 catch(error){
@@ -345,7 +351,9 @@ catch(error){
 
 }
 
+// Starta applikationen direkt
 loadWeather();
+// Uppdatera var 15:e minut
 setInterval(loadWeather,900000);
 
 </script>
