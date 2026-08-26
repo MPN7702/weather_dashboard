@@ -226,37 +226,75 @@ try{
         const smhiData =
         await smhiResponse.json();
 
-        if(
-            smhiData.timeSeries &&
-            smhiData.timeSeries.length > 0 &&
-            smhiData.timeSeries[0].data
-        ){
+        const idag =
+        new Date()
+        .toISOString()
+        .split("T")[0];
 
-            const current =
-            smhiData.timeSeries[0].data;
+        const dagensSMHI =
+        smhiData.timeSeries.filter(item =>
+            item.time.startsWith(idag)
+        );
 
-            smhiTemp =
-            current.air_temperature;
+        if(dagensSMHI.length > 0){
 
-            smhiWind =
-            current.wind_speed;
+            const temperaturer = [];
+            const regnrisker = [];
+            const askrisker = [];
 
-            smhiHumidity =
-            current.relative_humidity;
+            dagensSMHI.forEach(item => {
 
-            smhiRain =
-            current.probability_of_precipitation;
+                if(item.data.air_temperature !== undefined){
+                    temperaturer.push(
+                        item.data.air_temperature
+                    );
+                }
 
-            smhiThunder =
-            current.thunderstorm_probability;
+                if(item.data.probability_of_precipitation !== undefined){
+                    regnrisker.push(
+                        item.data.probability_of_precipitation
+                    );
+                }
 
-            smhiPressure =
-            current.air_pressure_at_mean_sea_level;
+                if(item.data.thunderstorm_probability !== undefined){
+                    askrisker.push(
+                        item.data.thunderstorm_probability
+                    );
+                }
 
+            });
+
+            if(temperaturer.length){
+                smhiTemp =
+                Math.max(...temperaturer);
+            }
+
+            if(regnrisker.length){
+                smhiRain =
+                Math.round(
+                    regnrisker.reduce((a,b)=>a+b,0)
+                    / regnrisker.length
+                );
+            }
+
+            if(askrisker.length){
+                smhiThunder =
+                Math.max(...askrisker);
+            }
         }
 
-    }
+        const current =
+        smhiData.timeSeries[0].data;
 
+        smhiWind =
+        current.wind_speed;
+
+        smhiHumidity =
+        current.relative_humidity;
+
+        smhiPressure =
+        current.air_pressure_at_mean_sea_level;
+    }
 }
 catch(smhiError){
 
@@ -281,8 +319,10 @@ data.daily.precipitation_probability_max[0];
 
 // ÄNDRING: Kodblocken som uppdaterade de gamla boxarna har flyttats till slutet av funktionen där Copilot-variablerna har skapats.
 
-let copilotTemp =
-temp;
+let copilotTemp = Math.max(
+    temp,
+    smhiTemp ?? temp
+);
 
 if(smhiTemp !== null){
 
