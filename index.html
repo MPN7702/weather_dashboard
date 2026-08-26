@@ -119,12 +119,10 @@ Laddar...
 
 <div class="card">
 
-<!-- Rubrik ändrad till Dagens väder -->
 <h2>Dagens väder</h2>
 
 <div class="current">
 
-<!-- Boxar för att visa Copilot-datan för hela dygnet -->
 <div class="info">
 <div class="label">Temperatur</div>
 <div id="copilotTemp" class="value">-</div>
@@ -217,7 +215,7 @@ let smhiTodayTemps = [];
 let smhiTodayRains = [];
 
 try{
-    // ÄNDRING: Vi skippar Cloudflare-workern och anropar SMHI:s officiella API direkt via en publik proxy
+    // LÖSNING: Vi går runt din blockerade Cloudflare-worker helt och hämtar SMHI:s officiella data säkert via AllOrigins-proxy
     const smhiTargetUrl = "https://smhi.se";
     const proxyUrl = `https://allorigins.win{encodeURIComponent(smhiTargetUrl)}`;
 
@@ -226,7 +224,6 @@ try{
     if(smhiResponse.ok){
 
         const proxyData = await smhiResponse.json();
-        // Svaret från SMHI ligger packat som en textsträng inuti proxyData.contents
         const smhiData = JSON.parse(proxyData.contents);
 
         if(
@@ -234,7 +231,7 @@ try{
             smhiData.timeSeries &&
             smhiData.timeSeries.length > 0
         ){
-            // Tar ut realtidsdata för den första tillgängliga timmen i tidsserien
+            // Hämtar ut realtidsvärden från den första timmen i tidsserien
             const firstSlot = smhiData.timeSeries[0];
             if(firstSlot && firstSlot.parameters) {
                 const tParam = firstSlot.parameters.find(p => p.name === "t");
@@ -252,7 +249,7 @@ try{
                 if(mslParam) smhiPressure = mslParam.values[0];
             }
 
-            // Samlar in alla timprognoser för det aktuella dygnet för att beräkna hela dagen
+            // Samlar in alla timprognoser för det aktuella dygnet
             const todayStr = data.daily.time[0]; // "YYYY-MM-DD"
             smhiData.timeSeries.forEach(slot => {
                 if(slot.validTime && slot.validTime.startsWith(todayStr) && slot.parameters) {
@@ -283,7 +280,7 @@ data.current.relative_humidity_2m;
 const rain =
 data.daily.precipitation_probability_max[0];
 
-// ÄNDRING: Beräknar en äkta, sammanslagen dygnsbedömning för hela dagen (max/min & dygnsregnrisk)
+// Beräknar en kombinerad dygnsbedömning för hela dagen (max/min & dygnsregnrisk)
 let finalTodayMin = data.daily.temperature_2m_min[0];
 let finalTodayMax = data.daily.temperature_2m_max[0];
 let copilotRain = rain;
@@ -369,7 +366,6 @@ smhiThunder !== null
 document.getElementById("copilot").innerHTML =
 text;
 
-// Uppdaterar boxarna högst upp med de sammanslagna dygnsberäkningarna
 document.getElementById("copilotTemp").textContent = Math.round(finalTodayMin) + "° / " + Math.round(finalTodayMax) + "°";
 document.getElementById("copilotRain").textContent = copilotRain + "%";
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
