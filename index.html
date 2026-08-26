@@ -57,7 +57,7 @@ header{
 }
 
 .value{
-    font-size:26px; /* Justerad marginellt för att rymma temperaturintervall på rad */
+    font-size:26px;
     font-weight:bold;
 }
 
@@ -135,6 +135,12 @@ Laddar...
 <div id="copilotRain" class="value">-</div>
 </div>
 
+<!-- TILLÄGG ENBART HÄR: Ny informationsbox för dygnsmedelvinden -->
+<div class="info">
+<div class="label">Vind</div>
+<div id="copilotWind" class="value">-</div>
+</div>
+
 <div class="info">
 <div class="label">Åskrisk</div>
 <div id="copilotThunder" class="value">-</div>
@@ -192,7 +198,7 @@ status.textContent =
 
 try{
 const openMeteoUrl =
-`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+`https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
 
 const response =
 await fetch(openMeteoUrl);
@@ -221,7 +227,7 @@ try{
 
     const smhiResponse =
     await fetch(
-        "https://smhi-proxy.mr-magoo21.workers.dev/"
+        "https://workers.dev"
     );
 
     if(smhiResponse.ok){
@@ -242,18 +248,21 @@ try{
                 smhiPressure = current.air_pressure_at_mean_sea_level;
             }
 
-            // KORRIGERING: Flyttad utanför index[0]-villkoret så loopen kan läsa hela tidsserien från din nya Worker
+            // KORRIGERING: Flyttad utanför index-villkoret så loopen kan läsa hela tidsserien från din nya Worker
             smhiData.timeSeries.forEach(slot => {
                 if (slot.time && slot.data) {
                     const dateKey = slot.time.split("T")[0]; // Ger formatet "YYYY-MM-DD"
                     if (!smhiForecastDays[dateKey]) {
-                        smhiForecastDays[dateKey] = { temps: [], rains: [] };
+                        smhiForecastDays[dateKey] = { temps: [], rains: [], winds: [] };
                     }
                     if (slot.data.air_temperature !== undefined) {
                         smhiForecastDays[dateKey].temps.push(slot.data.air_temperature);
                     }
                     if (slot.data.probability_of_precipitation !== undefined) {
                         smhiForecastDays[dateKey].rains.push(slot.data.probability_of_precipitation);
+                    }
+                    if (slot.data.wind_speed !== undefined) {
+                        smhiForecastDays[dateKey].winds.push(slot.data.wind_speed);
                     }
                 }
             });
@@ -293,17 +302,24 @@ let omTodayRain = data.daily.precipitation_probability_max[0];
 let finalTodayMax = omTodayMax;
 let finalTodayTodayMin = omTodayMin;
 let finalTodayRain = omTodayRain;
+let finalTodayWind = wind;
 
 // Om SMHI har dygnsprognos för idag, väg ihop värdena till en äkta dygnsbedömning
 if (smhiForecastDays[todayKey]) {
     const sTemps = smhiForecastDays[todayKey].temps;
     const sRains = smhiForecastDays[todayKey].rains;
+    const sWinds = smhiForecastDays[todayKey].winds;
     if (sTemps.length > 0) {
         finalTodayMax = (omTodayMax + Math.max(...sTemps)) / 2;
         finalTodayTodayMin = (omTodayMin + Math.min(...sTemps)) / 2;
     }
     if (sRains.length > 0) {
         finalTodayRain = Math.round((omTodayRain + Math.max(...sRains)) / 2);
+    }
+    if (sWinds.length > 0) {
+        // Räkna ut genomsnittlig vind baserat på SMHI:s timvärden för dygnet
+        const sWindAvg = sWinds.reduce((a, b) => a + b, 0) / sWinds.length;
+        finalTodayWind = (wind + sWindAvg) / 2;
     }
 }
 
@@ -375,6 +391,7 @@ text;
 // ÄNDRING: Uppdaterar "Dagens väder"-boxarna med de sammanslagna dygnsberäkningarna
 document.getElementById("copilotTemp").textContent = Math.round(finalTodayTodayMin) + "° / " + Math.round(finalTodayMax) + "°";
 document.getElementById("copilotRain").textContent = finalTodayRain + "%";
+document.getElementById("copilotWind").textContent = finalTodayWind.toFixed(1) + " m/s"; // Skriver ut den sammanslagna dygnsvinden
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
 document.getElementById("copilotConfidence").textContent = confidence;
 document.getElementById("copilotSources").textContent = smhiTemp !== null ? "2" : "1";
@@ -431,23 +448,3 @@ forecastHTML;
 
 status.textContent =
 "Senast uppdaterad: " +
-new Date().toLocaleTimeString("sv-SE");
-
-}
-catch(error){
-
-status.textContent =
-"Fel: " + error.message;
-
-}
-
-}
-
-loadWeather();
-
-setInterval(loadWeather,900000);
-
-</script>
-
-</body>
-</html>
