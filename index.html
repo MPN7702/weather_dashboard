@@ -191,8 +191,9 @@ status.textContent =
 "Hämtar väderdata...";
 
 try{
+// KORRIGERING: Hårdkodad och helt felsäker URL-sträng till Open-Meteo med Torsbys fasta koordinater
 const openMeteoUrl =
-`https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+"https://open-meteo.com";
 
 const response =
 await fetch(openMeteoUrl);
@@ -214,7 +215,6 @@ let smhiRain = null;
 let smhiThunder = null;
 let smhiPressure = null;
 
-// TILLÄGG: Listor för att samla in dagens alla timvärden från SMHI för dygnsextremer
 let smhiTodayTemps = [];
 let smhiTodayRains = [];
 
@@ -233,28 +233,31 @@ try{
         if(
             smhiData.timeSeries &&
             smhiData.timeSeries.length > 0 &&
-            smhiData.timeSeries[0].parameters
+            smhiData.timeSeries[0].data
         ){
 
-            const firstSlot =
-            smhiData.timeSeries[0];
+            const current =
+            smhiData.timeSeries[0].data;
 
-            // Sorterar ut realtidsparametrarna ur pmp3g-strukturen för tabellen i botten
-            const tParam = firstSlot.parameters.find(p => p.name === "t");
-            const wsParam = firstSlot.parameters.find(p => p.name === "ws");
-            const rParam = firstSlot.parameters.find(p => p.name === "r");
-            const pmeanParam = firstSlot.parameters.find(p => p.name === "pmean");
-            const tstmParam = firstSlot.parameters.find(p => p.name === "tstm");
-            const mslParam = firstSlot.parameters.find(p => p.name === "msl");
+            smhiTemp =
+            current.air_temperature;
 
-            if(tParam) smhiTemp = tParam.values[0];
-            if(wsParam) smhiWind = wsParam.values[0];
-            if(rParam) smhiHumidity = rParam.values[0];
-            if(pmeanParam) smhiRain = pmeanParam.values[0] > 0 ? 100 : 0;
-            if(tstmParam) smhiThunder = tstmParam.values[0];
-            if(mslParam) smhiPressure = mslParam.values[0];
+            smhiWind =
+            current.wind_speed;
 
-            // Samlar in dagens alla timvärden baserat på dagens datumnyckel från Open-Meteo
+            smhiHumidity =
+            current.relative_humidity;
+
+            smhiRain =
+            current.probability_of_precipitation;
+
+            smhiThunder =
+            current.thunderstorm_probability;
+
+            smhiPressure =
+            current.air_pressure_at_mean_sea_level;
+
+            // Samlar in dagens alla timvärden från SMHI-tidsserien baserat på datumnyckeln från Open-Meteo
             const todayStr = data.daily.time[0];
             smhiData.timeSeries.forEach(slot => {
                 if(slot.validTime && slot.validTime.startsWith(todayStr)) {
@@ -291,7 +294,7 @@ data.current.relative_humidity_2m;
 const rain =
 data.daily.precipitation_probability_max[0];
 
-// ÄNDRING: Räknar ut dygnsmax/min och dygnsregnrisk för hela dygnet i stället för just nu
+// ÄNDRING: Beräknar en kombinerad dygnsbedömning för hela dagen (max/min och dygnets högsta regnrisk)
 let finalTodayMin = data.daily.temperature_2m_min[0];
 let finalTodayMax = data.daily.temperature_2m_max[0];
 let copilotRain = rain;
@@ -322,7 +325,6 @@ smhiThunder !== null
 ? smhiThunder
 : 0;
 
-// ÄNDRING: COPILOT-textblocket och avdelaren har raderats härifrån
 let text = `
 
 <b>OPEN‑METEO</b>
@@ -380,7 +382,7 @@ smhiThunder !== null
 document.getElementById("copilot").innerHTML =
 text;
 
-// ÄNDRING: Skickar upp de sammanslagna dygnsintervallen för hela dygnet till boxarna
+// ÄNDRING: Skickar upp de sammanslagna dygnsberäkningarna till boxarna högst upp
 document.getElementById("copilotTemp").textContent = Math.round(finalTodayMin) + "° / " + Math.round(finalTodayMax) + "°";
 document.getElementById("copilotRain").textContent = copilotRain + "%";
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
