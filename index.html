@@ -119,41 +119,36 @@ Laddar...
 
 <div class="card">
 
-<!-- ÄNDRING 1: Byt namn till Dagens väder -->
 <h2>Dagens väder</h2>
 
+<!-- ÄNDRING: De gamla rådataboxarna har tagits bort och ersatts helt av Copilot-boxarna -->
 <div class="current">
 
 <div class="info">
-<div class="label">Open‑Meteo Temp</div>
-<div id="temp" class="value">-</div>
+<div class="label">Temperatur</div>
+<div id="copilotTemp" class="value">-</div>
 </div>
 
 <div class="info">
-<div class="label">SMHI Temp</div>
-<div id="smhiTemp" class="value">-</div>
+<div class="label">Regnrisk</div>
+<div id="copilotRain" class="value">-</div>
 </div>
 
 <div class="info">
-<div class="label">Vind</div>
-<div id="wind" class="value">-</div>
+<div class="label">Åskrisk</div>
+<div id="copilotThunder" class="value">-</div>
 </div>
 
 <div class="info">
-<div class="label">Luftfuktighet</div>
-<div id="humidity" class="value">-</div>
+<div class="label">Säkerhet</div>
+<div id="copilotConfidence" class="value">-</div>
 </div>
 
 <div class="info">
-<div class="label">Regnrisk idag</div>
-<div id="rain" class="value">-</div>
+<div class="label">Källor</div>
+<div id="copilotSources" class="value">-</div>
 </div>
 
-</div>
-
-<!-- ÄNDRING 2: Ny behållare för att visa enbart COPILOT-texten här i det översta kortet -->
-<div id="copilot-top" style="margin-top: 25px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 20px;">
-Laddar...
 </div>
 
 </div>
@@ -194,7 +189,7 @@ status.textContent =
 
 try{
 const openMeteoUrl =
-`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+`https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
 
 const response =
 await fetch(openMeteoUrl);
@@ -220,7 +215,7 @@ try{
 
     const smhiResponse =
     await fetch(
-        "https://smhi-proxy.mr-magoo21.workers.dev/"
+        "https://workers.dev"
     );
 
     if(smhiResponse.ok){
@@ -281,23 +276,6 @@ data.current.relative_humidity_2m;
 const rain =
 data.daily.precipitation_probability_max[0];
 
-document.getElementById("temp").textContent =
-temp + "°";
-
-document.getElementById("wind").textContent =
-wind + " m/s";
-
-document.getElementById("humidity").textContent =
-humidity + "%";
-
-document.getElementById("rain").textContent =
-rain + "%";
-
-document.getElementById("smhiTemp").textContent =
-smhiTemp !== null
-? smhiTemp + "°"
-: "N/A";
-
 let copilotTemp =
 temp;
 
@@ -338,6 +316,13 @@ let copilotThunder =
 smhiThunder !== null
 ? smhiThunder
 : 0;
+
+// ÄNDRING: Uppdaterar värdena i de nya boxarna
+document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°C";
+document.getElementById("copilotRain").textContent = copilotRain + "%";
+document.getElementById("copilotThunder").textContent = copilotThunder + "%";
+document.getElementById("copilotConfidence").textContent = confidence;
+document.getElementById("copilotSources").textContent = smhiTemp !== null ? "2" : "1";
 
 let text = `
 
@@ -393,30 +378,8 @@ smhiThunder !== null
 
 `;
 
-// ÄNDRING 3: Delat upp strängarna så att data hamnar på exakt rätt ställen
-let topText = `
-<b>COPILOT</b>
-<br>
-Temperatur: ${copilotTemp.toFixed(1)}°C
-<br>
-Regnrisk: ${copilotRain}%
-<br>
-Åskrisk: ${copilotThunder}%
-<br>
-Säkerhet: ${confidence}
-<br>
-Källor: ${
-smhiTemp !== null
-? "2"
-: "1"
-}
-`;
-
 document.getElementById("copilot").innerHTML =
 text;
-
-document.getElementById("copilot-top").innerHTML =
-topText;
 
 let forecastHTML = "";
 
