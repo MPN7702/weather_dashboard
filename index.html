@@ -119,10 +119,12 @@ Laddar...
 
 <div class="card">
 
+<!-- Rubrik ändrad till Dagens väder -->
 <h2>Dagens väder</h2>
 
 <div class="current">
 
+<!-- Boxar för att visa Copilot-datan för hela dygnet -->
 <div class="info">
 <div class="label">Temperatur</div>
 <div id="copilotTemp" class="value">-</div>
@@ -215,54 +217,58 @@ let smhiTodayTemps = [];
 let smhiTodayRains = [];
 
 try{
+    // ÄNDRING: Vi skippar Cloudflare-workern och anropar SMHI:s officiella API direkt via en publik proxy
+    const smhiTargetUrl = "https://smhi.se";
+    const proxyUrl = `https://allorigins.win{encodeURIComponent(smhiTargetUrl)}`;
 
-    const smhiResponse =
-    await fetch(
-        "https://workers.dev"
-    );
+    const smhiResponse = await fetch(proxyUrl);
 
     if(smhiResponse.ok){
 
-        // KORRIGERING: Hämta svaret som text först för att se om din Worker skickar HTML-kod
-        const rawText = await smhiResponse.text();
-        
-        // SÄKERHETSSPÄRR: Om texten börjar med < (HTML-kod) avbryter vi direkt och förhindrar JSON-krasch
-        if (rawText.trim().startsWith("<")) {
-            console.warn("Källan returnerade HTML i stället för JSON. Hoppar över SMHI.");
-        } else {
-            // Om det är giltig JSON-text, parsa den säkert här
-            const smhiData = JSON.parse(rawText);
+        const proxyData = await smhiResponse.json();
+        // Svaret från SMHI ligger packat som en textsträng inuti proxyData.contents
+        const smhiData = JSON.parse(proxyData.contents);
 
-            if(
-                smhiData.timeSeries &&
-                smhiData.timeSeries.length > 0
-            ){
-                const firstSlot = smhiData.timeSeries[0];
-                if(firstSlot && firstSlot.data) {
-                    const current = firstSlot.data;
-                    smhiTemp = current.air_temperature;
-                    smhiWind = current.wind_speed;
-                    smhiHumidity = current.relative_humidity;
-                    smhiRain = current.probability_of_precipitation;
-                    smhiThunder = current.thunderstorm_probability;
-                    smhiPressure = current.air_pressure_at_mean_sea_level;
-                }
+        if(
+            smhiData &&
+            smhiData.timeSeries &&
+            smhiData.timeSeries.length > 0
+        ){
+            // Tar ut realtidsdata för den första tillgängliga timmen i tidsserien
+            const firstSlot = smhiData.timeSeries[0];
+            if(firstSlot && firstSlot.parameters) {
+                const tParam = firstSlot.parameters.find(p => p.name === "t");
+                const wsParam = firstSlot.parameters.find(p => p.name === "ws");
+                const rParam = firstSlot.parameters.find(p => p.name === "r");
+                const pmeanParam = firstSlot.parameters.find(p => p.name === "pmean");
+                const tstmParam = firstSlot.parameters.find(p => p.name === "tstm");
+                const mslParam = firstSlot.parameters.find(p => p.name === "msl");
 
-                const todayStr = data.daily.time[0];
-                smhiData.timeSeries.forEach(slot => {
-                    if(slot.time && slot.time.startsWith(todayStr) && slot.data) {
-                        if(slot.data.air_temperature !== undefined) smhiTodayTemps.push(slot.data.air_temperature);
-                        if(slot.data.probability_of_precipitation !== undefined) smhiTodayRains.push(slot.data.probability_of_precipitation);
-                    }
-                });
+                if(tParam) smhiTemp = tParam.values[0];
+                if(wsParam) smhiWind = wsParam.values[0];
+                if(rParam) smhiHumidity = rParam.values[0];
+                if(pmeanParam) smhiRain = pmeanParam.values[0] > 0 ? 100 : 0;
+                if(tstmParam) smhiThunder = tstmParam.values[0];
+                if(mslParam) smhiPressure = mslParam.values[0];
             }
+
+            // Samlar in alla timprognoser för det aktuella dygnet för att beräkna hela dagen
+            const todayStr = data.daily.time[0]; // "YYYY-MM-DD"
+            smhiData.timeSeries.forEach(slot => {
+                if(slot.validTime && slot.validTime.startsWith(todayStr) && slot.parameters) {
+                    const t = slot.parameters.find(p => p.name === "t");
+                    const pmean = slot.parameters.find(p => p.name === "pmean");
+                    if(t && t.values) smhiTodayTemps.push(t.values[0]);
+                    if(pmean && pmean.values) smhiTodayRains.push(pmean.values[0] > 0 ? 100 : 0);
+                }
+            });
         }
 
     }
 
 }
 catch(smhiError){
-    console.error("SMHI-fel:", smhiError);
+    console.error("SMHI-fel via proxy:", smhiError);
 }
 
 const temp =
@@ -277,7 +283,7 @@ data.current.relative_humidity_2m;
 const rain =
 data.daily.precipitation_probability_max[0];
 
-// ÄNDRING: Beräknar en kombinerad dygnsbedömning för hela dagen (max/min och dygnets högsta regnrisk)
+// ÄNDRING: Beräknar en äkta, sammanslagen dygnsbedömning för hela dagen (max/min & dygnsregnrisk)
 let finalTodayMin = data.daily.temperature_2m_min[0];
 let finalTodayMax = data.daily.temperature_2m_max[0];
 let copilotRain = rain;
@@ -363,7 +369,7 @@ smhiThunder !== null
 document.getElementById("copilot").innerHTML =
 text;
 
-// ÄNDRING: Skickar upp de sammanslagna dygnsberäkningarna till boxarna högst upp
+// Uppdaterar boxarna högst upp med de sammanslagna dygnsberäkningarna
 document.getElementById("copilotTemp").textContent = Math.round(finalTodayMin) + "° / " + Math.round(finalTodayMax) + "°";
 document.getElementById("copilotRain").textContent = copilotRain + "%";
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
