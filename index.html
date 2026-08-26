@@ -305,81 +305,109 @@ smhiTemp
 
 }
 
-let text = "";
+let confidence = "Hög";
 
-if(rain < 20){
-
-text =
-"☀️ Hög sannolikhet för torrt och stabilt väder idag.";
-
-}
-else if(rain < 50){
-
-text =
-"🌤 Risk för enstaka skurar men mest uppehåll.";
-
-}
-else{
-
-text =
-"🌧 Förhöjd risk för regn idag.";
-
+if(
+    smhiTemp !== null &&
+    Math.abs(temp - smhiTemp) > 3
+){
+    confidence = "Medel";
 }
 
-text +=
-"<br><br><b>Open‑Meteo:</b> " +
-temp.toFixed(1) +
-"°C";
+let copilotRain = rain;
 
-if(smhiTemp !== null){
+if(smhiRain !== null){
 
-text +=
-"<br><b>SMHI:</b> " +
-smhiTemp.toFixed(1) +
-"°C";
-
-text +=
-"<br><b>SMHI Vind:</b> " +
-smhiWind +
-" m/s";
-
-text +=
-"<br><b>SMHI Luftfuktighet:</b> " +
-smhiHumidity +
-"%";
-
-text +=
-"<br><b>SMHI Regnrisk:</b> " +
-smhiRain +
-"%";
-
-text +=
-"<br><b>SMHI Åskrisk:</b> " +
-smhiThunder +
-"%";
-
-text +=
-"<br><b>SMHI Lufttryck:</b> " +
-smhiPressure +
-" hPa";
+    copilotRain =
+    Math.round(
+        (
+            rain +
+            smhiRain
+        ) / 2
+    );
 
 }
 
-text +=
-"<br><br><b>Copilot Temperatur:</b> " +
-copilotTemp.toFixed(1) +
-"°C";
+let copilotThunder =
+smhiThunder !== null
+? smhiThunder
+: 0;
 
-text +=
-"<br><br><b>Regnrisk:</b> " +
-rain +
-"%";
+let text = `
 
-text +=
-"<br><br><b>Källor:</b> " +
-(smhiTemp !== null
-? "Open‑Meteo + SMHI"
-: "Open‑Meteo");
+<b>OPEN‑METEO</b>
+<br>
+Temperatur: ${temp.toFixed(1)}°C
+<br>
+Vind: ${wind.toFixed(1)} m/s
+<br>
+Luftfuktighet: ${humidity}%
+<br>
+Regnrisk: ${rain}%
+
+<br><br>
+
+<b>SMHI</b>
+<br>
+Temperatur: ${
+smhiTemp !== null
+? smhiTemp.toFixed(1) + "°C"
+: "N/A"
+}
+<br>
+Vind: ${
+smhiWind !== null
+? smhiWind.toFixed(1) + " m/s"
+: "N/A"
+}
+<br>
+Luftfuktighet: ${
+smhiHumidity !== null
+? smhiHumidity + "%"
+: "N/A"
+}
+<br>
+Lufttryck: ${
+smhiPressure !== null
+? smhiPressure + " hPa"
+: "N/A"
+}
+<br>
+Regnrisk: ${
+smhiRain !== null
+? smhiRain + "%"
+: "N/A"
+}
+<br>
+Åskrisk: ${
+smhiThunder !== null
+? smhiThunder + "%"
+: "N/A"
+}
+
+<br><br>
+
+────────────────
+
+<br><br>
+
+<b>COPILOT</b>
+<br>
+Temperatur: ${copilotTemp.toFixed(1)}°C
+<br>
+Regnrisk: ${copilotRain}%
+<br>
+Åskrisk: ${copilotThunder}%
+<br>
+Säkerhet: ${confidence}
+<br>
+Källor: ${
+smhiTemp !== null
+? "2"
+: "1"
+}
+
+`;
 
 document.getElementById("copilot").innerHTML =
 text;
