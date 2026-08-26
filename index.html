@@ -57,7 +57,7 @@ header{
 }
 
 .value{
-    font-size:32px;
+    font-size:24px;
     font-weight:bold;
 }
 
@@ -214,6 +214,10 @@ let smhiRain = null;
 let smhiThunder = null;
 let smhiPressure = null;
 
+// TILLÄGG: Listor för att lagra dagens alla timvärden från SMHI för dygnsextremer
+let smhiTodayTemps = [];
+let smhiTodayRains = [];
+
 try{
 
     const smhiResponse =
@@ -228,30 +232,37 @@ try{
 
         if(
             smhiData.timeSeries &&
-            smhiData.timeSeries.length > 0 &&
-            smhiData.timeSeries[0].data
+            smhiData.timeSeries.length > 0
         ){
 
-            const current =
-            smhiData.timeSeries[0].data;
+            // Realtidsdata för tabellen längst ner hämtas från första mätpunkten
+            const firstSlot = smhiData.timeSeries[0];
+            if(firstSlot && firstSlot.parameters) {
+                const tParam = firstSlot.parameters.find(p => p.name === "t");
+                const wsParam = firstSlot.parameters.find(p => p.name === "ws");
+                const rParam = firstSlot.parameters.find(p => p.name === "r");
+                const pcatParam = firstSlot.parameters.find(p => p.name === "pcat");
+                const tstmParam = firstSlot.parameters.find(p => p.name === "tstm");
+                const mslParam = firstSlot.parameters.find(p => p.name === "msl");
 
-            smhiTemp =
-            current.air_temperature;
+                if(tParam) smhiTemp = tParam.values[0];
+                if(wsParam) smhiWind = wsParam.values[0];
+                if(rParam) smhiHumidity = rParam.values[0];
+                if(pcatParam) smhiRain = pcatParam.values[0] > 0 ? 100 : 0;
+                if(tstmParam) smhiThunder = tstmParam.values[0];
+                if(mslParam) smhiPressure = mslParam.values[0];
+            }
 
-            smhiWind =
-            current.wind_speed;
-
-            smhiHumidity =
-            current.relative_humidity;
-
-            smhiRain =
-            current.probability_of_precipitation;
-
-            smhiThunder =
-            current.thunderstorm_probability;
-
-            smhiPressure =
-            current.air_pressure_at_mean_sea_level;
+            // ÄNDRING: Samlar in dagens alla timvärden från SMHI för att kunna beräkna hela dygnet
+            const todayStr = data.daily.time[0]; // "YYYY-MM-DD"
+            smhiData.timeSeries.forEach(slot => {
+                if(slot.validTime && slot.validTime.startsWith(todayStr)) {
+                    const t = slot.parameters.find(p => p.name === "t");
+                    const pcat = slot.parameters.find(p => p.name === "pcat");
+                    if(t) smhiTodayTemps.push(t.values[0]);
+                    if(pcat) smhiTodayRains.push(pcat.values[0] > 0 ? 100 : 0);
+                }
+            });
 
         }
 
@@ -279,19 +290,21 @@ data.current.relative_humidity_2m;
 const rain =
 data.daily.precipitation_probability_max[0];
 
-// ÄNDRING: Kodblocken som uppdaterade de gamla boxarna har flyttats till slutet av funktionen där Copilot-variablerna har skapats.
+// ÄNDRING: Räknar ut en äkta sammanslagen dygnsbedömning för hela dagen utifrån båda källorna
+let finalTodayMin = data.daily.temperature_2m_min[0];
+let finalTodayMax = data.daily.temperature_2m_max[0];
+let copilotRain = rain;
 
-let copilotTemp =
-temp;
+if(smhiTodayTemps.length > 0) {
+    const smhiMin = Math.min(...smhiTodayTemps);
+    const smhiMax = Math.max(...smhiTodayTemps);
+    finalTodayMin = (finalTodayMin + smhiMin) / 2;
+    finalTodayMax = (finalTodayMax + smhiMax) / 2;
+}
 
-if(smhiTemp !== null){
-
-copilotTemp =
-(
-temp +
-smhiTemp
-) / 2;
-
+if(smhiTodayRains.length > 0) {
+    const smhiMaxRain = Math.max(...smhiTodayRains);
+    copilotRain = Math.round((rain + smhiMaxRain) / 2);
 }
 
 let confidence = "Hög";
@@ -303,26 +316,11 @@ if(
     confidence = "Medel";
 }
 
-let copilotRain = rain;
-
-if(smhiRain !== null){
-
-    copilotRain =
-    Math.round(
-        (
-            rain +
-            smhiRain
-        ) / 2
-    );
-
-}
-
 let copilotThunder =
 smhiThunder !== null
 ? smhiThunder
 : 0;
 
-// ÄNDRING: COPILOT-textblocket och avdelaren har raderats härifrån
 let text = `
 
 <b>OPEN‑METEO</b>
@@ -380,8 +378,8 @@ smhiThunder !== null
 document.getElementById("copilot").innerHTML =
 text;
 
-// ÄNDRING: Här skickas Copilot-värdena in i de nya Dagens väder-boxarna högst upp
-document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°";
+// ÄNDRING: Uppdaterar "Dagens väder"-boxarna med de sammanslagna dygnsintervallen (Hela dygnet)
+document.getElementById("copilotTemp").textContent = Math.round(finalTodayMin) + "° / " + Math.round(finalTodayMax) + "°";
 document.getElementById("copilotRain").textContent = copilotRain + "%";
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
 document.getElementById("copilotConfidence").textContent = confidence;
