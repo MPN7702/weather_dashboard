@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Väder Torsby</title>
 
 <style>
@@ -54,7 +53,7 @@ header{
 
 .label{
     font-size:14px;
-    opacity:0.8;
+    opacity:.8;
 }
 
 .value{
@@ -99,7 +98,7 @@ button:hover{
 <body>
 
 <header>
-    <h1>🌤 Väder Torsby</h1>
+<h1>🌤 Väder Torsby</h1>
 </header>
 
 <div class="container">
@@ -125,8 +124,13 @@ Laddar...
 <div class="current">
 
 <div class="info">
-<div class="label">Temperatur</div>
+<div class="label">Open‑Meteo Temp</div>
 <div id="temp" class="value">-</div>
+</div>
+
+<div class="info">
+<div class="label">SMHI Temp</div>
+<div id="smhiTemp" class="value">-</div>
 </div>
 
 <div class="info">
@@ -142,11 +146,6 @@ Laddar...
 <div class="info">
 <div class="label">Regnrisk idag</div>
 <div id="rain" class="value">-</div>
-</div>
-
-<div class="info">
-<div class="label">SMHI Temp</div>
-<div id="smhiTemp" class="value">-</div>
 </div>
 
 </div>
@@ -167,7 +166,8 @@ Laddar...
 
 <h2>7-dagars prognos</h2>
 
-<div id="forecast" class="forecast"></div>
+<div id="forecast" class="forecast">
+</div>
 
 </div>
 
@@ -180,209 +180,198 @@ const LON = 13.0;
 
 async function loadWeather(){
 
-    const status =
-    document.getElementById("status");
+const status =
+document.getElementById("status");
 
-    status.textContent =
-    "Hämtar väderdata...";
+status.textContent =
+"Hämtar väderdata...";
 
-    try{
+try{
 
-        const response =
-        await fetch(
-        "https://api.open-meteo.com/v1/forecast?latitude=60.1333&longitude=13.0&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm"
-        );
+const openMeteoUrl =
+`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
 
-        if(!response.ok){
-            throw new Error(
-                "HTTP " +
-                response.status
-            );
-        }
+const response =
+await fetch(openMeteoUrl);
 
-        const data =
-        await response.json();
+if(!response.ok){
+throw new Error("Open‑Meteo " + response.status);
+}
 
-        let smhiTemp = null;
+const data =
+await response.json();
 
-        try{
+let smhiTemp = null;
 
-            const smhiResponse =
-            await fetch(
-            "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/13.0/lat/60.13/data.json"
-            );
+try{
 
-            if(smhiResponse.ok){
+const smhiResponse =
+await fetch(
+"https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/13.0/lat/60.13/data.json"
+);
 
-                const smhiData =
-                await smhiResponse.json();
+if(smhiResponse.ok){
 
-                if(
-                    smhiData.timeSeries &&
-                    smhiData.timeSeries.length > 0
-                ){
+const smhiData =
+await smhiResponse.json();
 
-                    const tempParameter =
-                    smhiData.timeSeries[0].parameters.find(
-                        p => p.name === "t"
-                    );
+const tempParameter =
+smhiData.timeSeries[0].parameters.find(
+p => p.name === "t"
+);
 
-                    if(tempParameter){
+if(tempParameter){
+smhiTemp =
+tempParameter.values[0];
+}
 
-                        smhiTemp =
-                        tempParameter.values[0];
+}
 
-                    }
+}catch(smhiError){
 
-                }
+console.error(
+"SMHI-fel:",
+smhiError
+);
 
-            }
+}
 
-        }
-        catch(smhiError){
+const temp =
+data.current.temperature_2m;
 
-            console.error(
-                "SMHI-fel:",
-                smhiError
-            );
+const wind =
+data.current.wind_speed_10m;
 
-        }
+const humidity =
+data.current.relative_humidity_2m;
 
-        const temp =
-        data.current.temperature_2m;
+const rain =
+data.daily.precipitation_probability_max[0];
 
-        const humidity =
-        data.current.relative_humidity_2m;
+document.getElementById("temp").textContent =
+temp + "°";
 
-        const wind =
-        data.current.wind_speed_10m;
+document.getElementById("wind").textContent =
+wind + " m/s";
 
-        const rain =
-        data.daily.precipitation_probability_max[0];
+document.getElementById("humidity").textContent =
+humidity + "%";
 
-        document.getElementById("temp").textContent =
-        temp + "°";
+document.getElementById("rain").textContent =
+rain + "%";
 
-        document.getElementById("wind").textContent =
-        wind + " m/s";
+document.getElementById("smhiTemp").textContent =
+smhiTemp !== null
+? smhiTemp + "°"
+: "N/A";
 
-        document.getElementById("humidity").textContent =
-        humidity + "%";
+let copilotTemp =
+temp;
 
-        document.getElementById("rain").textContent =
-        rain + "%";
+if(smhiTemp !== null){
 
-        document.getElementById("smhiTemp").textContent =
-        smhiTemp !== null
-        ? smhiTemp + "°"
-        : "N/A";
+copilotTemp =
+(
+temp +
+smhiTemp
+) / 2;
 
-        let text = "";
+}
 
-        if(rain < 20){
+let text = "";
 
-            text =
-            "☀️ Hög sannolikhet för torrt och stabilt väder idag.";
+if(rain < 20){
 
-        }
-        else if(rain < 50){
+text =
+"☀️ Hög sannolikhet för torrt och stabilt väder idag.";
 
-            text =
-            "🌤 Risk för enstaka skurar men mest uppehåll.";
+}
+else if(rain < 50){
 
-        }
-        else{
+text =
+"🌤 Risk för enstaka skurar men mest uppehåll.";
 
-            text =
-            "🌧 Förhöjd risk för regn idag.";
+}
+else{
 
-        }
+text =
+"🌧 Förhöjd risk för regn idag.";
 
-        text +=
-        "<br><br><b>Open‑Meteo:</b> " +
-        temp.toFixed(1) +
-        "°C";
+}
 
-        if(smhiTemp !== null){
+text +=
+"<br><br><b>Open‑Meteo:</b> " +
+temp.toFixed(1) +
+"°C";
 
-            text +=
-            "<br><b>SMHI:</b> " +
-            smhiTemp.toFixed(1) +
-            "°C";
+if(smhiTemp !== null){
 
-            text +=
-            "<br><br><b>Copilot Temperatur:</b> " +
-            ((temp + smhiTemp) / 2).toFixed(1) +
-            "°C";
+text +=
+"<br><b>SMHI:</b> " +
+smhiTemp.toFixed(1) +
+"°C";
 
-        } else {
+}
 
-            text +=
-            "<br><br><b>Copilot Temperatur:</b> " +
-            temp.toFixed(1) +
-            "°C";
+text +=
+"<br><br><b>Copilot Temperatur:</b> " +
+copilotTemp.toFixed(1) +
+"°C";
 
-        }
+text +=
+"<br><br><b>Regnrisk:</b> " +
+rain +
+"%";
 
-        text +=
-        "<br><br><b>Regnrisk:</b> " +
-        rain +
-        "%";
+text +=
+"<br><br><b>Källor:</b> " +
+(smhiTemp !== null
+? "Open‑Meteo + SMHI"
+: "Open‑Meteo");
 
-        text +=
-        "<br><br><b>Källor:</b> " +
-        (smhiTemp !== null
-        ? "Open‑Meteo + SMHI"
-        : "Open‑Meteo");
+document.getElementById("copilot").innerHTML =
+text;
 
-        document.getElementById("copilot").innerHTML =
-        text;
+let forecastHTML = "";
 
-        let forecastHTML = "";
+for(let i = 0; i < 7; i++){
 
-        for(let i=0;i<7;i++){
+const date =
+new Date(data.daily.time[i]);
 
-            const date =
-            new Date(
-            data.daily.time[i]
-            );
+forecastHTML += `
+<div class="day">
+<strong>
+${date.toLocaleDateString(
+"sv-SE",
+{weekday:"short"}
+)}
+</strong>
+<br><br>
+🔺 ${Math.round(data.daily.temperature_2m_max[i])}°
+<br>
+🔻 ${Math.round(data.daily.temperature_2m_min[i])}°
+<br><br>
+🌧 ${data.daily.precipitation_probability_max[i]}%
+</div>
+`;
 
-            forecastHTML += `
-            <div class="day">
-                <strong>
-                ${date.toLocaleDateString(
-                'sv-SE',
-                {weekday:'short'}
-                )}
-                </strong>
-                <br><br>
-                🔺 ${Math.round(
-                data.daily.temperature_2m_max[i]
-                )}°
-                <br>
-                🔻 ${Math.round(
-                data.daily.temperature_2m_min[i]
-                )}°
-                <br><br>
-                🌧 ${data.daily.precipitation_probability_max[i]}%
-            </div>
-            `;
-        }
+}
 
-        document.getElementById("forecast").innerHTML =
-        forecastHTML;
+document.getElementById("forecast").innerHTML =
+forecastHTML;
 
-        status.textContent =
-        "Senast uppdaterad: " +
-        new Date().toLocaleTimeString("sv-SE");
+status.textContent =
+"Senast uppdaterad: " +
+new Date().toLocaleTimeString("sv-SE");
 
-    }
-    catch(error){
+}
+catch(error){
 
-        status.textContent =
-        "Fel: " + error.message;
+status.textContent =
+"Fel: " + error.message;
 
-    }
+}
 
 }
 
@@ -394,3 +383,4 @@ setInterval(loadWeather,900000);
 
 </body>
 </html>
+``
