@@ -217,9 +217,17 @@ async function loadWeather(){
             }
 
         }
-        catch(smhiError){
-
-            console.log("SMHI-fel:", smhiError);
+catch(smhiError){
+2
+ 
+3
+console.error("SMHI-fel:", smhiError);
+4
+ 
+5
+document.getElementById("smhiTemp").textContent =
+6
+"Fel";
 
         }
 
