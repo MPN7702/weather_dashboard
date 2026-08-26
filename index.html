@@ -152,7 +152,7 @@ Laddar...
 
 </div>
 
-<!-- ÄNDRING: 7-dagars prognos har flyttats upp hit -->
+<!-- HIT HAR PROGNOSEN FLYTTATS -->
 <div class="card">
 
 <h2>7-dagars prognos</h2>
@@ -162,7 +162,7 @@ Laddar...
 
 </div>
 
-<!-- ÄNDRING: Copilot-bedömning har flyttats ner hit -->
+<!-- HIT HAR COPILOT-BEDÖMNINGEN FLYTTATS -->
 <div class="card">
 
 <h2>Copilot-bedömning</h2>
@@ -227,11 +227,11 @@ try{
         if(
             smhiData.timeSeries &&
             smhiData.timeSeries.length > 0 &&
-            smhiData.timeSeries.data
+            smhiData.timeSeries[0].data
         ){
 
             const current =
-            smhiData.timeSeries.data;
+            smhiData.timeSeries[0].data;
 
             smhiTemp =
             current.air_temperature;
@@ -275,7 +275,7 @@ const humidity =
 data.current.relative_humidity_2m;
 
 const rain =
-data.daily.precipitation_probability_max;
+data.daily.precipitation_probability_max[0];
 
 let copilotTemp =
 temp;
