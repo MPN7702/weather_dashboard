@@ -57,7 +57,7 @@ header{
 }
 
 .value{
-    font-size:28px; /* Marginellt justerad för att dygnsintervallen alltid ska rymmas på en rad */
+    font-size:32px;
     font-weight:bold;
 }
 
@@ -284,26 +284,19 @@ data.current.relative_humidity_2m;
 const rain =
 data.daily.precipitation_probability_max[0];
 
-// ÄNDRING ENBART HÄR: Hämtar dygnsdata för IDAG (index 0 i daily-arrayen) för att beräkna hela dagen
-const todayKey = data.daily.time[0];
-let omTodayMax = data.daily.temperature_2m_max[0];
-let omTodayMin = data.daily.temperature_2m_min[0];
-let omTodayRain = data.daily.precipitation_probability_max[0];
+// ÄNDRING: Kodblocken som uppdaterade de gamla boxarna har flyttats till slutet av funktionen där Copilot-variablerna har skapats.
 
-let finalTodayMax = omTodayMax;
-let finalTodayMin = omTodayMin;
-let finalTodayRain = omTodayRain;
+let copilotTemp =
+temp;
 
-if (smhiForecastDays[todayKey]) {
-    const sTemps = smhiForecastDays[todayKey].temps;
-    const sRains = smhiForecastDays[todayKey].rains;
-    if (sTemps.length > 0) {
-        finalTodayMax = (omTodayMax + Math.max(...sTemps)) / 2;
-        finalTodayMin = (omMin = (omTodayMin + Math.min(...sTemps)) / 2);
-    }
-    if (sRains.length > 0) {
-        finalTodayRain = Math.round((omTodayRain + Math.max(...sRains)) / 2);
-    }
+if(smhiTemp !== null){
+
+copilotTemp =
+(
+temp +
+smhiTemp
+) / 2;
+
 }
 
 let confidence = "Hög";
@@ -313,6 +306,20 @@ if(
     Math.abs(temp - smhiTemp) > 3
 ){
     confidence = "Medel";
+}
+
+let copilotRain = rain;
+
+if(smhiRain !== null){
+
+    copilotRain =
+    Math.round(
+        (
+            rain +
+            smhiRain
+        ) / 2
+    );
+
 }
 
 let copilotThunder =
@@ -331,7 +338,7 @@ Vind: ${wind.toFixed(1)} m/s
 <br>
 Luftfuktighet: ${humidity}%
 <br>
-Regnrisk: ${omTodayRain}%
+Regnrisk: ${rain}%
 
 <br><br>
 
@@ -378,9 +385,9 @@ smhiThunder !== null
 document.getElementById("copilot").innerHTML =
 text;
 
-// ÄNDRING: Här skickas de sammanslagna dygnsvärdena in i rutorna högst upp
-document.getElementById("copilotTemp").textContent = Math.round(finalTodayMin) + "° / " + Math.round(finalTodayMax) + "°";
-document.getElementById("copilotRain").textContent = finalTodayRain + "%";
+// ÄNDRING: Här skickas Copilot-värdena in i de nya Dagens väder-boxarna högst upp
+document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°";
+document.getElementById("copilotRain").textContent = copilotRain + "%";
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
 document.getElementById("copilotConfidence").textContent = confidence;
 document.getElementById("copilotSources").textContent = smhiTemp !== null ? "2" : "1";
