@@ -192,7 +192,7 @@ status.textContent =
 
 try{
 const openMeteoUrl =
-`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+`https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
 
 const response =
 await fetch(openMeteoUrl);
@@ -218,7 +218,7 @@ try{
 
     const smhiResponse =
     await fetch(
-        "https://smhi-proxy.mr-magoo21.workers.dev/"
+        "https://workers.dev"
     );
 
     if(smhiResponse.ok){
@@ -269,13 +269,15 @@ catch(smhiError){
 
 // TILLÄGG ENBART HÄR: Hämtar dygnsprognos från Yr.no för att kunna köra Copilot-bedömning på 7-dagarsprognosen
 let yrForecastDays = {};
+let yrLoaded = false;
 try {
     const yrUrl = `https://met.no{LAT}&lon=${LON}`;
-    const yrResponse = await fetch(`https://allorigins.win{encodeURIComponent(yrUrl)}`);
+    const yrResponse = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(yrUrl)}`);
     if (yrResponse.ok) {
         const yrProxyData = await yrResponse.json();
         const yrData = JSON.parse(yrProxyData.contents);
         if (yrData.properties && yrData.properties.timeseries) {
+            yrLoaded = true;
             yrData.properties.timeseries.forEach(slot => {
                 const dateStr = slot.time.split("T")[0];
                 if (!yrForecastDays[dateStr]) {
@@ -349,10 +351,10 @@ smhiThunder !== null
 ? smhiThunder
 : 0;
 
-// ÄNDRING: COPILOT-textblocket och avdelaren har raderats härifrån
+// ÄNDRING ENBART HÄR: Textstycket visar nu rådata för alla tre källor i botten
 let text = `
 
-<b>OPEN‑METEO</b>
+<b>OPEN‑METEO (Realtid & 7-dagars)</b>
 <br>
 Temperatur: ${temp.toFixed(1)}°C
 <br>
@@ -364,7 +366,7 @@ Regnrisk: ${rain}%
 
 <br><br>
 
-<b>SMHI</b>
+<b>SMHI (Enbart realtid)</b>
 <br>
 Temperatur: ${
 smhiTemp !== null
@@ -402,17 +404,27 @@ smhiThunder !== null
 : "N/A"
 }
 
+<br><br>
+
+<b>YR.NO (Enbart 7-dagarsbedömning)</b>
+<br>
+Status: ${yrLoaded ? "Inläst för veckoprognos" : "N/A"}
+
 `;
 
 document.getElementById("copilot").innerHTML =
 text;
 
-// ÄNDRING: Här skickas Copilot-värdena in i de nya Dagens väder-boxarna högst upp
+// ÄNDRING ENBART HÄR: Räknar ut totala antalet aktiva källor baserat på om SMHI och Yr svarade (Max 3 st)
+let totalSources = 1; 
+if (smhiTemp !== null) totalSources++;
+if (yrLoaded) totalSources++;
+
 document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°";
 document.getElementById("copilotRain").textContent = copilotRain + "%";
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
 document.getElementById("copilotConfidence").textContent = confidence;
-document.getElementById("copilotSources").textContent = smhiTemp !== null ? "2" : "1";
+document.getElementById("copilotSources").textContent = totalSources;
 
 let forecastHTML = "";
 
