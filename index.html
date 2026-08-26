@@ -207,7 +207,7 @@ const status = document.getElementById("status");
 status.textContent = "Hämtar väderdata...";
 
 try{
-    // Fixad hårdkodad Open-Meteo URL för Torsby
+    // 1. Hämta Open-Meteo data
     const openMeteoUrl = "https://open-meteo.com";
     const response = await fetch(openMeteoUrl);
 
@@ -223,34 +223,31 @@ try{
     let smhiThunder = null;
     let smhiPressure = null;
 
+    // 2. Hämta SMHI data (Genom CORS-proxy och med det nya SNOW1g-API:et)
     try{
-        // NY ENPOINT: Direkt anrop till SMHI:s officiella öppna API för Torsby (Lat 60.1333, Lon 13.0 avrundat till 6 decimaler)
-        const smhiResponse = await fetch("https://smhi.se");
+        const targetSmhiUrl = "https://smhi.se";
+        const smhiResponse = await fetch("https://corsproxy.io?" + encodeURIComponent(targetSmhiUrl));
 
         if(smhiResponse.ok){
             const smhiData = await smhiResponse.json();
 
             if(smhiData.timeSeries && smhiData.timeSeries.length > 0){
-                // Hämtar den allra första tidspunkten (just nu)
-                const currentData = smhiData.timeSeries[0].parameters;
+                // Ta parametrarna för den första tillgängliga tidspunkten (aktuell timme)
+                const currentParams = smhiData.timeSeries[0].parameters;
 
-                // SMHI mappar sina värden via specifika parameternamn (t.ex t, ws, r, pcat)
-                const tParam = currentData.find(p => p.name === "t");
-                const wsParam = currentData.find(p => p.name === "ws");
-                const rParam = currentData.find(p => p.name === "r");
-                const pcatParam = currentData.find(p => p.name === "pcat"); // Nederbördstyp
-                const mslParam = currentData.find(p => p.name === "msl"); // Lufttryck
+                const tParam = currentParams.find(p => p.name === "t");
+                const wsParam = currentParams.find(p => p.name === "ws");
+                const rParam = currentParams.find(p => p.name === "r");
+                const mslParam = currentParams.find(p => p.name === "msl");
+                const pcatParam = currentParams.find(p => p.name === "pcat");
 
                 if(tParam) smhiTemp = tParam.values[0];
                 if(wsParam) smhiWind = wsParam.values[0];
                 if(rParam) smhiHumidity = rParam.values[0];
                 if(mslParam) smhiPressure = mslParam.values[0];
+                if(pcatParam) smhiRain = pcatParam.values[0] > 0 ? "Ja" : "Nej";
                 
-                // SMHI skickar inte ut %-regnrisk på samma sätt, vi tolkar dess regnkategori istället (0 = inget regn)
-                if(pcatParam) {
-                    smhiRain = pcatParam.values[0] > 0 ? 100 : 0; 
-                }
-                smhiThunder = 0; // Åskrisk saknas i grundmodellen för nuvarande timme
+                smhiThunder = 0; // Det nya API:et levererar inte åska direkt i denna nod
             }
         }
     }
@@ -258,11 +255,12 @@ try{
         console.error("SMHI-fel:", smhiError);
     }
 
+    // Variabler från Open-Meteo
     const temp = data.current.temperature_2m;
     const wind = data.current.wind_speed_10m;
     const humidity = data.current.relative_humidity_2m;
     const pressure = data.current.surface_pressure;
-    const rain = data.daily.precipitation_probability_max[0]; // Fixat index så det hämtar ett enskilt tal
+    const rain = data.daily.precipitation_probability_max[0];
 
     let openMeteoThunder = 0;
     if (rain > 30 && temp > 15 && humidity > 60) {
@@ -271,7 +269,7 @@ try{
         openMeteoThunder = Math.round(rain * 0.05);
     }
 
-    // Uppdatera jämförelserutorna i gränssnittet
+    // Uppdatera jämförelserutorna
     document.getElementById("temp").textContent = temp + "°";
     document.getElementById("wind").textContent = wind + " m/s";
     document.getElementById("humidity").textContent = humidity + "%";
@@ -280,7 +278,7 @@ try{
     document.getElementById("smhiTemp").textContent = smhiTemp !== null ? smhiTemp + "°" : "N/A";
     document.getElementById("smhiWindVal").textContent = smhiWind !== null ? smhiWind + " m/s" : "N/A";
     document.getElementById("smhiHumVal").textContent = smhiHumidity !== null ? smhiHumidity + "%" : "N/A";
-    document.getElementById("smhiRainVal").textContent = smhiRain !== null ? (smhiRain > 0 ? "Ja" : "Nej") : "N/A";
+    document.getElementById("smhiRainVal").textContent = smhiRain !== null ? smhiRain : "N/A";
 
     // Text för Open-Meteo-kortet
     let meteoHTML = "";
@@ -297,18 +295,18 @@ try{
     if(smhiTemp !== null){
         smhiHTML += "<b>Temperatur:</b> " + Number(smhiTemp).toFixed(1) + "°C<br>";
         smhiHTML += "<b>Vindhastighet:</b> " + smhiWind + " m/s<br>";
-        smhiHTML += "<b>Luftfuktighet (Relativ):</b> " + smhiHumidity + "%<br>";
-        smhiHTML += "<b>Aktivt regn just nu:</b> " + (smhiRain > 0 ? "Ja" : "Nej") + "<br>";
+        smhiHTML += "<b>Luftfuktighet:</b> " + smhiHumidity + "%<br>";
+        smhiHTML += "<b>Aktivt regn just nu:</b> " + smhiRain + "<br>";
         smhiHTML += "<b>Lufttryck (Havsnivå):</b> " + smhiPressure + " hPa";
     } else {
-        smhiHTML = "<span style='color:#ef4444;'>Kunde inte hämta data från SMHI för tillfället.</span>";
+        smhiHTML = "<span style='color:#ef4444;'>Kunde inte hämta data från SMHI (CORS/API-fel).</span>";
     }
     document.getElementById("smhi-details").innerHTML = smhiHTML;
 
-    // Medelbedömning
+    // Copilot-bedömning (medeltemperatur)
     let copilotTemp = temp;
     if(smhiTemp !== null){
-        copilotTemp = (temp + smhiTemp) / 2;
+        copilotTemp = (temp + Number(smhiTemp)) / 2;
     }
 
     let text = "";
@@ -324,7 +322,7 @@ try{
     text += "<br><b>Aktiva väderkällor:</b> " + (smhiTemp !== null ? "Open‑Meteo + SMHI" : "Endast Open‑Meteo");
     document.getElementById("copilot").innerHTML = text;
 
-    // 7-dagars prognosbygge (Open-Meteo)
+    // 7-dagars prognosbygge
     let forecastHTML = "";
     for(let i = 0; i < 7; i++){
         const date = new Date(data.daily.time[i]);
@@ -351,9 +349,7 @@ catch(error){
 
 }
 
-// Starta applikationen direkt
 loadWeather();
-// Uppdatera var 15:e minut
 setInterval(loadWeather,900000);
 
 </script>
