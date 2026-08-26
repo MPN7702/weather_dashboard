@@ -154,7 +154,6 @@ Laddar...
 
 </div>
 
-<!-- ÄNDRING: Detta block (7-dagars prognos) har flyttats upp och ligger nu direkt under Dagens väder -->
 <div class="card">
 
 <h2>7-dagars prognos</h2>
@@ -164,7 +163,6 @@ Laddar...
 
 </div>
 
-<!-- ÅTERSTÄLLT: Kortet för källor ligger kvar här i botten precis som du ville ha det -->
 <div class="card">
 
 <h2>Källor</h2>
@@ -267,7 +265,7 @@ catch(smhiError){
 
 }
 
-// TILLÄGG: Hämtar dygnsprognoser från Yr.no (MET Norway) via en proxy för 7-dagarsbedömningen
+// ÄNDRING: Hämtar dygnsprognoser från Yr.no (MET Norway) för 7-dagarsbedömningen
 let yrForecastDays = {};
 try {
     const yrUrl = `https://met.no{LAT}&lon=${LON}`;
@@ -307,6 +305,8 @@ data.current.relative_humidity_2m;
 
 const rain =
 data.daily.precipitation_probability_max[0];
+
+// ÄNDRING: Kodblocken som uppdaterade de gamla boxarna har flyttats till slutet av funktionen där Copilot-variablerna har skapats.
 
 let copilotTemp =
 temp;
@@ -349,7 +349,7 @@ smhiThunder !== null
 ? smhiThunder
 : 0;
 
-// ÄNDRING: Textsträngen innehåller nu återigen OPEN-METEO och SMHI, men COPILOT-delen längst ner har tagits bort
+// ÄNDRING: Tagit bort hela COPILOT-textblocket och linjen från variabeln text
 let text = `
 
 <b>OPEN‑METEO</b>
@@ -414,9 +414,9 @@ document.getElementById("copilotThunder").textContent = copilotThunder + "%";
 document.getElementById("copilotConfidence").textContent = confidence;
 document.getElementById("copilotSources").textContent = smhiTemp !== null ? "2" : "1";
 
-// TILLÄGG: Bygger 7-dagarslistan med sammanslagen databedömning från Open-Meteo och Yr.no
 let forecastHTML = "";
 
+// ÄNDRING: Gör om 7-dagarsprognosen till en Copilot-bedömning baserad på Open-Meteo och Yr.no
 for(let i = 0; i < 7; i++){
 
 const dateStr = data.daily.time[i];
