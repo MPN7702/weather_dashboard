@@ -187,7 +187,7 @@ status.textContent =
 "Hämtar väderdata...";
 
 try{
-// KORRIGERING: Hårdkodade siffror i strängen eliminerar risken för misslyckad strängparsning i webbläsaren
+// Felsäker URL till Open-Meteo med Torsbys fasta koordinater
 const openMeteoUrl =
 "https://open-meteo.com";
 
@@ -223,36 +223,39 @@ try{
 
     if(smhiResponse.ok){
 
-        const smhiData =
-        await smhiResponse.json();
+        // KORRIGERING: Hämta svaret som text först för att se om din Worker skickar HTML-kod
+        const rawText = await smhiResponse.text();
+        
+        // SÄKERHETSSPÄRR: Om texten börjar med < (HTML-kod) avbryter vi direkt och förhindrar JSON-krasch
+        if (rawText.trim().startsWith("<")) {
+            console.warn("Källan returnerade HTML i stället för JSON. Hoppar över SMHI.");
+        } else {
+            // Om det är giltig JSON-text, parsa den säkert här
+            const smhiData = JSON.parse(rawText);
 
-        if(
-            smhiData.timeSeries &&
-            smhiData.timeSeries.length > 0
-        ){
-
-            const firstSlot =
-            smhiData.timeSeries[0];
-
-            if(firstSlot && firstSlot.data) {
-                const current = firstSlot.data;
-                smhiTemp = current.air_temperature;
-                smhiWind = current.wind_speed;
-                smhiHumidity = current.relative_humidity;
-                smhiRain = current.probability_of_precipitation;
-                smhiThunder = current.thunderstorm_probability;
-                smhiPressure = current.air_pressure_at_mean_sea_level;
-            }
-
-            // Samlar in dagens alla timvärden från SMHI-tidsserien baserat på datumet från Open-Meteo
-            const todayStr = data.daily.time[0];
-            smhiData.timeSeries.forEach(slot => {
-                if(slot.time && slot.time.startsWith(todayStr) && slot.data) {
-                    if(slot.data.air_temperature !== undefined) smhiTodayTemps.push(slot.data.air_temperature);
-                    if(slot.data.probability_of_precipitation !== undefined) smhiTodayRains.push(slot.data.probability_of_precipitation);
+            if(
+                smhiData.timeSeries &&
+                smhiData.timeSeries.length > 0
+            ){
+                const firstSlot = smhiData.timeSeries[0];
+                if(firstSlot && firstSlot.data) {
+                    const current = firstSlot.data;
+                    smhiTemp = current.air_temperature;
+                    smhiWind = current.wind_speed;
+                    smhiHumidity = current.relative_humidity;
+                    smhiRain = current.probability_of_precipitation;
+                    smhiThunder = current.thunderstorm_probability;
+                    smhiPressure = current.air_pressure_at_mean_sea_level;
                 }
-            });
 
+                const todayStr = data.daily.time[0];
+                smhiData.timeSeries.forEach(slot => {
+                    if(slot.time && slot.time.startsWith(todayStr) && slot.data) {
+                        if(slot.data.air_temperature !== undefined) smhiTodayTemps.push(slot.data.air_temperature);
+                        if(slot.data.probability_of_precipitation !== undefined) smhiTodayRains.push(slot.data.probability_of_precipitation);
+                    }
+                });
+            }
         }
 
     }
