@@ -187,7 +187,6 @@ status.textContent =
 "Hämtar väderdata...";
 
 try{
-
 const openMeteoUrl =
 `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
 
@@ -195,7 +194,10 @@ const response =
 await fetch(openMeteoUrl);
 
 if(!response.ok){
-throw new Error("Open‑Meteo " + response.status);
+    throw new Error(
+        "Open‑Meteo " +
+        response.status
+    );
 }
 
 const data =
@@ -205,34 +207,40 @@ let smhiTemp = null;
 
 try{
 
-const smhiResponse =
-await fetch(
-"https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/13.0/lat/60.13/data.json"
-);
+    const smhiResponse =
+    await fetch(
+        "https://smhi-proxy.mr-magoo21.workers.dev/"
+    );
 
-if(smhiResponse.ok){
+    if(smhiResponse.ok){
 
-const smhiData =
-await smhiResponse.json();
+        const smhiData =
+        await smhiResponse.json();
 
-const tempParameter =
-smhiData.timeSeries[0].parameters.find(
-p => p.name === "t"
-);
+        if(
+            smhiData.timeSeries &&
+            smhiData.timeSeries.length > 0 &&
+            smhiData.timeSeries[0].data
+        ){
 
-if(tempParameter){
-smhiTemp =
-tempParameter.values[0];
+            smhiTemp =
+            smhiData.timeSeries[0]
+            .data
+            .air_temperature;
+
+        }
+
+    }
+
 }
+catch(smhiError){
+
+    console.error(
+        "SMHI-fel:",
+        smhiError
+    );
 
 }
-
-}catch(smhiError){
-
-console.error(
-"SMHI-fel:",
-smhiError
-);
 
 }
 
