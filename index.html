@@ -232,22 +232,22 @@ try{
             smhiData.timeSeries[0].data;
 
             smhiTemp =
-            current.air_temperature;
+            current.air_temperature !== undefined ? current.air_temperature : null;
 
             smhiWind =
-            current.wind_speed;
+            current.wind_speed !== undefined ? current.wind_speed : null;
 
             smhiHumidity =
-            current.relative_humidity;
+            current.relative_humidity !== undefined ? current.relative_humidity : null;
 
             smhiRain =
-            current.probability_of_precipitation;
+            current.probability_of_precipitation !== undefined ? current.probability_of_precipitation : null;
 
             smhiThunder =
-            current.thunderstorm_probability;
+            current.thunderstorm_probability !== undefined ? current.thunderstorm_probability : null;
 
             smhiPressure =
-            current.air_pressure_at_mean_sea_level;
+            current.air_pressure_at_mean_sea_level !== undefined ? current.air_pressure_at_mean_sea_level : null;
 
         }
 
@@ -335,33 +335,28 @@ if(smhiTemp !== null){
 
 text +=
 "<br><b>SMHI:</b> " +
-smhiTemp.toFixed(1) +
+Number(smhiTemp).toFixed(1) +
 "°C";
 
 text +=
 "<br><b>SMHI Vind:</b> " +
-smhiWind +
-" m/s";
+(smhiWind !== null ? smhiWind + " m/s" : "N/A");
 
 text +=
 "<br><b>SMHI Luftfuktighet:</b> " +
-smhiHumidity +
-"%";
+(smhiHumidity !== null ? smhiHumidity + "%" : "N/A");
 
 text +=
 "<br><b>SMHI Regnrisk:</b> " +
-smhiRain +
-"%";
+(smhiRain !== null ? smhiRain + "%" : "N/A");
 
 text +=
 "<br><b>SMHI Åskrisk:</b> " +
-smhiThunder +
-"%";
+(smhiThunder !== null ? smhiThunder + "%" : "N/A");
 
 text +=
 "<br><b>SMHI Lufttryck:</b> " +
-smhiPressure +
-" hPa";
+(smhiPressure !== null ? smhiPressure + " hPa" : "N/A");
 
 }
 
@@ -435,4 +430,3 @@ setInterval(loadWeather,900000);
 
 </body>
 </html>
-``
