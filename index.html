@@ -229,34 +229,20 @@ try{
         const smhiData =
         await smhiResponse.json();
 
-        if(
-            smhiData.timeSeries &&
-            smhiData.timeSeries.length > 0 &&
-            smhiData.timeSeries[0].data
-        ){
+        if(smhiData.timeSeries && smhiData.timeSeries.length > 0){
 
-            const current =
-            smhiData.timeSeries[0].data;
+            // KORRIGERING: Hämta realtidsdata säkert från första mätpunkten om data-objektet existerar
+            if(smhiData.timeSeries[0].data) {
+                const current = smhiData.timeSeries[0].data;
+                smhiTemp = current.air_temperature;
+                smhiWind = current.wind_speed;
+                smhiHumidity = current.relative_humidity;
+                smhiRain = current.probability_of_precipitation;
+                smhiThunder = current.thunderstorm_probability;
+                smhiPressure = current.air_pressure_at_mean_sea_level;
+            }
 
-            smhiTemp =
-            current.air_temperature;
-
-            smhiWind =
-            current.wind_speed;
-
-            smhiHumidity =
-            current.relative_humidity;
-
-            smhiRain =
-            current.probability_of_precipitation;
-
-            smhiThunder =
-            current.thunderstorm_probability;
-
-            smhiPressure =
-            current.air_pressure_at_mean_sea_level;
-
-            // TILLÄGG ENBART HÄR: Samlar in och grupperar alla tillgängliga dygnsprognoser från SMHI per datum
+            // KORRIGERING: Flyttad utanför index[0]-villkoret så loopen kan läsa hela tidsserien från din nya Worker
             smhiData.timeSeries.forEach(slot => {
                 if (slot.time && slot.data) {
                     const dateKey = slot.time.split("T")[0]; // Ger formatet "YYYY-MM-DD"
@@ -422,6 +408,7 @@ let finalMax = omMax;
 let finalMin = omMin;
 let finalRain = omRain;
 
+// KORRIGERING: Återställd och korrekt stängd loop för att binda ihop källornas 7-dagarsprognoser
 if (smhiForecastDays[dateStr]) {
     const smhiTemps = smhiForecastDays[dateStr].temps;
     const smhiRains = smhiForecastDays[dateStr].rains;
