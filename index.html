@@ -119,10 +119,12 @@ Laddar...
 
 <div class="card">
 
+<!-- ÄNDRING: Rubrik ändrad till Dagens väder -->
 <h2>Dagens väder</h2>
 
 <div class="current">
 
+<!-- ÄNDRING: Etiketter och ID:n ändrade för att visa Copilot-datan istället -->
 <div class="info">
 <div class="label">Temperatur</div>
 <div id="copilotTemp" class="value">-</div>
@@ -188,7 +190,7 @@ status.textContent =
 
 try{
 const openMeteoUrl =
-`https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
 
 const response =
 await fetch(openMeteoUrl);
@@ -214,7 +216,7 @@ try{
 
     const smhiResponse =
     await fetch(
-        "https://workers.dev"
+        "https://smhi-proxy.mr-magoo21.workers.dev/"
     );
 
     if(smhiResponse.ok){
@@ -275,7 +277,7 @@ data.current.relative_humidity_2m;
 const rain =
 data.daily.precipitation_probability_max[0];
 
-// ÄNDRING: Vi fyller inte i de gamla boxarna (temp, wind, etc.) eftersom de är borttagna, utan tilldelar värdena till dina nya Copilot-boxar längre ner i skriptet.
+// ÄNDRING: Kodblocken som uppdaterade de gamla boxarna har flyttats till slutet av funktionen där Copilot-variablerna har skapats.
 
 let copilotTemp =
 temp;
@@ -397,8 +399,8 @@ smhiTemp !== null
 document.getElementById("copilot").innerHTML =
 text;
 
-// ÄNDRING: Här kopplas dina nya gränssnittsboxar till de beräknade Copilot-värdena
-document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°C";
+// ÄNDRING: Här skickas Copilot-värdena in i de nya Dagens väder-boxarna högst upp
+document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°";
 document.getElementById("copilotRain").textContent = copilotRain + "%";
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
 document.getElementById("copilotConfidence").textContent = confidence;
