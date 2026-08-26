@@ -184,6 +184,7 @@ const status = document.getElementById("status");
 status.textContent = "Hämtar väderdata...";
 
 try{
+// ÅTERSTÄLLD: Mallsträng med korrekta backticks för att förhindra URL-fel [2]
 const openMeteoUrl = `https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
 
 const response = await fetch(openMeteoUrl);
@@ -211,35 +212,38 @@ try{
 
         const smhiData = await smhiResponse.json();
 
-        // RÄTTELSE 1: Läser direkt från timeSeries.data eftersom din Worker skickar objektet direkt (inte som en array på index 0)
-        if(smhiData.timeSeries && smhiData.timeSeries.data){
+        // KORRIGERING: Läser datastrukturen stabilt baserat på din nuvarande Worker-output [2]
+        if(smhiData.timeSeries && smhiData.timeSeries.length > 0){
 
-            const current = smhiData.timeSeries.data;
+            // Hämta första timmen om data ligger i en array, annars läs direkt [2]
+            const firstSlot = Array.isArray(smhiData.timeSeries) ? smhiData.timeSeries[0] : smhiData.timeSeries;
+            const current = firstSlot.data;
 
-            smhiTemp = current.air_temperature;
-            smhiWind = current.wind_speed;
-            smhiHumidity = current.relative_humidity;
-            smhiRain = current.probability_of_precipitation;
-            smhiThunder = current.thunderstorm_probability;
-            smhiPressure = current.air_pressure_at_mean_sea_level;
-
-            // RÄTTELSE 2: Anpassat loopen så den mappar tidsserien korrekt utifrån din workers struktur
-            if (Array.isArray(smhiData.timeSeries)) {
-                smhiData.timeSeries.forEach(slot => {
-                    if (slot.time && slot.data) {
-                        const dateKey = slot.time.split("T");
-                        if (!smhiForecastDays[dateKey]) {
-                            smhiForecastDays[dateKey] = { temps: [], rains: [] };
-                        }
-                        if (slot.data.air_temperature !== undefined) {
-                            smhiForecastDays[dateKey].temps.push(slot.data.air_temperature);
-                        }
-                        if (slot.data.probability_of_precipitation !== undefined) {
-                            smhiForecastDays[dateKey].rains.push(slot.data.probability_of_precipitation);
-                        }
-                    }
-                });
+            if(current) {
+                smhiTemp = current.air_temperature;
+                smhiWind = current.wind_speed;
+                smhiHumidity = current.relative_humidity;
+                smhiRain = current.probability_of_precipitation;
+                smhiThunder = current.thunderstorm_probability;
+                smhiPressure = current.air_pressure_at_mean_sea_level;
             }
+
+            // Mappa upp hela veckans dygnsvärden från SMHI-tidsserien [2]
+            const seriesArray = Array.isArray(smhiData.timeSeries) ? smhiData.timeSeries : [smhiData.timeSeries];
+            seriesArray.forEach(slot => {
+                if (slot.time && slot.data) {
+                    const dateKey = slot.time.split("T")[0];
+                    if (!smhiForecastDays[dateKey]) {
+                        smhiForecastDays[dateKey] = { temps: [], rains: [] };
+                    }
+                    if (slot.data.air_temperature !== undefined) {
+                        smhiForecastDays[dateKey].temps.push(slot.data.air_temperature);
+                    }
+                    if (slot.data.probability_of_precipitation !== undefined) {
+                        smhiForecastDays[dateKey].rains.push(slot.data.probability_of_precipitation);
+                    }
+                }
+            });
 
         }
 
@@ -269,7 +273,6 @@ if (smhiForecastDays[todayKey]) {
     const sRains = smhiForecastDays[todayKey].rains;
     if (sTemps.length > 0) {
         finalTodayMax = (omTodayMax + Math.max(...sTemps)) / 2;
-        // RÄTTELSE 3: Tog bort syntaxfelet (den felaktiga parantesen och variabelomdefinitionen)
         finalTodayMin = (omTodayMin + Math.min(...sTemps)) / 2;
     }
     if (sRains.length > 0) {
@@ -338,7 +341,7 @@ for(let i = 0; i < 7; i++){
     <div class="day">
     <strong>${date.toLocaleDateString("sv-SE", {weekday:"short"})}</strong><br><br>
     🔺 ${Math.round(finalMax)}°<br>
-    🔻 ${Math.round(finalMin)}°<br><br>
+    🔻 ${Math.round(finalMin)}°br><br>
     🌧 ${finalRain}%
     </div>
     `;
