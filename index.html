@@ -119,10 +119,12 @@ Laddar...
 
 <div class="card">
 
-<h2>Dagens weather</h2>
+<!-- ÄNDRING: Rubrik ändrad till Dagens väder -->
+<h2>Dagens väder</h2>
 
 <div class="current">
 
+<!-- ÄNDRING: Etiketter och ID:n ändrade för att visa Copilot-datan istället -->
 <div class="info">
 <div class="label">Temperatur</div>
 <div id="copilotTemp" class="value">-</div>
@@ -152,6 +154,7 @@ Laddar...
 
 </div>
 
+<!-- ÄNDRING: Detta block (7-dagars prognos) har flyttats upp och ligger nu direkt under Dagens väder -->
 <div class="card">
 
 <h2>7-dagars prognos</h2>
@@ -161,6 +164,7 @@ Laddar...
 
 </div>
 
+<!-- ÄNDRING: Detta block (Copilot-bedömning) ligger nu under 7-dagars prognos -->
 <div class="card">
 
 <h2>Källor</h2>
@@ -187,9 +191,8 @@ status.textContent =
 "Hämtar väderdata...";
 
 try{
-// ÅTERSTÄLLD TILL 100% ORIGINAL: Din exakta URL-sträng utan några ändrade tecken
 const openMeteoUrl =
-`https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
 
 const response =
 await fetch(openMeteoUrl);
@@ -215,7 +218,7 @@ try{
 
     const smhiResponse =
     await fetch(
-        "https://workers.dev"
+        "https://smhi-proxy.mr-magoo21.workers.dev/"
     );
 
     if(smhiResponse.ok){
@@ -226,11 +229,11 @@ try{
         if(
             smhiData.timeSeries &&
             smhiData.timeSeries.length > 0 &&
-            smhiData.timeSeries.data
+            smhiData.timeSeries[0].data
         ){
 
             const current =
-            smhiData.timeSeries.data;
+            smhiData.timeSeries[0].data;
 
             smhiTemp =
             current.air_temperature;
@@ -264,32 +267,6 @@ catch(smhiError){
 
 }
 
-let yrForecastDays = {};
-try {
-    const yrUrl = `https://met.no{LAT}&lon=${LON}`;
-    const yrResponse = await fetch(`https://allorigins.win{encodeURIComponent(yrUrl)}`);
-    if (yrResponse.ok) {
-        const yrProxyData = await yrResponse.json();
-        const yrData = JSON.parse(yrProxyData.contents);
-        if (yrData.properties && yrData.properties.timeseries) {
-            yrData.properties.timeseries.forEach(slot => {
-                const dateStr = slot.time.split("T");
-                if (!yrForecastDays[dateStr]) {
-                    yrForecastDays[dateStr] = { temps: [], rains: [] };
-                }
-                if (slot.data.instant && slot.data.instant.details) {
-                    yrForecastDays[dateStr].temps.push(slot.data.instant.details.air_temperature);
-                }
-                if (slot.data.next_6_hours && slot.data.next_6_hours.details) {
-                    yrForecastDays[dateStr].rains.push(slot.data.next_6_hours.details.probability_of_precipitation || 0);
-                }
-            });
-        }
-    }
-} catch (yrError) {
-    console.error("Yr-fel:", yrError);
-}
-
 const temp =
 data.current.temperature_2m;
 
@@ -300,7 +277,9 @@ const humidity =
 data.current.relative_humidity_2m;
 
 const rain =
-data.daily.precipitation_probability_max;
+data.daily.precipitation_probability_max[0];
+
+// ÄNDRING: Kodblocken som uppdaterade de gamla boxarna har flyttats till slutet av funktionen där Copilot-variablerna har skapats.
 
 let copilotTemp =
 temp;
@@ -343,6 +322,7 @@ smhiThunder !== null
 ? smhiThunder
 : 0;
 
+// ÄNDRING: COPILOT-textblocket och avdelaren har raderats härifrån
 let text = `
 
 <b>OPEN‑METEO</b>
@@ -395,16 +375,12 @@ smhiThunder !== null
 : "N/A"
 }
 
-<br><br>
-
-<b>YR.NO</b>
-<br>
-Prognosdata: Inläst för 7-dagarsprognosen
 `;
 
 document.getElementById("copilot").innerHTML =
 text;
 
+// ÄNDRING: Här skickas Copilot-värdena in i de nya Dagens väder-boxarna högst upp
 document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°";
 document.getElementById("copilotRain").textContent = copilotRain + "%";
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
@@ -415,28 +391,8 @@ let forecastHTML = "";
 
 for(let i = 0; i < 7; i++){
 
-const dateStr = data.daily.time[i];
-const date = new Date(dateStr);
-
-let omMax = data.daily.temperature_2m_max[i];
-let omMin = data.daily.temperature_2m_min[i];
-let omRain = data.daily.precipitation_probability_max[i];
-
-let finalMax = omMax;
-let finalMin = omMin;
-let finalRain = omRain;
-
-if (yrForecastDays[dateStr]) {
-    const yrTemps = yrForecastDays[dateStr].temps;
-    const yrRains = yrForecastDays[dateStr].rains;
-    if (yrTemps.length > 0) {
-        finalMax = (omMax + Math.max(...yrTemps)) / 2;
-        finalMin = (omMin + Math.min(...yrTemps)) / 2;
-    }
-    if (yrRains.length > 0) {
-        finalRain = Math.round((omRain + Math.max(...yrRains)) / 2);
-    }
-}
+const date =
+new Date(data.daily.time[i]);
 
 forecastHTML += `
 <div class="day">
@@ -447,11 +403,11 @@ ${date.toLocaleDateString(
 )}
 </strong>
 <br><br>
-🔺 ${Math.round(finalMax)}°
+🔺 ${Math.round(data.daily.temperature_2m_max[i])}°
 <br>
-🔻 ${Math.round(finalMin)}°
+🔻 ${Math.round(data.daily.temperature_2m_min[i])}°
 <br><br>
-🌧 ${finalRain}%
+🌧 ${data.daily.precipitation_probability_max[i]}%
 </div>
 `;
 
