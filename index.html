@@ -204,6 +204,11 @@ const data =
 await response.json();
 
 let smhiTemp = null;
+let smhiWind = null;
+let smhiHumidity = null;
+let smhiRain = null;
+let smhiThunder = null;
+let smhiPressure = null;
 
 try{
 
@@ -223,10 +228,26 @@ try{
             smhiData.timeSeries[0].data
         ){
 
+            const current =
+            smhiData.timeSeries[0].data;
+
             smhiTemp =
-            smhiData.timeSeries[0]
-            .data
-            .air_temperature;
+            current.air_temperature;
+
+            smhiWind =
+            current.wind_speed;
+
+            smhiHumidity =
+            current.relative_humidity;
+
+            smhiRain =
+            current.probability_of_precipitation;
+
+            smhiThunder =
+            current.thunderstorm_probability;
+
+            smhiPressure =
+            current.air_pressure_at_mean_sea_level;
 
         }
 
