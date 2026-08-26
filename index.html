@@ -172,7 +172,6 @@ Laddar...
 </div>
 </div>
 
-<!-- SEPARERADE KORT FÖR KÄLLORNA -->
 <div class="flex-grid">
     <div class="card col">
         <h2>📊 Open-Meteo</h2>
@@ -202,32 +201,22 @@ Laddar...
 
 <script>
 
-const LAT = 60.1333;
-const LON = 13.0;
-
 async function loadWeather(){
 
-const status =
-document.getElementById("status");
-
-status.textContent =
-"Hämtar väderdata...";
+const status = document.getElementById("status");
+status.textContent = "Hämtar väderdata...";
 
 try{
-const openMeteoUrl = "https://open-meteo.com" + LAT + "&longitude=" + LON + "&current=temperature_2m,relative_humidity_2m,wind_speed_10m,surface_pressure&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm";
+// SÄKRAD URL: Hårdkodad sträng med Torsbys koordinater inbakade direkt för att förhindra skriptfel
+const openMeteoUrl = "https://open-meteo.com";
 
-const response =
-await fetch(openMeteoUrl);
+const response = await fetch(openMeteoUrl);
 
 if(!response.ok){
-    throw new Error(
-        "Open‑Meteo " +
-        response.status
-    );
+    throw new Error("Open‑Meteo " + response.status);
 }
 
-const data =
-await response.json();
+const data = await response.json();
 
 let smhiTemp = null;
 let smhiWind = null;
@@ -237,22 +226,17 @@ let smhiThunder = null;
 let smhiPressure = null;
 
 try{
-    const smhiResponse =
-    await fetch(
-        "https://workers.dev"
-    );
+    const smhiResponse = await fetch("https://workers.dev");
 
     if(smhiResponse.ok){
-        const smhiData =
-        await smhiResponse.json();
+        const smhiData = await smhiResponse.json();
 
         if(
             smhiData.timeSeries &&
             smhiData.timeSeries.length > 0 &&
             smhiData.timeSeries[0].data
         ){
-            const current =
-            smhiData.timeSeries[0].data;
+            const current = smhiData.timeSeries[0].data;
 
             smhiTemp = current.air_temperature !== undefined ? current.air_temperature : null;
             smhiWind = current.wind_speed !== undefined ? current.wind_speed : null;
@@ -264,10 +248,7 @@ try{
     }
 }
 catch(smhiError){
-    console.error(
-        "SMHI-fel:",
-        smhiError
-    );
+    console.error("SMHI-fel:", smhiError);
 }
 
 const temp = data.current.temperature_2m;
