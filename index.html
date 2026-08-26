@@ -119,12 +119,10 @@ Laddar...
 
 <div class="card">
 
-<!-- ÄNDRING: Rubrik ändrad till Dagens väder -->
 <h2>Dagens väder</h2>
 
 <div class="current">
 
-<!-- ÄNDRING: Etiketter och ID:n ändrade för att visa Copilot-datan istället -->
 <div class="info">
 <div class="label">Temperatur</div>
 <div id="copilotTemp" class="value">-</div>
@@ -154,7 +152,6 @@ Laddar...
 
 </div>
 
-<!-- ÄNDRING: Detta block (7-dagars prognos) har flyttats upp och ligger nu direkt under Dagens väder -->
 <div class="card">
 
 <h2>7-dagars prognos</h2>
@@ -164,7 +161,6 @@ Laddar...
 
 </div>
 
-<!-- ÄNDRING: Detta block (Copilot-bedömning) ligger nu under 7-dagars prognos -->
 <div class="card">
 
 <h2>Källor</h2>
@@ -192,7 +188,7 @@ status.textContent =
 
 try{
 const openMeteoUrl =
-`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+`https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
 
 const response =
 await fetch(openMeteoUrl);
@@ -214,11 +210,14 @@ let smhiRain = null;
 let smhiThunder = null;
 let smhiPressure = null;
 
+// Objekt för att strukturera SMHI:s dygnsvärden till 7-dagarslistan
+let smhiForecastDays = {};
+
 try{
 
     const smhiResponse =
     await fetch(
-        "https://smhi-proxy.mr-magoo21.workers.dev/"
+        "https://workers.dev"
     );
 
     if(smhiResponse.ok){
@@ -226,33 +225,35 @@ try{
         const smhiData =
         await smhiResponse.json();
 
-        if(
-            smhiData.timeSeries &&
-            smhiData.timeSeries.length > 0 &&
-            smhiData.timeSeries[0].data
-        ){
+        // ÄNDRING: Läser direkt från ditt nya "data"-objekt i tidsserien
+        if(smhiData.timeSeries && smhiData.timeSeries.length > 0){
 
-            const current =
-            smhiData.timeSeries[0].data;
+            // 1. Plocka ut realtidsdata från den allra första timmen i listan
+            const current = smhiData.timeSeries[0].data;
 
-            smhiTemp =
-            current.air_temperature;
+            if(current.air_temperature !== undefined) smhiTemp = current.air_temperature;
+            if(current.wind_speed !== undefined) smhiWind = current.wind_speed;
+            if(current.relative_humidity !== undefined) smhiHumidity = current.relative_humidity;
+            if(current.probability_of_precipitation !== undefined) smhiRain = current.probability_of_precipitation; 
+            if(current.thunderstorm_probability !== undefined) smhiThunder = current.thunderstorm_probability;
+            if(current.air_pressure_at_mean_sea_level !== undefined) smhiPressure = current.air_pressure_at_mean_sea_level;
 
-            smhiWind =
-            current.wind_speed;
+            // 2. Loopa igenom alla timmar för att samla in värden till 7-dagarsprognosen
+            smhiData.timeSeries.forEach(slot => {
+                const dateKey = slot.time.split("T")[0]; // Ger "YYYY-MM-DD"
+                
+                if(!smhiForecastDays[dateKey]){
+                    smhiForecastDays[dateKey] = { temps: [], rains: [] };
+                }
 
-            smhiHumidity =
-            current.relative_humidity;
-
-            smhiRain =
-            current.probability_of_precipitation;
-
-            smhiThunder =
-            current.thunderstorm_probability;
-
-            smhiPressure =
-            current.air_pressure_at_mean_sea_level;
-
+                const slotData = slot.data;
+                if(slotData.air_temperature !== undefined) {
+                    smhiForecastDays[dateKey].temps.push(slotData.air_temperature);
+                }
+                if(slotData.probability_of_precipitation !== undefined) {
+                    smhiForecastDays[dateKey].rains.push(slotData.probability_of_precipitation);
+                }
+            });
         }
 
     }
@@ -278,8 +279,6 @@ data.current.relative_humidity_2m;
 
 const rain =
 data.daily.precipitation_probability_max[0];
-
-// ÄNDRING: Kodblocken som uppdaterade de gamla boxarna har flyttats till slutet av funktionen där Copilot-variablerna har skapats.
 
 let copilotTemp =
 temp;
@@ -322,7 +321,6 @@ smhiThunder !== null
 ? smhiThunder
 : 0;
 
-// ÄNDRING: COPILOT-textblocket och avdelaren har raderats härifrån
 let text = `
 
 <b>OPEN‑METEO</b>
@@ -359,7 +357,7 @@ smhiHumidity !== null
 <br>
 Lufttryck: ${
 smhiPressure !== null
-? smhiPressure + " hPa"
+? smhiPressure.toFixed(1) + " hPa"
 : "N/A"
 }
 <br>
@@ -380,7 +378,6 @@ smhiThunder !== null
 document.getElementById("copilot").innerHTML =
 text;
 
-// ÄNDRING: Här skickas Copilot-värdena in i de nya Dagens väder-boxarna högst upp
 document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°";
 document.getElementById("copilotRain").textContent = copilotRain + "%";
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
@@ -389,10 +386,35 @@ document.getElementById("copilotSources").textContent = smhiTemp !== null ? "2" 
 
 let forecastHTML = "";
 
+// ÄNDRING: Bygger 7-dagarslistan som ett äkta genomsnitt av både Open-Meteo och din nya SMHI-data
 for(let i = 0; i < 7; i++){
 
-const date =
-new Date(data.daily.time[i]);
+const dateStr = data.daily.time[i]; // "YYYY-MM-DD"
+const date = new Date(dateStr);
+
+let omMax = data.daily.temperature_2m_max[i];
+let omMin = data.daily.temperature_2m_min[i];
+let omRain = data.daily.precipitation_probability_max[i];
+
+let finalMax = omMax;
+let finalMin = omMin;
+let finalRain = omRain;
+
+if (smhiForecastDays[dateStr]) {
+    const smhiTemps = smhiForecastDays[dateStr].temps;
+    const smhiRains = smhiForecastDays[dateStr].rains;
+    
+    if (smhiTemps.length > 0) {
+        const smhiMax = Math.max(...smhiTemps);
+        const smhiMin = Math.min(...smhiTemps);
+        finalMax = (omMax + smhiMax) / 2;
+        finalMin = (omMin + smhiMin) / 2;
+    }
+    if (smhiRains.length > 0) {
+        const smhiRainMax = Math.max(...smhiRains);
+        finalRain = Math.round((omRain + smhiRainMax) / 2);
+    }
+}
 
 forecastHTML += `
 <div class="day">
@@ -403,11 +425,11 @@ ${date.toLocaleDateString(
 )}
 </strong>
 <br><br>
-🔺 ${Math.round(data.daily.temperature_2m_max[i])}°
+🔺 ${Math.round(finalMax)}°
 <br>
-🔻 ${Math.round(data.daily.temperature_2m_min[i])}°
+🔻 ${Math.round(finalMin)}°
 <br><br>
-🌧 ${data.daily.precipitation_probability_max[i]}%
+🌧 ${finalRain}%
 </div>
 `;
 
