@@ -121,7 +121,6 @@ Laddar...
 
 <h2>Dagens väder</h2>
 
-<!-- ÄNDRING: De gamla rådataboxarna har tagits bort och ersatts helt av Copilot-boxarna -->
 <div class="current">
 
 <div class="info">
@@ -276,6 +275,8 @@ data.current.relative_humidity_2m;
 const rain =
 data.daily.precipitation_probability_max[0];
 
+// ÄNDRING: Vi fyller inte i de gamla boxarna (temp, wind, etc.) eftersom de är borttagna, utan tilldelar värdena till dina nya Copilot-boxar längre ner i skriptet.
+
 let copilotTemp =
 temp;
 
@@ -316,13 +317,6 @@ let copilotThunder =
 smhiThunder !== null
 ? smhiThunder
 : 0;
-
-// ÄNDRING: Uppdaterar värdena i de nya boxarna
-document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°C";
-document.getElementById("copilotRain").textContent = copilotRain + "%";
-document.getElementById("copilotThunder").textContent = copilotThunder + "%";
-document.getElementById("copilotConfidence").textContent = confidence;
-document.getElementById("copilotSources").textContent = smhiTemp !== null ? "2" : "1";
 
 let text = `
 
@@ -376,10 +370,39 @@ smhiThunder !== null
 : "N/A"
 }
 
+<br><br>
+
+────────────────
+
+<br><br>
+
+<b>COPILOT</b>
+<br>
+Temperatur: ${copilotTemp.toFixed(1)}°C
+<br>
+Regnrisk: ${copilotRain}%
+<br>
+Åskrisk: ${copilotThunder}%
+<br>
+Säkerhet: ${confidence}
+<br>
+Källor: ${
+smhiTemp !== null
+? "2"
+: "1"
+}
+
 `;
 
 document.getElementById("copilot").innerHTML =
 text;
+
+// ÄNDRING: Här kopplas dina nya gränssnittsboxar till de beräknade Copilot-värdena
+document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°C";
+document.getElementById("copilotRain").textContent = copilotRain + "%";
+document.getElementById("copilotThunder").textContent = copilotThunder + "%";
+document.getElementById("copilotConfidence").textContent = confidence;
+document.getElementById("copilotSources").textContent = smhiTemp !== null ? "2" : "1";
 
 let forecastHTML = "";
 
