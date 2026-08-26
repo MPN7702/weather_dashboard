@@ -322,6 +322,7 @@ smhiThunder !== null
 ? smhiThunder
 : 0;
 
+// ÄNDRING: COPILOT-textblocket och avdelaren har raderats härifrån
 let text = `
 
 <b>OPEN‑METEO</b>
@@ -372,28 +373,6 @@ smhiRain !== null
 smhiThunder !== null
 ? smhiThunder + "%"
 : "N/A"
-}
-
-<br><br>
-
-────────────────
-
-<br><br>
-
-<b>COPILOT</b>
-<br>
-Temperatur: ${copilotTemp.toFixed(1)}°C
-<br>
-Regnrisk: ${copilotRain}%
-<br>
-Åskrisk: ${copilotThunder}%
-<br>
-Säkerhet: ${confidence}
-<br>
-Källor: ${
-smhiTemp !== null
-? "2"
-: "1"
 }
 
 `;
