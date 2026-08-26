@@ -57,7 +57,7 @@ header{
 }
 
 .value{
-    font-size:24px;
+    font-size:32px;
     font-weight:bold;
 }
 
@@ -119,10 +119,12 @@ Laddar...
 
 <div class="card">
 
+<!-- ÄNDRING: Rubrik ändrad till Dagens väder -->
 <h2>Dagens väder</h2>
 
 <div class="current">
 
+<!-- ÄNDRING: Etiketter och ID:n ändrade för att visa Copilot-datan istället -->
 <div class="info">
 <div class="label">Temperatur</div>
 <div id="copilotTemp" class="value">-</div>
@@ -152,6 +154,7 @@ Laddar...
 
 </div>
 
+<!-- ÄNDRING: Detta block (7-dagars prognos) har flyttats upp och ligger nu direkt under Dagens väder -->
 <div class="card">
 
 <h2>7-dagars prognos</h2>
@@ -161,6 +164,7 @@ Laddar...
 
 </div>
 
+<!-- ÄNDRING: Detta block (Copilot-bedömning) ligger nu under 7-dagars prognos -->
 <div class="card">
 
 <h2>Källor</h2>
@@ -210,6 +214,7 @@ let smhiRain = null;
 let smhiThunder = null;
 let smhiPressure = null;
 
+// TILLÄGG: Listor för att samla in dagens alla timvärden från SMHI för dygnsextremer
 let smhiTodayTemps = [];
 let smhiTodayRains = [];
 
@@ -227,29 +232,30 @@ try{
 
         if(
             smhiData.timeSeries &&
-            smhiData.timeSeries.length > 0
+            smhiData.timeSeries.length > 0 &&
+            smhiData.timeSeries[0].parameters
         ){
 
-            // Hämtar den första mätpunkten i tidsserien för realtidsfälten
-            const firstSlot = smhiData.timeSeries[0];
-            if(firstSlot && firstSlot.parameters) {
-                const tParam = firstSlot.parameters.find(p => p.name === "t");
-                const wsParam = firstSlot.parameters.find(p => p.name === "ws");
-                const rParam = firstSlot.parameters.find(p => p.name === "r");
-                const pmeanParam = firstSlot.parameters.find(p => p.name === "pmean");
-                const tstmParam = firstSlot.parameters.find(p => p.name === "tstm");
-                const mslParam = firstSlot.parameters.find(p => p.name === "msl");
+            const firstSlot =
+            smhiData.timeSeries[0];
 
-                if(tParam) smhiTemp = tParam.values[0];
-                if(wsParam) smhiWind = wsParam.values[0];
-                if(rParam) smhiHumidity = rParam.values[0];
-                if(pmeanParam) smhiRain = pmeanParam.values[0] > 0 ? 100 : 0;
-                if(tstmParam) smhiThunder = tstmParam.values[0];
-                if(mslParam) smhiPressure = mslParam.values[0];
-            }
+            // Sorterar ut realtidsparametrarna ur pmp3g-strukturen för tabellen i botten
+            const tParam = firstSlot.parameters.find(p => p.name === "t");
+            const wsParam = firstSlot.parameters.find(p => p.name === "ws");
+            const rParam = firstSlot.parameters.find(p => p.name === "r");
+            const pmeanParam = firstSlot.parameters.find(p => p.name === "pmean");
+            const tstmParam = firstSlot.parameters.find(p => p.name === "tstm");
+            const mslParam = firstSlot.parameters.find(p => p.name === "msl");
 
-            // Samlar in alla timvärden för det aktuella dygnet från SMHI
-            const todayStr = data.daily.time[0]; 
+            if(tParam) smhiTemp = tParam.values[0];
+            if(wsParam) smhiWind = wsParam.values[0];
+            if(rParam) smhiHumidity = rParam.values[0];
+            if(pmeanParam) smhiRain = pmeanParam.values[0] > 0 ? 100 : 0;
+            if(tstmParam) smhiThunder = tstmParam.values[0];
+            if(mslParam) smhiPressure = mslParam.values[0];
+
+            // Samlar in dagens alla timvärden baserat på dagens datumnyckel från Open-Meteo
+            const todayStr = data.daily.time[0];
             smhiData.timeSeries.forEach(slot => {
                 if(slot.validTime && slot.validTime.startsWith(todayStr)) {
                     const t = slot.parameters.find(p => p.name === "t");
@@ -265,7 +271,12 @@ try{
 
 }
 catch(smhiError){
-    console.error("SMHI-fel:", smhiError);
+
+    console.error(
+        "SMHI-fel:",
+        smhiError
+    );
+
 }
 
 const temp =
@@ -280,7 +291,7 @@ data.current.relative_humidity_2m;
 const rain =
 data.daily.precipitation_probability_max[0];
 
-// Räknar ut kombinerat dygnsintervall och regnrisk för hela dygnet
+// ÄNDRING: Räknar ut dygnsmax/min och dygnsregnrisk för hela dygnet i stället för just nu
 let finalTodayMin = data.daily.temperature_2m_min[0];
 let finalTodayMax = data.daily.temperature_2m_max[0];
 let copilotRain = rain;
@@ -311,7 +322,9 @@ smhiThunder !== null
 ? smhiThunder
 : 0;
 
+// ÄNDRING: COPILOT-textblocket och avdelaren har raderats härifrån
 let text = `
+
 <b>OPEN‑METEO</b>
 <br>
 Temperatur: ${temp.toFixed(1)}°C
@@ -321,25 +334,53 @@ Vind: ${wind.toFixed(1)} m/s
 Luftfuktighet: ${humidity}%
 <br>
 Regnrisk: ${rain}%
+
 <br><br>
+
 <b>SMHI</b>
 <br>
-Temperatur: ${smhiTemp !== null ? smhiTemp.toFixed(1) + "°C" : "N/A"}
+Temperatur: ${
+smhiTemp !== null
+? smhiTemp.toFixed(1) + "°C"
+: "N/A"
+}
 <br>
-Vind: ${smhiWind !== null ? smhiWind.toFixed(1) + " m/s" : "N/A"}
+Vind: ${
+smhiWind !== null
+? smhiWind.toFixed(1) + " m/s"
+: "N/A"
+}
 <br>
-Luftfuktighet: ${smhiHumidity !== null ? smhiHumidity + "%" : "N/A"}
+Luftfuktighet: ${
+smhiHumidity !== null
+? smhiHumidity + "%"
+: "N/A"
+}
 <br>
-Lufttryck: ${smhiPressure !== null ? smhiPressure.toFixed(1) + " hPa" : "N/A"}
+Lufttryck: ${
+smhiPressure !== null
+? smhiPressure + " hPa"
+: "N/A"
+}
 <br>
-Regnrisk: ${smhiRain !== null ? smhiRain + "%" : "N/A"}
+Regnrisk: ${
+smhiRain !== null
+? smhiRain + "%"
+: "N/A"
+}
 <br>
-Åskrisk: ${smhiThunder !== null ? smhiThunder + "%" : "N/A"}
+Åskrisk: ${
+smhiThunder !== null
+? smhiThunder + "%"
+: "N/A"
+}
+
 `;
 
 document.getElementById("copilot").innerHTML =
 text;
 
+// ÄNDRING: Skickar upp de sammanslagna dygnsintervallen för hela dygnet till boxarna
 document.getElementById("copilotTemp").textContent = Math.round(finalTodayMin) + "° / " + Math.round(finalTodayMax) + "°";
 document.getElementById("copilotRain").textContent = copilotRain + "%";
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
@@ -349,6 +390,7 @@ document.getElementById("copilotSources").textContent = smhiTemp !== null ? "2" 
 let forecastHTML = "";
 
 for(let i = 0; i < 7; i++){
+
 const date =
 new Date(data.daily.time[i]);
 
@@ -368,6 +410,7 @@ ${date.toLocaleDateString(
 🌧 ${data.daily.precipitation_probability_max[i]}%
 </div>
 `;
+
 }
 
 document.getElementById("forecast").innerHTML =
@@ -379,13 +422,18 @@ new Date().toLocaleTimeString("sv-SE");
 
 }
 catch(error){
-    status.textContent = "Fel: " + error.message;
+
+status.textContent =
+"Fel: " + error.message;
+
 }
 
 }
 
 loadWeather();
+
 setInterval(loadWeather,900000);
+
 </script>
 
 </body>
