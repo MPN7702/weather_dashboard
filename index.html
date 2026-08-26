@@ -119,7 +119,8 @@ Laddar...
 
 <div class="card">
 
-<h2>Just nu</h2>
+<!-- ÄNDRING 1: Byt namn till Dagens väder -->
+<h2>Dagens väder</h2>
 
 <div class="current">
 
@@ -148,6 +149,11 @@ Laddar...
 <div id="rain" class="value">-</div>
 </div>
 
+</div>
+
+<!-- ÄNDRING 2: Ny behållare för att visa enbart COPILOT-texten här i det översta kortet -->
+<div id="copilot-top" style="margin-top: 25px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 20px;">
+Laddar...
 </div>
 
 </div>
@@ -385,12 +391,10 @@ smhiThunder !== null
 : "N/A"
 }
 
-<br><br>
+`;
 
-────────────────
-
-<br><br>
-
+// ÄNDRING 3: Delat upp strängarna så att data hamnar på exakt rätt ställen
+let topText = `
 <b>COPILOT</b>
 <br>
 Temperatur: ${copilotTemp.toFixed(1)}°C
@@ -406,11 +410,13 @@ smhiTemp !== null
 ? "2"
 : "1"
 }
-
 `;
 
 document.getElementById("copilot").innerHTML =
 text;
+
+document.getElementById("copilot-top").innerHTML =
+topText;
 
 let forecastHTML = "";
 
@@ -463,4 +469,3 @@ setInterval(loadWeather,900000);
 
 </body>
 </html>
-``
