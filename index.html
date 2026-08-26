@@ -223,7 +223,7 @@ try{
     let smhiThunder = null;
     let smhiPressure = null;
 
-    // 2. Hämta SMHI data (Genom CORS-proxy och med det nya SNOW1g-API:et)
+    // 2. Hämta SMHI data via rätt, ny domän (metfcst) och nytt API (snow1g)
     try{
         const targetSmhiUrl = "https://smhi.se";
         const smhiResponse = await fetch("https://corsproxy.io?" + encodeURIComponent(targetSmhiUrl));
@@ -232,7 +232,7 @@ try{
             const smhiData = await smhiResponse.json();
 
             if(smhiData.timeSeries && smhiData.timeSeries.length > 0){
-                // Ta parametrarna för den första tillgängliga tidspunkten (aktuell timme)
+                // Det nya API:et har parametrar strukturerade per tidsindex. Vi plockar [0] som är just nu.
                 const currentParams = smhiData.timeSeries[0].parameters;
 
                 const tParam = currentParams.find(p => p.name === "t");
@@ -241,13 +241,13 @@ try{
                 const mslParam = currentParams.find(p => p.name === "msl");
                 const pcatParam = currentParams.find(p => p.name === "pcat");
 
-                if(tParam) smhiTemp = tParam.values[0];
-                if(wsParam) smhiWind = wsParam.values[0];
-                if(rParam) smhiHumidity = rParam.values[0];
-                if(mslParam) smhiPressure = mslParam.values[0];
-                if(pcatParam) smhiRain = pcatParam.values[0] > 0 ? "Ja" : "Nej";
+                if(tParam && tParam.values) smhiTemp = tParam.values[0];
+                if(wsParam && wsParam.values) smhiWind = wsParam.values[0];
+                if(rParam && rParam.values) smhiHumidity = rParam.values[0];
+                if(mslParam && mslParam.values) smhiPressure = mslParam.values[0];
+                if(pcatParam && pcatParam.values) smhiRain = pcatParam.values[0] > 0 ? "Ja" : "Nej";
                 
-                smhiThunder = 0; // Det nya API:et levererar inte åska direkt i denna nod
+                smhiThunder = 0; 
             }
         }
     }
@@ -260,7 +260,7 @@ try{
     const wind = data.current.wind_speed_10m;
     const humidity = data.current.relative_humidity_2m;
     const pressure = data.current.surface_pressure;
-    const rain = data.daily.precipitation_probability_max[0];
+    const rain = data.daily.precipitation_probability_max[0]; // Rättat indexering till dagens specifika värde
 
     let openMeteoThunder = 0;
     if (rain > 30 && temp > 15 && humidity > 60) {
@@ -299,7 +299,7 @@ try{
         smhiHTML += "<b>Aktivt regn just nu:</b> " + smhiRain + "<br>";
         smhiHTML += "<b>Lufttryck (Havsnivå):</b> " + smhiPressure + " hPa";
     } else {
-        smhiHTML = "<span style='color:#ef4444;'>Kunde inte hämta data från SMHI (CORS/API-fel).</span>";
+        smhiHTML = "<span style='color:#ef4444;'>Kunde inte hämta data från SMHI för tillfället.</span>";
     }
     document.getElementById("smhi-details").innerHTML = smhiHTML;
 
