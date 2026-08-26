@@ -134,12 +134,12 @@ Laddar...
 </div>
 
 <div class="info">
-<div class="label">Vind</div>
+<div class="label">Vind (Open-Meteo)</div>
 <div id="wind" class="value">-</div>
 </div>
 
 <div class="info">
-<div class="label">Luftfuktighet</div>
+<div class="label">Luftfuktighet (Open-Meteo)</div>
 <div id="humidity" class="value">-</div>
 </div>
 
@@ -187,8 +187,9 @@ status.textContent =
 "Hämtar väderdata...";
 
 try{
+// Uppdaterad URL med extra parametrar (surface_pressure)
 const openMeteoUrl =
-`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+`https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,surface_pressure&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
 
 const response =
 await fetch(openMeteoUrl);
@@ -214,7 +215,7 @@ try{
 
     const smhiResponse =
     await fetch(
-        "https://smhi-proxy.mr-magoo21.workers.dev/"
+        "https://workers.dev"
     );
 
     if(smhiResponse.ok){
@@ -225,11 +226,11 @@ try{
         if(
             smhiData.timeSeries &&
             smhiData.timeSeries.length > 0 &&
-            smhiData.timeSeries[0].data
+            smhiData.timeSeries.data
         ){
 
             const current =
-            smhiData.timeSeries[0].data;
+            smhiData.timeSeries.data;
 
             smhiTemp =
             current.air_temperature !== undefined ? current.air_temperature : null;
@@ -272,8 +273,19 @@ data.current.wind_speed_10m;
 const humidity =
 data.current.relative_humidity_2m;
 
+const pressure =
+data.current.surface_pressure;
+
 const rain =
 data.daily.precipitation_probability_max[0];
+
+// Beräknar en uppskattad åskrisk för Open-Meteo baserat på fukt, temp och regnrisk
+let openMeteoThunder = 0;
+if (rain > 30 && temp > 15 && humidity > 60) {
+    openMeteoThunder = Math.min(Math.round((humidity - 50) * (temp / 10) * (rain / 100)), 100);
+} else if (rain > 10) {
+    openMeteoThunder = Math.round(rain * 0.05); // Låg fast risk vid grundregn
+}
 
 document.getElementById("temp").textContent =
 temp + "°";
@@ -326,15 +338,41 @@ text =
 
 }
 
+// Utskrift av Open-Meteo data i bedömningsrutan
 text +=
 "<br><br><b>Open‑Meteo:</b> " +
 temp.toFixed(1) +
 "°C";
 
+text +=
+"<br><b>Open-Meteo Vind:</b> " +
+wind +
+" m/s";
+
+text +=
+"<br><b>Open-Meteo Luftfuktighet:</b> " +
+humidity +
+"%";
+
+text +=
+"<br><b>Open-Meteo Regnrisk:</b> " +
+rain +
+"%";
+
+text +=
+"<br><b>Open-Meteo Åskrisk:</b> " +
+openMeteoThunder +
+"%";
+
+text +=
+"<br><b>Open-Meteo Lufttryck:</b> " +
+pressure +
+" hPa";
+
 if(smhiTemp !== null){
 
 text +=
-"<br><b>SMHI:</b> " +
+"<br><br><b>SMHI:</b> " +
 Number(smhiTemp).toFixed(1) +
 "°C";
 
@@ -361,14 +399,9 @@ text +=
 }
 
 text +=
-"<br><br><b>Copilot Temperatur:</b> " +
+"<br><br><b>Copilot Genomsnittstemp:</b> " +
 copilotTemp.toFixed(1) +
 "°C";
-
-text +=
-"<br><br><b>Regnrisk:</b> " +
-rain +
-"%";
 
 text +=
 "<br><br><b>Källor:</b> " +
