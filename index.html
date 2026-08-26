@@ -144,6 +144,11 @@ Laddar...
 <div id="rain" class="value">-</div>
 </div>
 
+<div class="info">
+<div class="label">SMHI Temp</div>
+<div id="smhiTemp" class="value">-</div>
+</div>
+
 </div>
 
 </div>
@@ -198,6 +203,51 @@ async function loadWeather(){
         const data =
         await response.json();
 
+        let smhiTemp = null;
+
+        try{
+
+            const smhiResponse =
+            await fetch(
+            "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/13.0/lat/60.13/data.json"
+            );
+
+            if(smhiResponse.ok){
+
+                const smhiData =
+                await smhiResponse.json();
+
+                if(
+                    smhiData.timeSeries &&
+                    smhiData.timeSeries.length > 0
+                ){
+
+                    const tempParameter =
+                    smhiData.timeSeries[0].parameters.find(
+                        p => p.name === "t"
+                    );
+
+                    if(tempParameter){
+
+                        smhiTemp =
+                        tempParameter.values[0];
+
+                    }
+
+                }
+
+            }
+
+        }
+        catch(smhiError){
+
+            console.error(
+                "SMHI-fel:",
+                smhiError
+            );
+
+        }
+
         const temp =
         data.current.temperature_2m;
 
@@ -222,6 +272,11 @@ async function loadWeather(){
         document.getElementById("rain").textContent =
         rain + "%";
 
+        document.getElementById("smhiTemp").textContent =
+        smhiTemp !== null
+        ? smhiTemp + "°"
+        : "N/A";
+
         let text = "";
 
         if(rain < 20){
@@ -244,9 +299,30 @@ async function loadWeather(){
         }
 
         text +=
-        "<br><br><b>Temperatur:</b> " +
+        "<br><br><b>Open‑Meteo:</b> " +
         temp.toFixed(1) +
         "°C";
+
+        if(smhiTemp !== null){
+
+            text +=
+            "<br><b>SMHI:</b> " +
+            smhiTemp.toFixed(1) +
+            "°C";
+
+            text +=
+            "<br><br><b>Copilot Temperatur:</b> " +
+            ((temp + smhiTemp) / 2).toFixed(1) +
+            "°C";
+
+        } else {
+
+            text +=
+            "<br><br><b>Copilot Temperatur:</b> " +
+            temp.toFixed(1) +
+            "°C";
+
+        }
 
         text +=
         "<br><br><b>Regnrisk:</b> " +
@@ -254,7 +330,10 @@ async function loadWeather(){
         "%";
 
         text +=
-        "<br><br><b>Källor:</b> Open‑Meteo";
+        "<br><br><b>Källor:</b> " +
+        (smhiTemp !== null
+        ? "Open‑Meteo + SMHI"
+        : "Open‑Meteo");
 
         document.getElementById("copilot").innerHTML =
         text;
@@ -304,6 +383,7 @@ async function loadWeather(){
         "Fel: " + error.message;
 
     }
+
 }
 
 loadWeather();
