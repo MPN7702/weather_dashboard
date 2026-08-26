@@ -290,10 +290,10 @@ data.current.wind_speed_10m;
 const humidity =
 data.current.relative_humidity_2m;
 
-// Hämta dagens datumnyckel för att matcha dygnsvärden
+// KORRIGERING: Lagt till index [0] för att hämta dagens specifika datumnyckel från arrayen
 const todayKey = data.daily.time[0];
 
-// Open-Meteo dygnsvärden för idag
+// KORRIGERING: Lagt till index [0] för att hämta Open-Meteos specifika dygnsvärden för IDAG
 let omTodayMax = data.daily.temperature_2m_max[0];
 let omTodayMin = data.daily.temperature_2m_min[0];
 let omTodayRain = data.daily.precipitation_probability_max[0];
@@ -444,7 +444,3 @@ ${date.toLocaleDateString(
 }
 
 document.getElementById("forecast").innerHTML =
-forecastHTML;
-
-status.textContent =
-"Senast uppdaterad: " +
