@@ -6,21 +6,25 @@
 <title>Väder Torsby</title>
 
 <style>
+*{
+    box-sizing:border-box;
+}
+
 body{
-    background:#0f172a;
-    color:white;
-    font-family:Arial,sans-serif;
     margin:0;
+    background:#0f172a;
+    color:#fff;
+    font-family:Arial,sans-serif;
 }
 
 header{
     background:#1e293b;
-    padding:20px;
     text-align:center;
+    padding:20px;
 }
 
 .container{
-    max-width:1100px;
+    max-width:1000px;
     margin:auto;
     padding:20px;
 }
@@ -40,7 +44,7 @@ header{
 
 .info{
     flex:1;
-    min-width:180px;
+    min-width:160px;
     background:#334155;
     border-radius:8px;
     padding:15px;
@@ -48,12 +52,12 @@ header{
 }
 
 .label{
-    opacity:.8;
     font-size:14px;
+    opacity:.8;
 }
 
 .value{
-    font-size:32px;
+    font-size:30px;
     font-weight:bold;
 }
 
@@ -65,8 +69,8 @@ header{
 
 .day{
     background:#334155;
-    padding:12px;
     border-radius:8px;
+    padding:12px;
     text-align:center;
 }
 
@@ -74,16 +78,22 @@ button{
     background:#2563eb;
     color:white;
     border:none;
-    border-radius:8px;
     padding:12px 20px;
+    border-radius:8px;
     cursor:pointer;
 }
 
 button:hover{
     background:#1d4ed8;
 }
+
+#status{
+    text-align:center;
+    margin-top:15px;
+}
 </style>
 </head>
+
 <body>
 
 <header>
@@ -93,60 +103,60 @@ button:hover{
 <div class="container">
 
 <div class="card">
-<button onclick="loadWeather()">
-Uppdatera väder
-</button>
-<div id="status">Laddar...</div>
+
+<div style="text-align:center;">
+<button onclick="loadWeather()">Uppdatera väder</button>
+</div>
+
+<div id="status">
+Laddar...
+</div>
+
 </div>
 
 <div class="card">
+
 <h2>Dagens väder</h2>
 
 <div class="current">
 
 <div class="info">
 <div class="label">Temperatur</div>
-<div id="temp" class="value">-</div>
+<div id="copilotTemp" class="value">-</div>
 </div>
 
 <div class="info">
 <div class="label">Regnrisk</div>
-<div id="rain" class="value">-</div>
+<div id="copilotRain" class="value">-</div>
 </div>
 
 <div class="info">
 <div class="label">Åskrisk</div>
-<div id="thunder" class="value">-</div>
+<div id="copilotThunder" class="value">-</div>
 </div>
 
 <div class="info">
 <div class="label">Säkerhet</div>
-<div id="confidence" class="value">-</div>
+<div id="copilotConfidence" class="value">-</div>
 </div>
 
 <div class="info">
 <div class="label">Källor</div>
-<div class="value">2</div>
+<div id="copilotSources" class="value">-</div>
 </div>
 
 </div>
-</div>
 
-<div class="card">
-<h2>🤖 AI‑bedömning</h2>
-<div id="ai">
-Laddar...
-</div>
 </div>
 
 <div class="card">
-<h2>7‑dagars prognos</h2>
+<h2>7-dagars prognos</h2>
 <div id="forecast" class="forecast"></div>
 </div>
 
 <div class="card">
 <h2>Källor</h2>
-<div id="sources"></div>
+<div id="copilot">Laddar...</div>
 </div>
 
 </div>
@@ -166,21 +176,39 @@ status.textContent =
 
 try{
 
-const openMeteo =
-await fetch(
-`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`
-);
+const openMeteoUrl =
+`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&current=wind_speed_10m,relative_humidity_2m&timezone=Europe%2FStockholm`;
 
-const meteoData =
-await openMeteo.json();
+const response =
+await fetch(openMeteoUrl);
 
-const smhi =
+const data =
+await response.json();
+
+const openMeteoTemp =
+(
+data.daily.temperature_2m_max[0] +
+data.daily.temperature_2m_min[0]
+) / 2;
+
+const openMeteoRain =
+data.daily.precipitation_probability_max[0];
+
+let smhiTemp = null;
+let smhiRain = null;
+let smhiThunder = null;
+
+try{
+
+const smhiResponse =
 await fetch(
 "https://smhi-proxy.mr-magoo21.workers.dev/"
 );
 
+if(smhiResponse.ok){
+
 const smhiData =
-await smhi.json();
+await smhiResponse.json();
 
 const idag =
 new Date()
@@ -192,185 +220,123 @@ smhiData.timeSeries.filter(item =>
 item.time.startsWith(idag)
 );
 
-const temps = [];
-const rains = [];
-const thunders = [];
+const temperaturer = [];
+const regnrisker = [];
+const askrisker = [];
 
-dagensSMHI.forEach(item=>{
+dagensSMHI.forEach(item => {
 
-temps.push(
+if(item.data.air_temperature !== undefined){
+temperaturer.push(
 item.data.air_temperature
 );
+}
 
-rains.push(
+if(item.data.probability_of_precipitation !== undefined){
+regnrisker.push(
 item.data.probability_of_precipitation
 );
+}
 
-thunders.push(
+if(item.data.thunderstorm_probability !== undefined){
+askrisker.push(
 item.data.thunderstorm_probability
 );
+}
 
 });
 
-const smhiTemp =
-temps.reduce((a,b)=>a+b,0) /
-temps.length;
+if(temperaturer.length){
+smhiTemp =
+temperaturer.reduce((a,b)=>a+b,0)
+/
+temperaturer.length;
+}
 
-const smhiRain =
-Math.max(...rains);
+if(regnrisker.length){
+smhiRain =
+Math.max(...regnrisker);
+}
 
-const smhiThunder =
-Math.max(...thunders);
+if(askrisker.length){
+smhiThunder =
+Math.max(...askrisker);
+}
 
-const meteoTemp =
+}
+
+}
+catch(smhiError){
+
+console.error(smhiError);
+
+}
+
+let copilotTemp =
+openMeteoTemp;
+
+if(smhiTemp !== null){
+
+copilotTemp =
 (
-meteoData.daily.temperature_2m_max[0] +
-meteoData.daily.temperature_2m_min[0]
-) / 2;
-
-const meteoRain =
-meteoData.daily.precipitation_probability_max[0];
-
-const temp =
-(
-meteoTemp +
+openMeteoTemp +
 smhiTemp
 ) / 2;
 
-const rain =
-Math.max(
-meteoRain,
+}
+
+let copilotRain =
+openMeteoRain;
+
+if(smhiRain !== null){
+
+copilotRain =
+Math.round(
+(
+openMeteoRain +
 smhiRain
+) / 2
 );
 
-const thunder =
-smhiThunder;
+}
 
-let confidence = "Hög";
+let copilotThunder =
+smhiThunder ?? 0;
+
+let confidence =
+"Hög";
 
 if(
+smhiTemp !== null &&
 Math.abs(
-meteoTemp -
+openMeteoTemp -
 smhiTemp
-) > 4
+) > 3
 ){
-confidence = "Medel";
+confidence =
+"Medel";
 }
 
-document.getElementById("temp").textContent =
-temp.toFixed(1) + "°";
+document.getElementById(
+"copilotTemp"
+).textContent =
+copilotTemp.toFixed(1) + "°";
 
-document.getElementById("rain").textContent =
-rain + "%";
+document.getElementById(
+"copilotRain"
+).textContent =
+copilotRain + "%";
 
-document.getElementById("thunder").textContent =
-thunder + "%";
+document.getElementById(
+"copilotThunder"
+).textContent =
+copilotThunder + "%";
 
-document.getElementById("confidence").textContent =
+document.getElementById(
+"copilotConfidence"
+).textContent =
 confidence;
 
-let aiText = "";
-
-if(rain < 20){
-
-aiText =
-"🟢 Mestadels uppehåll och stabilt väder väntas.";
-
-}
-else if(rain < 50){
-
-aiText =
-"🟡 Viss risk för regn under dagen.";
-
-}
-else{
-
-aiText =
-"🔴 Förhöjd risk för regn idag.";
-
-}
-
-if(thunder >= 20){
-
-aiText +=
-"<br><br>⛈ Risk för åska förekommer.";
-
-}
-
-aiText +=
-`<br><br>🌡 Sammanvägd temperatur: ${temp.toFixed(1)}°C`;
-
-aiText +=
-`<br>🌧 Regnrisk: ${rain}%`;
-
-document.getElementById("ai").innerHTML =
-aiText;
-
-document.getElementById("sources").innerHTML =
-`
-<b>Open‑Meteo</b><br>
-Temperatur: ${meteoTemp.toFixed(1)}°C<br>
-Regnrisk: ${meteoRain}%<br><br>
-
-<b>SMHI</b><br>
-Temperatur: ${smhiTemp.toFixed(1)}°C<br>
-Regnrisk: ${smhiRain}%<br>
-Åskrisk: ${smhiThunder}%
-`;
-
-let forecastHTML = "";
-
-for(let i=0;i<7;i++){
-
-const date =
-new Date(
-meteoData.daily.time[i]
-);
-
-forecastHTML += `
-<div class="day">
-<strong>
-${date.toLocaleDateString(
-"sv-SE",
-{weekday:"short"}
-)}
-</strong>
-<br><br>
-🔺 ${Math.round(meteoData.daily.temperature_2m_max[i])}°
-<br>
-🔻 ${Math.round(meteoData.daily.temperature_2m_min[i])}°
-<br><br>
-🌧 ${meteoData.daily.precipitation_probability_max[i]}%
-</div>
-`;
-
-}
-
-document.getElementById("forecast").innerHTML =
-forecastHTML;
-
-status.textContent =
-"Senast uppdaterad: " +
-new Date().toLocaleTimeString("sv-SE");
-
-}
-catch(error){
-
-status.textContent =
-"Fel: " + error.message;
-
-}
-
-}
-
-loadWeather();
-
-setInterval(
-loadWeather,
-900000
-);
-
-</script>
-
-</body>
-</html>
+document.getElementById(
+"copilotSources"
+).textContent =
