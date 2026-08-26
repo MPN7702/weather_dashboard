@@ -305,81 +305,128 @@ smhiTemp
 
 }
 
-let text = "";
+let smhiWindTxt = "-";
+let smhiHumidityTxt = "-";
+let smhiRainTxt = "-";
+let smhiThunderTxt = "-";
+let smhiPressureTxt = "-";
 
-if(rain < 20){
-
-text =
-"☀️ Hög sannolikhet för torrt och stabilt väder idag.";
-
-}
-else if(rain < 50){
-
-text =
-"🌤 Risk för enstaka skurar men mest uppehåll.";
-
-}
-else{
-
-text =
-"🌧 Förhöjd risk för regn idag.";
-
+if(
+    typeof smhiWind !== "undefined" &&
+    smhiWind !== null
+){
+    smhiWindTxt =
+    smhiWind.toFixed(1) + " m/s";
 }
 
-text +=
-"<br><br><b>Open‑Meteo:</b> " +
-temp.toFixed(1) +
-"°C";
-
-if(smhiTemp !== null){
-
-text +=
-"<br><b>SMHI:</b> " +
-smhiTemp.toFixed(1) +
-"°C";
-
-text +=
-"<br><b>SMHI Vind:</b> " +
-smhiWind +
-" m/s";
-
-text +=
-"<br><b>SMHI Luftfuktighet:</b> " +
-smhiHumidity +
-"%";
-
-text +=
-"<br><b>SMHI Regnrisk:</b> " +
-smhiRain +
-"%";
-
-text +=
-"<br><b>SMHI Åskrisk:</b> " +
-smhiThunder +
-"%";
-
-text +=
-"<br><b>SMHI Lufttryck:</b> " +
-smhiPressure +
-" hPa";
-
+if(
+    typeof smhiHumidity !== "undefined" &&
+    smhiHumidity !== null
+){
+    smhiHumidityTxt =
+    smhiHumidity + "%";
 }
 
-text +=
-"<br><br><b>Copilot Temperatur:</b> " +
-copilotTemp.toFixed(1) +
-"°C";
+if(
+    typeof smhiRain !== "undefined" &&
+    smhiRain !== null
+){
+    smhiRainTxt =
+    smhiRain + "%";
+}
 
-text +=
-"<br><br><b>Regnrisk:</b> " +
-rain +
-"%";
+if(
+    typeof smhiThunder !== "undefined" &&
+    smhiThunder !== null
+){
+    smhiThunderTxt =
+    smhiThunder + "%";
+}
 
-text +=
-"<br><br><b>Källor:</b> " +
-(smhiTemp !== null
-? "Open‑Meteo + SMHI"
-: "Open‑Meteo");
+if(
+    typeof smhiPressure !== "undefined" &&
+    smhiPressure !== null
+){
+    smhiPressureTxt =
+    smhiPressure + " hPa";
+}
+
+let confidence = "Hög";
+
+if(
+    smhiTemp !== null &&
+    Math.abs(temp - smhiTemp) > 3
+){
+    confidence = "Medel";
+}
+
+let copilotRain = rain;
+let copilotThunder = smhiThunderTxt;
+
+if(
+    typeof smhiRain !== "undefined" &&
+    smhiRain !== null
+){
+    copilotRain =
+    Math.round(
+        (rain + smhiRain) / 2
+    );
+}
+
+text = `
+
+<b>OPEN‑METEO</b>
+<br>
+Temperatur: ${temp.toFixed(1)}°C
+<br>
+Vind: ${wind.toFixed(1)} m/s
+<br>
+Luftfuktighet: ${humidity}%
+<br>
+Regnrisk: ${rain}%
+
+<br><br>
+
+<b>SMHI</b>
+<br>
+Temperatur: ${
+    smhiTemp !== null
+    ? smhiTemp.toFixed(1) + "°C"
+    : "N/A"
+}
+<br>
+Vind: ${smhiWindTxt}
+<br>
+Luftfuktighet: ${smhiHumidityTxt}
+<br>
+Lufttryck: ${smhiPressureTxt}
+<br>
+Regnrisk: ${smhiRainTxt}
+<br>
+Åskrisk: ${smhiThunderTxt}
+
+<br><br>
+────────────────
+
+<br><br>
+
+<b>COPILOT</b>
+<br>
+Temperatur: ${copilotTemp.toFixed(1)}°C
+<br>
+Regnrisk: ${copilotRain}%
+<br>
+Åskrisk: ${copilotThunderTxt}
+<br>
+Säkerhet: ${confidence}
+<br>
+Källor: ${
+    smhiTemp !== null
+    ? "2"
+    : "1"
+}
+
+`;
 
 document.getElementById("copilot").innerHTML =
 text;
