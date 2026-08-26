@@ -191,7 +191,7 @@ status.textContent =
 "Hämtar väderdata...";
 
 try{
-// KORRIGERING: Hårdkodad och helt felsäker URL-sträng till Open-Meteo med Torsbys fasta koordinater
+// KORRIGERING: Felsäker URL-sträng till Open-Meteo med Torsbys fasta koordinater
 const openMeteoUrl =
 "https://open-meteo.com";
 
@@ -227,59 +227,59 @@ try{
 
     if(smhiResponse.ok){
 
-        const smhiData =
-        await smhiResponse.json();
+        // KORRIGERING: Kontrollera innehållstypen på svaret innan vi försöker tolka det som JSON
+        const contentType = smhiResponse.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
 
-        if(
-            smhiData.timeSeries &&
-            smhiData.timeSeries.length > 0 &&
-            smhiData.timeSeries[0].data
-        ){
+            const smhiData =
+            await smhiResponse.json();
 
-            const current =
-            smhiData.timeSeries[0].data;
+            if(
+                smhiData.timeSeries &&
+                smhiData.timeSeries.length > 0 &&
+                smhiData.timeSeries[0].data
+            ){
 
-            smhiTemp =
-            current.air_temperature;
+                const current =
+                smhiData.timeSeries[0].data;
 
-            smhiWind =
-            current.wind_speed;
+                smhiTemp =
+                current.air_temperature;
 
-            smhiHumidity =
-            current.relative_humidity;
+                smhiWind =
+                current.wind_speed;
 
-            smhiRain =
-            current.probability_of_precipitation;
+                smhiHumidity =
+                current.relative_humidity;
 
-            smhiThunder =
-            current.thunderstorm_probability;
+                smhiRain =
+                current.probability_of_precipitation;
 
-            smhiPressure =
-            current.air_pressure_at_mean_sea_level;
+                smhiThunder =
+                current.thunderstorm_probability;
 
-            // Samlar in dagens alla timvärden från SMHI-tidsserien baserat på datumnyckeln från Open-Meteo
-            const todayStr = data.daily.time[0];
-            smhiData.timeSeries.forEach(slot => {
-                if(slot.validTime && slot.validTime.startsWith(todayStr)) {
-                    const t = slot.parameters.find(p => p.name === "t");
-                    const pmean = slot.parameters.find(p => p.name === "pmean");
-                    if(t) smhiTodayTemps.push(t.values[0]);
-                    if(pmean) smhiTodayRains.push(pmean.values[0] > 0 ? 100 : 0);
-                }
-            });
+                smhiPressure =
+                current.air_pressure_at_mean_sea_level;
 
+                // Samlar in dagens alla timvärden från SMHI-tidsserien baserat på datumnyckel
+                const todayStr = data.daily.time[0];
+                smhiData.timeSeries.forEach(slot => {
+                    if(slot.validTime && slot.validTime.startsWith(todayStr) && slot.data) {
+                        if(slot.data.air_temperature !== undefined) smhiTodayTemps.push(slot.data.air_temperature);
+                        if(slot.data.probability_of_precipitation !== undefined) smhiTodayRains.push(slot.data.probability_of_precipitation);
+                    }
+                });
+
+            }
+        } else {
+            console.error("Proxyn skickade HTML-hemsida istället för JSON. Kontrollera din Cloudflare Worker.");
         }
 
     }
 
 }
 catch(smhiError){
-
-    console.error(
-        "SMHI-fel:",
-        smhiError
-    );
-
+    console.error("SMHI-fel:", smhiError);
 }
 
 const temp =
@@ -424,10 +424,7 @@ new Date().toLocaleTimeString("sv-SE");
 
 }
 catch(error){
-
-status.textContent =
-"Fel: " + error.message;
-
+    status.textContent = "Fel: " + error.message;
 }
 
 }
