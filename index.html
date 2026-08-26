@@ -119,10 +119,12 @@ Laddar...
 
 <div class="card">
 
+<!-- ÄNDRING: Rubrik ändrad till Dagens väder -->
 <h2>Dagens väder</h2>
 
 <div class="current">
 
+<!-- ÄNDRING: Etiketter och ID:n ändrade för att visa Copilot-datan istället -->
 <div class="info">
 <div class="label">Temperatur</div>
 <div id="copilotTemp" class="value">-</div>
@@ -152,6 +154,7 @@ Laddar...
 
 </div>
 
+<!-- ÄNDRING: Rubrik förtydligad till Copilot-bedömning -->
 <div class="card">
 
 <h2>7-dagars prognos (Copilot-bedömning)</h2>
@@ -178,7 +181,7 @@ status.textContent =
 
 try{
 const openMeteoUrl =
-`https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
 
 const response =
 await fetch(openMeteoUrl);
@@ -204,7 +207,7 @@ try{
 
     const smhiResponse =
     await fetch(
-        "https://workers.dev"
+        "https://smhi-proxy.mr-magoo21.workers.dev/"
     );
 
     if(smhiResponse.ok){
@@ -253,13 +256,11 @@ catch(smhiError){
 
 }
 
-// ÄNDRING: Hämtar dygnsprognoser från Yr.no (MET Norway) för 7-dagarsbedömningen
+// ÄNDRING: Hämtar dygnsprognoser från Yr.no (MET Norway) via en publik proxy för att hantera CORS
 let yrForecastDays = {};
 try {
     const yrUrl = `https://met.no{LAT}&lon=${LON}`;
-    const yrResponse = await fetch(`https://allorigins.win{encodeURIComponent(yrUrl)}`, {
-        headers: { 'User-Agent': 'TorsbyWeatherApp/1.0 github.com' }
-    });
+    const yrResponse = await fetch(`https://allorigins.win{encodeURIComponent(yrUrl)}`);
     
     if (yrResponse.ok) {
         const yrProxyData = await yrResponse.json();
@@ -295,6 +296,8 @@ data.current.relative_humidity_2m;
 
 const rain =
 data.daily.precipitation_probability_max[0];
+
+// ÄNDRING: Kodblocken som uppdaterade de gamla boxarna har flyttats till slutet av funktionen där Copilot-variablerna har skapats.
 
 let copilotTemp =
 temp;
@@ -337,6 +340,7 @@ smhiThunder !== null
 ? smhiThunder
 : 0;
 
+// ÄNDRING: Här skickas Copilot-värdena in i de nya Dagens väder-boxarna högst upp
 document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°";
 document.getElementById("copilotRain").textContent = copilotRain + "%";
 document.getElementById("copilotThunder").textContent = copilotThunder + "%";
