@@ -194,6 +194,33 @@ async function loadWeather(){
         );
 
         const data = await response.json();
+        // Hämta SMHI
+
+let smhiTemp = null;
+
+try {
+
+    const smhiResponse = await fetch(
+        "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/13.0/lat/60.13/data.json"
+    );
+
+    const smhiData = await smhiResponse.json();
+
+    const parameter =
+        smhiData.timeSeries[0].parameters.find(
+            p => p.name === "t"
+        );
+
+    if(parameter){
+        smhiTemp = parameter.values[0];
+    }
+
+}
+catch(err){
+
+    console.log("SMHI fel:", err);
+
+}
 
         const temp =
             data.current.temperature_2m;
