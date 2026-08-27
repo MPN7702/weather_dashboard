@@ -180,11 +180,13 @@ async function loadWeather(){
     status.textContent = "Hämtar väderdata...";
 
     try {
-        // Läser weather.json helt lokalt från din GitHub Pages-mapp
-        const response = await fetch('weather.json', { cache: "no-store" });
+        // Vi hämtar rådatan via jsDelivr CDN som läser ditt GitHub-arkiv blixtsnabbt utan CORS-problem.
+        // Vi skickar med ett unikt tidsnummer för att tvinga fram den senaste uppdateringen direkt.
+        const url = `https://jsdelivr.net{Date.now()}`;
+        const response = await fetch(url);
 
         if(!response.ok){
-            throw new Error("Kunde inte läsa weather.json. Säkerställ att filen skapats i ditt arkiv.");
+            throw new Error("Kunde inte läsa weather.json från din lagring.");
         }
 
         const weather = await response.json();
@@ -195,7 +197,7 @@ async function loadWeather(){
         const omData = await omResponse.json();
 
         // Montera in värdena från din weather.json direkt i dina befintliga boxar
-        document.getElementById("copilotTemp").textContent = weather.eftermiddag.temp.toFixed(1) + "°";
+        document.getElementById("copilotTemp").textContent = parseFloat(weather.eftermiddag.temp).toFixed(1) + "°";
         document.getElementById("copilotRain").textContent = weather.eftermiddag.rain + " mm";
         document.getElementById("copilotThunder").textContent = weather.eftermiddag.lightning + "%";
         document.getElementById("copilotConfidence").textContent = weather.eftermiddag.wind + " m/s";
