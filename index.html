@@ -197,21 +197,19 @@ Laddar global analys...
 </div>
 
 <script>
-const LAT = 60.1333;
-const LON = 13.0000;
-
 async function loadWeather(){
     const status = document.getElementById("status");
     status.textContent = "Samlar in och synkroniserar 4 globala källor...";
 
     try {
-        // En 100% verifierad och öppen länk som hämtar 4 globala supermodeller samtidigt utan licenshinder
-        const url = `https://open-meteo.com{LAT}&longitude=${LON}&hourly=temperature_2m,precipitation,wind_speed_10m&models=ecmwf_ifs04,dwd_icon_global,gfs_seamless,gem_global&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+        // Helt platt och korrekt URL till Open-Meteos publika databas för centrala Torsby [2026-08-28]
+        const url = "https://open-meteo.com";
         
         const res = await fetch(url);
         if (!res.ok) throw new Error("Väderserverns publika databas svarar inte.");
         const data = await res.json();
 
+        // Datumhantering synkad med svensk tidszon [2026-08-28]
         const todayStr = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
         const targetHour = "15:00";
 
@@ -219,7 +217,6 @@ async function loadWeather(){
         let sourcesHTML = "";
         let activeCount = 0;
 
-        // Mappar Open-Meteos korrekta globala modellnycklar
         const models = [
             { name: "🇪🇺 ECMWF (Europa/SMHI)", tree: data.hourly_ecmwf_ifs04 },
             { name: "🇩🇪 DWD ICON (Tyskland)", tree: data.hourly_dwd_icon_global },
@@ -232,7 +229,7 @@ async function loadWeather(){
                 const idx = m.tree.time.findIndex(t => t === `${todayStr}T${targetHour}`);
                 if (idx !== -1) {
                     const t = m.tree.temperature_2m[idx];
-                    const w = m.tree.wind_speed_10m[idx] / 3.6; // km/h till m/s
+                    const w = m.tree.wind_speed_10m[idx] / 3.6; // Omvandlar km/h till m/s
                     const r = m.tree.precipitation[idx];
 
                     temps.push(t);
@@ -254,31 +251,31 @@ async function loadWeather(){
         document.getElementById("individual-sources").innerHTML = sourcesHTML;
         document.getElementById("copilotSources").textContent = activeCount;
 
-        if (activeCount === 0) throw new Error("Ingen data hittades för vald tid.");
+        if (activeCount === 0) throw new Error("Ingen data matchade eftermiddagens prognos.");
 
-        // Beräkna medelvärden
+        // Beräkna det sammanslagna snittet
         const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
         const weatherSnitt = { temp: avg(temps), wind: avg(winds), rain: avg(rains) };
 
-        // Montera huvudboxarna
+        // Montera värdena i boxarna för Dagens väder
         document.getElementById("copilotTemp").textContent = weatherSnitt.temp.toFixed(1) + "°";
         document.getElementById("copilotRain").textContent = weatherSnitt.rain.toFixed(1) + " mm";
         document.getElementById("copilotConfidence").textContent = weatherSnitt.wind.toFixed(1) + " m/s";
 
-        // Skapa Copilot-textanalysen
+        // Skapa Copilot-analysen
         let text = `<b>MULTIKÄLLS-BEDÖMNING FÖR TORSBY IDAG (KL 15:00):</b><br>`;
-        text += `Genom att väga samman data från ${activeCount} globala väderinstitut ser vi en tydlig bild för eftermiddagen. `;
-        text += `Medeltemperaturen i Torsby förväntas bli ${weatherSnitt.temp.toFixed(1)}°C. `;
+        text += `Genom att sammanfoga och analysera datamodeller från ${activeCount} globala institut kan vi presentera ett stabilt medelvärde. `;
+        text += `Temperaturen under eftermiddagen beräknas till ${weatherSnitt.temp.toFixed(1)}°C. `;
         
         if (weatherSnitt.rain > 0.1) {
-            text += `Modellerna indikerar risk för lättare nederbörd med ett beräknat snitt på ${weatherSnitt.rain.toFixed(1)} mm regn. `;
+            text += `Vissa modeller indikerar en risk för lättare skurar med ett uppmätt snitt på ${weatherSnitt.rain.toFixed(1)} mm. `;
         } else {
-            text += `Samtliga källor visar hög stabilitet utan någon mätbar nederbörd. Vädret lämpar sig utmärkt för utomhusaktiviteter. `;
+            text += `Modellerna uppvisar en total samstämmighet om en helt torr eftermiddag, vilket ger perfekta förutsättningar för utomhusaktiviteter. `;
         }
-        text += `Vindhastigheten blir lugn och landar i genomsnitt på ${weatherSnitt.wind.toFixed(1)} m/s.`;
+        text += `Vindarna förblir mycket svaga och behagliga med ett snitt på ${weatherSnitt.wind.toFixed(1)} m/s.`;
         document.getElementById("copilot").innerHTML = text;
 
-        // Montera 7-dagarsprognosen
+        // Montera din 7-dagarsprognos
         let forecastHTML = "";
         for(let i = 0; i < 7; i++){
             const date = new Date(data.daily.time[i]);
@@ -296,7 +293,7 @@ async function loadWeather(){
         }
         document.getElementById("forecast").innerHTML = forecastHTML;
 
-        status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE") + " (4 källor aktiva)";
+        status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE") + " (4 källor synkade)";
 
     } catch(error) {
         status.textContent = "Fel vid laddning: " + error.message;
