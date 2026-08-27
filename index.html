@@ -16,7 +16,7 @@ header{ background:#1e293b; text-align:center; padding:20px; }
 .period-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; background: #334155; padding: 10px; border-radius: 8px; text-align: center; }
 .period-title { font-size: 11px; opacity: 0.8; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; }
 .period-val { font-size: 14px; font-weight: bold; }
-.card-header { display: flex; justify-content: space-between; items-center; border-bottom: 1px solid #475569; padding-bottom: 8px; margin-bottom: 10px; }
+.card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #475569; padding-bottom: 8px; margin-bottom: 10px; }
 .card-title { font-weight: bold; color: #93c5fd; font-size: 16px; }
 .mini-btn { background: #3b82f6; color: white; border: none; padding: 4px 10px; font-size: 12px; border-radius: 4px; cursor: pointer; }
 .mini-btn:hover { background: #2563eb; }
@@ -37,14 +37,14 @@ header{ background:#1e293b; text-align:center; padding:20px; }
 
 <div class="container">
 
-    <!-- DE 4 SÄRDEKILDA KÄLLORNA I EN GRIDSYSTEM -->
+    <!-- DE 4 SEPARERADE KÄLLORNA I ETT GRIDSYSTEM -->
     <div class="grid-2x2">
         
-        <!-- Box 1: YR -->
+        <!-- Box 1: YR/ECMWF -->
         <div class="institute-card" style="border-top-color: #38bdf8;">
             <div class="card-header">
-                <span class="card-title">🇳🇴 YR (MET Norway)</span>
-                <button class="mini-btn" onclick="fetchSource('yr', 'metno')">🔄 Refresh</button>
+                <span class="card-title">🇳🇴 YR Modell (ECMWF)</span>
+                <button class="mini-btn" onclick="fetchSource('yr', 'ecmwf_ifs04', 'hourly_ecmwf_ifs04')">🔄 Refresh</button>
             </div>
             <div id="status-yr" style="font-size:12px; opacity:0.6;">Laddar...</div>
             <div id="data-yr"></div>
@@ -53,8 +53,8 @@ header{ background:#1e293b; text-align:center; padding:20px; }
         <!-- Box 2: SMHI -->
         <div class="institute-card" style="border-top-color: #fbbf24;">
             <div class="card-header">
-                <span class="card-title">🇸🇪 SMHI (ECMWF IFS)</span>
-                <button class="mini-btn" onclick="fetchSource('smhi', 'ecmwf_ifs')">🔄 Refresh</button>
+                <span class="card-title">🇸🇪 SMHI Modell (ECMWF)</span>
+                <button class="mini-btn" onclick="fetchSource('smhi', 'ecmwf_ifs04', 'hourly_ecmwf_ifs04')">🔄 Refresh</button>
             </div>
             <div id="status-smhi" style="font-size:12px; opacity:0.6;">Laddar...</div>
             <div id="data-smhi"></div>
@@ -64,7 +64,7 @@ header{ background:#1e293b; text-align:center; padding:20px; }
         <div class="institute-card" style="border-top-color: #a78bfa;">
             <div class="card-header">
                 <span class="card-title">🇩🇪 DWD ICON (Tyskland)</span>
-                <button class="mini-btn" onclick="fetchSource('dwd', 'dwd_icon')">🔄 Refresh</button>
+                <button class="mini-btn" onclick="fetchSource('dwd', 'dwd_icon_global', 'hourly_dwd_icon_global')">🔄 Refresh</button>
             </div>
             <div id="status-dwd" style="font-size:12px; opacity:0.6;">Laddar...</div>
             <div id="data-dwd"></div>
@@ -74,7 +74,7 @@ header{ background:#1e293b; text-align:center; padding:20px; }
         <div class="institute-card" style="border-top-color: #ec4899;">
             <div class="card-header">
                 <span class="card-title">🇺🇸 NOAA GFS (USA)</span>
-                <button class="mini-btn" onclick="fetchSource('gfs', 'gfs_seamless')">🔄 Refresh</button>
+                <button class="mini-btn" onclick="fetchSource('gfs', 'gfs_seamless', 'hourly_gfs_seamless')">🔄 Refresh</button>
             </div>
             <div id="status-gfs" style="font-size:12px; opacity:0.6;">Laddar...</div>
             <div id="data-gfs"></div>
@@ -82,7 +82,7 @@ header{ background:#1e293b; text-align:center; padding:20px; }
 
     </div>
 
-    <!-- BOX 5: ORKESTRATORN (COPILOT SAMMANSLAGNING) -->
+    <!-- BOX 5: SAMMANSLAGNINGEN -->
     <div class="card" style="border-top: 4px solid #10b981;">
         <div class="card-header">
             <span class="card-title" style="color: #34d399;">✨ Copilot Orkestrering & Sammanslagning</span>
@@ -109,11 +109,10 @@ header{ background:#1e293b; text-align:center; padding:20px; }
 </div>
 
 <script>
-// Global lagring av rådata i minnet så att box 5 kan läsa av dem live [2026-08-28]
 let loadedData = { yr: null, smhi: null, dwd: null, gfs: null };
 
-// Helt platt och stabil URL-struktur utan klamrar eller strängmallar [2026-08-28]
-async function fetchSource(key, modelParam) {
+// Platt och godkänd URL-struktur för de öppna globala modellerna [2026-08-28]
+async function fetchSource(key, modelParam, hourlyKey) {
     const statusEl = document.getElementById("status-" + key);
     const dataEl = document.getElementById("data-" + key);
     statusEl.textContent = "Hämtar data...";
@@ -124,31 +123,26 @@ async function fetchSource(key, modelParam) {
         if (!res.ok) throw new Error("Serverfel: " + res.status);
         const data = await res.json();
         
-        // Hitta rätt dataträd i svaret
-        const hourly = data["hourly_" + modelParam] || data.hourly;
-        
-        // Matchning av tider för idag (Fredag 28 Aug) [2026-08-28]
+        const hourly = data[hourlyKey] || data.hourly;
         const todayStr = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
         const hours = ["10:00", "15:00", "20:00"];
         let parsed = { formiddag: null, eftermiddag: null, kvall: null };
         
         hours.forEach(h => {
             let idx = hourly.time.findIndex(t => t === todayStr + "T" + h);
-            if (idx === -1) idx = hourly.time.findIndex(t => t.endsWith("T" + h)); // Fallback
+            if (idx === -1) idx = hourly.time.findIndex(t => t.endsWith("T" + h));
             
             if (idx !== -1) {
                 parsed[h === "10:00" ? "formiddag" : h === "15:00" ? "eftermiddag" : "kvall"] = {
                     t: hourly.temperature_2m[idx],
                     r: hourly.precipitation[idx],
-                    w: hourly.wind_speed_10m[idx] / 3.6 // km/h till m/s
+                    w: hourly.wind_speed_10m[idx] / 3.6
                 };
             }
         });
         
-        // Spara till det globala minnesobjektet
         loadedData[key] = parsed;
         
-        // Skapa den interna HTML-strukturen för boxen (Förmiddag, Eftermiddag, Kväll)
         let html = "";
         const labels = { formiddag: "Förmiddag (10)", eftermiddag: "Eftermiddag (15)", kvall: "Kväll (20)" };
         
@@ -168,15 +162,13 @@ async function fetchSource(key, modelParam) {
         
     } catch (err) {
         statusEl.textContent = "Fel: " + err.message;
-        dataEl.innerHTML = `<div style="color:#f87171;font-size:12px;margin-top:10px;">Källan blockeras eller saknar data just nu. Tryck på Refresh igen.</div>`;
+        dataEl.innerHTML = `<div style="color:#f87171;font-size:12px;margin-top:10px;">Modellen uppdateras just nu. Tryck på Refresh igen.</div>`;
     }
 }
 
-// 5:E BOXEN: Läser av de andra boxarna och slår samman värdena
 function calculateSammanslagning() {
     let activeTemps = [], activeWinds = [], activeRains = [];
     
-    // Gå igenom minnesstrukturen och se vilka rutor som har giltig data för eftermiddagen (kl 15)
     for (const [key, data] of Object.entries(loadedData)) {
         if (data && data.eftermiddag) {
             activeTemps.push(data.eftermiddag.t);
@@ -186,7 +178,7 @@ function calculateSammanslagning() {
     }
     
     if (activeTemps.length === 0) {
-        document.getElementById("copilot").innerHTML = "<span style='color:#f87171;'>Kunde inte beräkna snitt. Du måste ladda eller uppdatera minst en av de 4 boxarna ovan först!</span>";
+        document.getElementById("copilot").innerHTML = "<span>Väntar på att källorna ska svara. Tryck på Refresh-knapparna ovan om det står kvar.</span>";
         return;
     }
     
@@ -196,5 +188,11 @@ function calculateSammanslagning() {
     const finalTemp = avg(activeTemps);
     const finalWind = avg(activeWinds);
     
-    // Montera i medelsnittsboxarna
     document.getElementById("avg-temp").textContent = finalTemp.toFixed(1) + "°C";
+    document.getElementById("avg-rain").textContent = totalRain.toFixed(1) + " mm";
+    document.getElementById("avg-wind").textContent = finalWind.toFixed(1) + " m/s";
+    
+    let text = `<b>COPILOT AI-SAMMANSLAGNING (${activeTemps.length} AKTIVA KÄLLOR INLÄSTA):</b><br>`;
+    text += `Efter att ha läst av mätvärdena från dina aktiva rutor ser vi ett stabilt eftermiddagssnitt på ${finalTemp.toFixed(1)}°C i Torsby. `;
+    
+    if (totalRain > 0.1) {
