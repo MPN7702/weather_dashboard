@@ -197,12 +197,10 @@ Laddar global analys...
 </div>
 
 <script>
-const LAT = 60.1333;
-const LON = 13.0000;
-
+// Isolerad funktion för individuella anrop - HELT PLATT URL
 async function fetchSingleModel(modelParam) {
     try {
-        const url = `https://open-meteo.com{LAT}&longitude=${LON}&hourly=temperature_2m,precipitation,wind_speed_10m&models=${modelParam}&timezone=Europe%2FStockholm`;
+        const url = "https://open-meteo.com" + modelParam + "&timezone=Europe%2FStockholm";
         const res = await fetch(url);
         if (!res.ok) return null;
         return await res.json();
@@ -216,6 +214,7 @@ async function loadWeather(){
     status.textContent = "Samlar in data från oberoende väderinstitut...";
 
     try {
+        // 1. HÄMTA DATA SEPARAT UTAN RISK FÖR BLOCKERINGAR
         const [yrData, smhiData, dwdData, gfsData] = await Promise.all([
             fetchSingleModel("metno"),
             fetchSingleModel("ecmwf_ifs"),
@@ -275,7 +274,7 @@ async function loadWeather(){
         document.getElementById("individual-sources").innerHTML = sourcesHTML;
         document.getElementById("copilotSources").textContent = activeCount;
 
-        // Fallback-värden ifall natt-uppdateringen från servrarna är tillfälligt fördröjd
+        // Fasta basvärden om nattuppdateringen från servrarna är tillfälligt fördröjd
         if (activeCount === 0) {
             temps = [16.8]; winds = [2.4]; rains = [0.0];
             activeCount = 4;
@@ -301,8 +300,10 @@ async function loadWeather(){
         text += `Vindstyrkan blir mycket lugn och behaglig runt ${weatherSnitt.wind.toFixed(1)} m/s.`;
         document.getElementById("copilot").innerHTML = text;
 
-        const backupRes = await fetch(`https://open-meteo.com{LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`);
+        // 2. 7-DAGARS PROGNOS - HELT PLATT ADRESS UTAN VARIABLER ELLER KLAMRAR [2026-08-28]
+        const backupRes = await fetch("https://open-meteo.com");
         const backupData = await backupRes.json();
+        
         let forecastHTML = "";
         for(let i = 0; i < 7; i++){
             const date = new Date(backupData.daily.time[i]);
