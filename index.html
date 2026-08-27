@@ -121,7 +121,7 @@ Uppdatera väder
 </button>
 </div>
 <div id="status">
-Ansluter till tunnel...
+Laddar...
 </div>
 </div>
 
@@ -144,16 +144,33 @@ Ansluter till tunnel...
 <div class="card">
 <h2>Källor</h2>
 <div id="copilot">
-Väntar på tunnelsvar...
+Laddar källredovisning...
 </div>
 </div>
 
 </div>
 
 <script>
-// Denna funktion utlöses automatiskt så fort krypteringstunneln skickar tillbaka datan lokalt
-window.handleTunnelData = function(data) {
-    try {
+const LAT = 60.1333;
+const LON = 13.0;
+
+async function loadWeather(){
+    const status = document.getElementById("status");
+    status.textContent = "Hämtar data via CORS-proxy...";
+
+    try{
+        // Vi skickar anropet genom en öppen CORS-proxy som lägger till de tillåtande säkerhetsnycklarna som webbläsaren kräver på GitHub Pages [2026-08-28]
+        const openMeteoUrl = `https://open-meteo.com{LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+        const proxyUrl = `https://allorigins.win{encodeURIComponent(openMeteoUrl)}`;
+        
+        const response = await fetch(proxyUrl);
+        if(!response.ok) throw new Error("Proxyserver fel: " + response.status);
+        const proxyData = await response.json();
+        
+        // AllOrigins lägger det riktiga API-svaret som en textsträng inuti fältet .contents [2026-08-28]
+        const data = JSON.parse(proxyData.contents);
+
+        // Extrahera realtidsmätningen
         const temp = data.current.temperature_2m;
         const wind = data.current.wind_speed_10m;
         const humidity = data.current.relative_humidity_2m;
@@ -167,13 +184,13 @@ window.handleTunnelData = function(data) {
         const smhiRain = 0;
         const smhiThunder = 3;
 
-        // Beräkna medelvärden
+        // Räkna ut det sammanslagna medelvärdet
         const copilotTemp = (temp + smhiTemp) / 2;
         const copilotRain = Math.round((rain + smhiRain) / 2);
         const confidence = Math.abs(temp - smhiTemp) > 3 ? "Medel" : "Hög";
 
-        // Rendera din textruta perfekt formaterad
-        document.getElementById("copilot").innerHTML = `
+        // Montera källboxen exakt enligt din textmall
+        let text = `
         <div class="source-clean-box">
             <b>OPEN‑METEO</b><br>
             Temperatur: ${temp.toFixed(1)}°C<br>
@@ -190,14 +207,16 @@ window.handleTunnelData = function(data) {
             Åskrisk: ${smhiThunder}%
         </div>`;
 
-        // Skicka upp värdena till huvudboxarna
+        document.getElementById("copilot").innerHTML = text;
+
+        // Skicka upp värdena till huvudboxarna högst upp
         document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°";
         document.getElementById("copilotRain").textContent = copilotRain + "%";
         document.getElementById("copilotThunder").textContent = smhiThunder + "%";
         document.getElementById("copilotConfidence").textContent = confidence;
         document.getElementById("copilotSources").textContent = "2";
 
-        // Rendera 7-dagarsprognosen
+        // Montera prognoslistan från API-datan
         let forecastHTML = "";
         for(let i = 0; i < 7; i++){
             const date = new Date(data.daily.time[i]);
@@ -210,27 +229,12 @@ window.handleTunnelData = function(data) {
             </div>`;
         }
         document.getElementById("forecast").innerHTML = forecastHTML;
-        document.getElementById("status").textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE");
 
-    } catch (e) {
-        document.getElementById("status").textContent = "Tolkningfel: " + e.message;
+        status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE");
+
+    } catch(error){
+        status.textContent = "Fel vid laddning: " + error.message;
     }
-};
-
-function loadWeather() {
-    document.getElementById("status").textContent = "Öppnar datatunnel...";
-    
-    // Radera eventuella gamla djuplänkar innan vi skapar en ny
-    const oldScript = document.getElementById("jsonp-tunnel");
-    if (oldScript) oldScript.remove();
-
-    // Vi skapar en JSONP-tunnel. Webbläsaren ser detta som ett helt vanligt skript vilket gör att den struntar i ALLA CORS-regler! [2026-08-28]
-    const script = document.createElement("script");
-    script.id = "jsonp-tunnel";
-    script.src = "https://open-meteo.com";
-    
-    // Skjut in skriptet i hemsidan för att starta inläsningen
-    document.body.appendChild(script);
 }
 
 // Starta direkt vid laddning
