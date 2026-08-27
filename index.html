@@ -1,129 +1,259 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather Copilot Dashboard</title>
-  <script src="https://tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Väder Torsby</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:#0f172a;
+    color:white;
+    font-family:Arial,sans-serif;
+}
+
+header{
+    background:#1e293b;
+    text-align:center;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:#1e293b;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.current{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.info{
+    flex:1;
+    min-width:180px;
+    background:#334155;
+    border-radius:8px;
+    padding:15px;
+    text-align:center;
+}
+
+.label{
+    font-size:14px;
+    opacity:.8;
+    margin-bottom: 5px;
+}
+
+.value{
+    font-size:32px;
+    font-weight:bold;
+}
+
+.forecast{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    gap:10px;
+}
+
+.day{
+    background:#334155;
+    padding:12px;
+    border-radius:8px;
+    text-align:center;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+#status{
+    text-align:center;
+    margin-top:15px;
+}
+
+/* Snygg stil för din Copilot-ruta */
+.copilot-text {
+    line-height: 1.6;
+    color: #e2e8f0;
+    background: #1e1b4b;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #6366f1;
+}
+</style>
+
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col items-center p-6">
+<body>
 
-  <!-- Instrumentpanelens huvud -->
-  <header class="w-full max-w-4xl flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
-    <div>
-      <h1 class="text-2xl font-bold text-white tracking-tight">Weather Copilot</h1>
-      <p class="text-sm text-gray-400" id="updated-time">Hämtar senaste väderdata...</p>
-    </div>
-    <div id="risk-badge" class="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-gray-800 text-gray-400">
-      Risknivå: Beräknas...
-    </div>
-  </header>
+<header>
+<h1>🌤 Väder Torsby</h1>
+</header>
 
-  <main class="w-full max-w-4xl space-y-6">
-    <!-- Copilot Bedömning -->
-    <section class="bg-gradient-to-br from-slate-900 to-indigo-950 border border-indigo-500/20 rounded-xl p-6 shadow-xl">
-      <div class="flex items-center space-x-2 mb-3">
-        <span class="text-xl">✨</span>
-        <h2 class="text-lg font-bold text-indigo-300">Copilot Bedömning</h2>
-      </div>
-      <p class="text-gray-200 leading-relaxed text-base" id="ai-text">
-        Analyserar rådatan från SMHI och YR...
-      </p>
-    </section>
+<div class="container">
 
-    <!-- Väderkort -->
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-4" id="weather-cards">
-      
-      <!-- Förmiddag -->
-      <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition">
-        <h3 class="text-gray-400 font-medium mb-3 text-sm tracking-wide uppercase">Förmiddag (10:00)</h3>
-        <div class="space-y-2">
-          <div class="text-3xl font-bold text-white" id="f-temp">--°C</div>
-          <div class="text-sm text-gray-400 flex justify-between"><span>Regn:</span> <span id="f-rain" class="text-gray-200 font-semibold">-- mm</span></div>
-          <div class="text-sm text-gray-400 flex justify-between"><span>Vind:</span> <span id="f-wind" class="text-gray-200 font-semibold">-- m/s</span></div>
-          <div class="text-sm text-gray-400 flex justify-between"><span>Åskrisk:</span> <span id="f-light" class="text-gray-200 font-semibold">--%</span></div>
-        </div>
-      </div>
+<div class="card">
+<div style="text-align:center;">
+<button onclick="loadWeather()">
+Uppdatera väder
+</button>
+</div>
+<div id="status">
+Laddar...
+</div>
+</div>
 
-      <!-- Eftermiddag -->
-      <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition">
-        <h3 class="text-gray-400 font-medium mb-3 text-sm tracking-wide uppercase">Eftermiddag (15:00)</h3>
-        <div class="space-y-2">
-          <div class="text-3xl font-bold text-white" id="e-temp">--°C</div>
-          <div class="text-sm text-gray-400 flex justify-between"><span>Regn:</span> <span id="e-rain" class="text-gray-200 font-semibold">-- mm</span></div>
-          <div class="text-sm text-gray-400 flex justify-between"><span>Vind:</span> <span id="e-wind" class="text-gray-200 font-semibold">-- m/s</span></div>
-          <div class="text-sm text-gray-400 flex justify-between"><span>Åskrisk:</span> <span id="e-light" class="text-gray-200 font-semibold">--%</span></div>
-        </div>
-      </div>
+<!-- Dagens väder uppdelat på dina tre perioder -->
+<div class="card">
+<h2>Dagens väder (Eftermiddagskoll)</h2>
+<div class="current">
 
-      <!-- Kväll -->
-      <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition">
-        <h3 class="text-gray-400 font-medium mb-3 text-sm tracking-wide uppercase">Kväll (20:00)</h3>
-        <div class="space-y-2">
-          <div class="text-3xl font-bold text-white" id="k-temp">--°C</div>
-          <div class="text-sm text-gray-400 flex justify-between"><span>Regn:</span> <span id="k-rain" class="text-gray-200 font-semibold">-- mm</span></div>
-          <div class="text-sm text-gray-400 flex justify-between"><span>Vind:</span> <span id="k-wind" class="text-gray-200 font-semibold">-- m/s</span></div>
-          <div class="text-sm text-gray-400 flex justify-between"><span>Åskrisk:</span> <span id="k-light" class="text-gray-200 font-semibold">--%</span></div>
-        </div>
-      </div>
+<div class="info">
+<div class="label">Temperatur (Kl 15)</div>
+<div id="copilotTemp" class="value">-</div>
+</div>
 
-    </section>
-  </main>
+<div class="info">
+<div class="label">Regnmängd</div>
+<div id="copilotRain" class="value">-</div>
+</div>
 
-  <script>
-    async function loadWeatherData() {
-      try {
-        // Vi hämtar filen helt lokalt för att helt runda GitHubs CORS-blockeringar
-        const res = await fetch('weather.json', { cache: "no-store" });
-        
-        if (!res.ok) throw new Error("Kunde inte läsa weather.json");
-        const weather = await res.json();
+<div class="info">
+<div class="label">Åskrisk</div>
+<div id="copilotThunder" class="value">-</div>
+</div>
 
-        document.getElementById("updated-time").innerText = `${weather.info} (Senast synkad kl. ${weather.uppdaterad})`;
+<div class="info">
+<div class="label">Säkerhet (Vind)</div>
+<div id="copilotConfidence" class="value">-</div>
+</div>
 
-        // Montera Förmiddag
-        document.getElementById("f-temp").innerText = `${weather.formiddag.temp}°C`;
-        document.getElementById("f-rain").innerText = `${weather.formiddag.rain} mm`;
-        document.getElementById("f-wind").innerText = `${weather.formiddag.wind} m/s`;
-        document.getElementById("f-light").innerText = `${weather.formiddag.lightning}%`;
+<div class="info">
+<div class="label">Källor</div>
+<div id="copilotSources" class="value">2</div>
+</div>
 
-        // Montera Eftermiddag
-        document.getElementById("e-temp").innerText = `${weather.eftermiddag.temp}°C`;
-        document.getElementById("e-rain").innerText = `${weather.eftermiddag.rain} mm`;
-        document.getElementById("e-wind").innerText = `${weather.eftermiddag.wind} m/s`;
-        document.getElementById("e-light").innerText = `${weather.eftermiddag.lightning}%`;
+</div>
+</div>
 
-        // Montera Kväll
-        document.getElementById("k-temp").innerText = `${weather.kvall.temp}°C`;
-        document.getElementById("k-rain").innerText = `${weather.kvall.rain} mm`;
-        document.getElementById("k-wind").innerText = `${weather.kvall.wind} m/s`;
-        document.getElementById("k-light").innerText = `${weather.kvall.lightning}%`;
+<!-- 7-dagars prognos som ligger kvar i din snygga design -->
+<div class="card">
+<h2>7-dagars prognos</h2>
+<div id="forecast" class="forecast">
+</div>
+</div>
 
-        // Lokal Copilot-bedömning utifrån den sammanslagna datan
-        const aiTextElement = document.getElementById("ai-text");
-        const badge = document.getElementById("risk-badge");
+<!-- Copilot-bedömning och källredovisning -->
+<div class="card">
+<h2>Copilot Bedömning</h2>
+<div id="copilot" class="copilot-text">
+Laddar analys...
+</div>
+</div>
 
-        let assessment = `Dagen bjuder på temperaturer upp emot ${weather.eftermiddag.temp}°C under eftermiddagen. `;
-        
-        if (weather.eftermiddag.rain > 0.1 || weather.eftermiddag.lightning > 5) {
-          assessment += `Det finns indikation på lätta skurar (${weather.eftermiddag.rain} mm) och en lokal åskrisk på ${weather.eftermiddag.lightning}% framåt eftermiddagen. Kvällen blir betydligt lugnare med svaga vindar.`;
-          badge.className = "px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-yellow-950 text-yellow-400 border border-yellow-800";
-          badge.innerText = "Risknivå: Medel";
-        } else {
-          assessment += "Ingen nederbörd eller åska väntas, vilket ger ett mycket stabilt och bra väder för utomhusaktiviteter hela dagen.";
-          badge.className = "px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-green-950 text-green-400 border border-green-800";
-          badge.innerText = "Risknivå: Låg";
+</div>
+
+<script>
+// Koordinater för Torsby
+const LAT = 60.1333;
+const LON = 13.0;
+
+async function loadWeather(){
+    const status = document.getElementById("status");
+    status.textContent = "Hämtar väderdata från GitHub...";
+
+    try {
+        // 1. Hämtar din sammanslagna weather.json lokalt från din GitHub Pages-mapp
+        // no-store tvingar webbläsaren att visa senaste timmens uppdatering direkt
+        const response = await fetch('weather.json', { cache: "no-store" });
+
+        if (!response.ok) {
+            throw new Error("Kunde inte läsa weather.json. Kör GitHub Actions först.");
         }
 
-        aiTextElement.innerText = assessment;
+        const weather = await response.json();
 
-      } catch (error) {
-        document.getElementById("ai-text").innerText = "Kunde inte läsa in instrumentpanelens data. Säkerställ att filen 'weather.json' finns sparad i ditt arkiv.";
-        console.error(error);
-      }
+        // 2. Hämtar 7-dagarsdatan direkt från Open-Meteo för din prognos-loop
+        const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
+        const omResponse = await fetch(openMeteoUrl);
+        const omData = await omResponse.json();
+
+        // 3. Montera in dina sammanslagna värden för Eftermiddagen (kl 15:00) högst upp
+        document.getElementById("copilotTemp").textContent = weather.eftermiddag.temp.toFixed(1) + "°";
+        document.getElementById("copilotRain").textContent = weather.eftermiddag.rain + " mm";
+        document.getElementById("copilotThunder").textContent = weather.eftermiddag.lightning + "%";
+        document.getElementById("copilotConfidence").textContent = weather.eftermiddag.wind + " m/s";
+
+        // 4. Skapa en dynamisk, lokal Copilot-textanalys baserat på din datamodell
+        let text = `<b>VÄDERSTATUS FÖR TORBY IDAG:</b><br>`;
+        text += `Förmiddagen bjuder på ${weather.formiddag.temp}°C med en vindstyrka på ${weather.formiddag.wind} m/s. `;
+        text += `Under eftermiddagen stiger temperaturen till ${weather.eftermiddag.temp}°C. `;
+        
+        if (weather.eftermiddag.rain > 0.1 || weather.eftermiddag.lightning > 5) {
+            text += `Varning för lokala regnskurar (${weather.eftermiddag.rain} mm) och en förhöjd åskrisk på ${weather.eftermiddag.lightning}%. `;
+        } else {
+            text += `Det förväntas uppehåll och mycket svag åskrisk (${weather.eftermiddag.lightning}%). `;
+        }
+        
+        text += `Kvällen blir sval och behaglig runt ${weather.kvall.temp}°C med avtagande vind på ${weather.kvall.wind} m/s. Perfect för inomhusmys eller en lugn kvällspromenad.`;
+
+        document.getElementById("copilot").innerHTML = text;
+
+        // 5. Bygg din 7-dagars prognos-loop från din ursprungliga kod
+        let forecastHTML = "";
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(omData.daily.time[i]);
+            forecastHTML += `
+            <div class="day">
+                <strong>${date.toLocaleDateString("sv-SE", {weekday:"short"})}</strong>
+                <br><br>
+                🔺 ${Math.round(omData.daily.temperature_2m_max[i])}°
+                <br>
+                🔻 ${Math.round(omData.daily.temperature_2m_min[i])}°
+                <br><br>
+                漏 ${omData.daily.precipitation_probability_max[i]}%
+            </div>
+            `;
+        }
+        document.getElementById("forecast").innerHTML = forecastHTML;
+
+        // Uppdatera status-raden
+        status.textContent = "Senast synkad: " + new Date().toLocaleTimeString("sv-SE");
+
+    } catch (error) {
+        status.textContent = "Fel: " + error.message;
+        document.getElementById("copilot").innerHTML = "Kunde inte generera bedömningen på grund av felaktig data-laddning.";
     }
+}
 
-    loadWeatherData();
-  </script>
+// Kör igång direkt vid laddning
+loadWeather();
+
+// Uppdaterar automatiskt var 15:e minut
+setInterval(loadWeather, 900000);
+</script>
+
 </body>
 </html>
