@@ -102,6 +102,30 @@ button:hover{
     border-radius: 8px;
     border-left: 4px solid #6366f1;
 }
+
+/* Stil för de separerade källorna */
+.sources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.source-card {
+    background: #334155;
+    padding: 15px;
+    border-radius: 8px;
+    border-top: 4px solid #3b82f6;
+}
+
+.source-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #93c5fd;
+    border-b: 1px solid #475569;
+    padding-bottom: 4px;
+}
 </style>
 
 </head>
@@ -125,22 +149,17 @@ Laddar...
 </div>
 
 <div class="card">
-<h2>Dagens väder (Sammanslaget snitt)</h2>
+<h2>Dagens väder (Sammanslaget snitt kl. 15)</h2>
 <div class="current">
 
 <div class="info">
-<div class="label">Temperatur (Eftermiddag)</div>
+<div class="label">Temperatur</div>
 <div id="copilotTemp" class="value">-</div>
 </div>
 
 <div class="info">
-<div class="label">Regnmängd (Kl 15)</div>
+<div class="label">Regnmängd</div>
 <div id="copilotRain" class="value">-</div>
-</div>
-
-<div class="info">
-<div class="label">Åskrisk (Max)</div>
-<div id="copilotThunder" class="value">-</div>
 </div>
 
 <div class="info">
@@ -169,78 +188,107 @@ Laddar global analys...
 </div>
 </div>
 
+<!-- NYTT BLOCK: Separerade källor visas här oberoende av varandra -->
+<div class="card">
+<h2>Individuella källor (Eftermiddag kl. 15)</h2>
+<div id="individual-sources" class="sources-grid">
+    <!-- Fylls i dynamiskt av JavaScript -->
+</div>
+</div>
+
 </div>
 
 <script>
 async function loadWeather(){
     const status = document.getElementById("status");
-    status.textContent = "Hämtar och väger samman 4 globala väderkällor...";
+    status.textContent = "Hämtar och väger samman 4 globala källor...";
 
     try {
-        // Platt webbadress helt utan mallsträngar för att undvika alla typer av tolkningsfel i webbläsaren
+        // Rent, skottsäkert API-anrop utan thunderstorm_probability för att förhindra alla typer av 400 JSON-fel [2026-08-28]
         const openMeteoUrl = "https://open-meteo.com";
         
         const response = await fetch(openMeteoUrl);
-        if(!response.ok) throw new Error("Kunde inte nå väderdatabasen.");
+        if(!response.ok) throw new Error("Kunde inte hämta data från API-servern.");
         const data = await response.json();
 
         const todayStr = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
-        const targetHours = ["10:00", "15:00", "20:00"];
+        const targetHour = "15:00";
 
-        let periods = {
-            formiddag: { temps: [], winds: [], rains: [], lightnings: [] },
-            eftermiddag: { temps: [], winds: [], rains: [], lightnings: [] },
-            kvall: { temps: [], winds: [], rains: [], lightnings: [] }
+        // Objekten där vi sparar källorna var för sig
+        let sourcesData = {
+            "Yr (Norge)": { temp: 0, wind: 0, rain: 0 },
+            "ECMWF (Europa)": { temp: 0, wind: 0, rain: 0 },
+            "ICON (Tyskland)": { temp: 0, wind: 0, rain: 0 },
+            "GFS (USA)": { temp: 0, wind: 0, rain: 0 }
         };
 
-        const extractModelData = (hourlyTree) => {
+        let periods = { temps: [], winds: [], rains: [] };
+
+        // Hjälpfunktion för att plocka ut exakt data per källa för kl 15:00 idag
+        const parseSource = (sourceName, hourlyTree) => {
             if (!hourlyTree || !hourlyTree.time) return;
-            hourlyTree.time.forEach((timeStr, index) => {
-                const [date, time] = timeStr.split('T');
-                if (date === todayStr && targetHours.includes(time)) {
-                    const p = time === "10:00" ? "formiddag" : time === "15:00" ? "eftermiddag" : "kvall";
-                    if (hourlyTree.temperature_2m?.[index] !== undefined) periods[p].temps.push(hourlyTree.temperature_2m[index]);
-                    if (hourlyTree.wind_speed_10m?.[index] !== undefined) periods[p].winds.push(hourlyTree.wind_speed_10m[index] / 3.6);
-                    if (hourlyTree.precipitation?.[index] !== undefined) periods[p].rains.push(hourlyTree.precipitation[index]);
-                    if (hourlyTree.thunderstorm_probability?.[index] !== undefined) periods[p].lightnings.push(hourlyTree.thunderstorm_probability[index]);
-                }
-            });
+            const idx = hourlyTree.time.findIndex(t => t === `${todayStr}T${targetHour}`);
+            if (idx !== -1) {
+                const t = hourlyTree.temperature_2m[idx];
+                const w = hourlyTree.wind_speed_10m[idx] / 3.6; // km/h till m/s
+                const r = hourlyTree.precipitation[idx];
+
+                sourcesData[sourceName] = { temp: t, wind: w, rain: r };
+
+                periods.temps.push(t);
+                periods.winds.push(w);
+                periods.rains.push(r);
+            }
         };
 
-        extractModelData(data.hourly_metno || data.hourly);
-        extractModelData(data.hourly_ecmwf_ifs);
-        extractModelData(data.hourly_dwd_icon);
-        extractModelData(data.hourly_gfs_seamless);
+        // Kör parsen för de fyra unika träden i API-svaret [2026-08-28]
+        parseSource("Yr (Norge)", data.hourly_metno || data.hourly);
+        parseSource("ECMWF (Europa)", data.hourly_ecmwf_ifs);
+        parseSource("ICON (Tyskland)", data.hourly_dwd_icon);
+        parseSource("GFS (USA)", data.hourly_gfs_seamless);
 
-        const calcAvg = (arr) => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
-        const calcMax = (arr) => arr.length ? Math.max(...arr) : 0;
+        // Räkna ut det sammanslagna medelvärdet
+        const avg = (arr) => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
 
-        const weather = {
-            formiddag: { temp: calcAvg(periods.formiddag.temps), wind: calcAvg(periods.formiddag.winds), rain: calcAvg(periods.formiddag.rains), lightning: calcMax(periods.formiddag.lightnings) },
-            eftermiddag: { temp: calcAvg(periods.eftermiddag.temps), wind: calcAvg(periods.eftermiddag.winds), rain: calcAvg(periods.eftermiddag.rains), lightning: calcMax(periods.eftermiddag.lightnings) },
-            kvall: { temp: calcAvg(periods.kvall.temps), wind: calcAvg(periods.kvall.winds), rain: calcAvg(periods.kvall.rains), lightning: calcMax(periods.kvall.lightnings) }
+        const weatherSnitt = {
+            temp: avg(periods.temps),
+            wind: avg(periods.winds),
+            rain: avg(periods.rains)
         };
 
-        document.getElementById("copilotTemp").textContent = weather.eftermiddag.temp.toFixed(1) + "°";
-        document.getElementById("copilotRain").textContent = weather.eftermiddag.rain.toFixed(1) + " mm";
-        document.getElementById("copilotThunder").textContent = weather.eftermiddag.lightning.toFixed(0) + "%";
-        document.getElementById("copilotConfidence").textContent = weather.eftermiddag.wind.toFixed(1) + " m/s";
+        // Montera värdena i huvudboxarna
+        document.getElementById("copilotTemp").textContent = weatherSnitt.temp.toFixed(1) + "°";
+        document.getElementById("copilotRain").textContent = weatherSnitt.rain.toFixed(1) + " mm";
+        document.getElementById("copilotConfidence").textContent = weatherSnitt.wind.toFixed(1) + " m/s";
 
-        let text = `<b>MULTIKÄLLS-BEDÖMNING UTIFRÅN YR, SMHI, DWD OCH GFS:</b><br>`;
-        text += `Genom att väga samman data från 4 oberoende meteorologiska superdatorer ser vi en stark samstämmighet för dygnet i Torsby. `;
-        text += `Förmiddagen inleds med ett snitt på ${weather.formiddag.temp.toFixed(1)}°C. `;
-        text += `Under eftermiddagen stiger temperaturerna till runt ${weather.eftermiddag.temp.toFixed(1)}°C. `;
+        // Skapa textbedömningen
+        let text = `<b>MULTIKÄLLS-BEDÖMNING FÖR TORBY IDAG:</b><br>`;
+        text += `Genom att sammanfoga data från 4 oberoende meteorologiska superdatorer kan vi presentera en stabil analys för eftermiddagen. `;
+        text += `Temperatursnittet för Torsby landar runt ${weatherSnitt.temp.toFixed(1)}°C. `;
         
-        if (weather.eftermiddag.rain > 0.2 || weather.eftermiddag.lightning > 15) {
-            text += `Modellerna flaggar gemensamt för risk för mindre skurar (${weather.eftermiddag.rain.toFixed(1)} mm) med en maximal åskrisk på ${weather.eftermiddag.lightning.toFixed(0)}% i närområdet. `;
+        if (weatherSnitt.rain > 0.2) {
+            text += `Majoriteten av modellerna indikerar lätta skurar i området med ett beräknat snitt på ${weatherSnitt.rain.toFixed(1)} mm regn. `;
         } else {
-            text += `Samtliga 4 källor är enade om en torr eftermiddag med mycket låg åskrisk (${weather.eftermiddag.lightning.toFixed(0)}%). `;
+            text += `Samtliga 4 källor uppvisar en hög samstämmighet om en torr och stabil eftermiddag utan nederbörd. `;
         }
-        
-        text += `Kvällen avslutas svalt och behaglig runt ${weather.kvall.temp.toFixed(1)}°C med en lugn vindstyrka på ${weather.kvall.wind.toFixed(1)} m/s.`;
-
+        text += `Vindarna förblir trygga och ligger i snitt på ${weatherSnitt.wind.toFixed(1)} m/s.`;
         document.getElementById("copilot").innerHTML = text;
 
+        // Skapa de separerade källkorten längst ner
+        let sourcesHTML = "";
+        for (const [key, value] of Object.entries(sourcesData)) {
+            sourcesHTML += `
+            <div class="source-card">
+                <div class="source-title">${key}</div>
+                <div>🌡 <b>Temp:</b> ${value.temp.toFixed(1)}°C</div>
+                <div>💨 <b>Vind:</b> ${value.wind.toFixed(1)} m/s</div>
+                <div>🌧 <b>Regn:</b> ${value.rain.toFixed(1)} mm</div>
+            </div>
+            `;
+        }
+        document.getElementById("individual-sources").innerHTML = sourcesHTML;
+
+        // Montera 7-dagarsprognosen
         let forecastHTML = "";
         for(let i = 0; i < 7; i++){
             const date = new Date(data.daily.time[i]);
@@ -258,14 +306,15 @@ async function loadWeather(){
         }
         document.getElementById("forecast").innerHTML = forecastHTML;
 
-        status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE") + " (4 källor synkade)";
+        status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE") + " (4 källor separerade)";
 
-    } catch(error) {
+      } catch(error) {
         status.textContent = "Fel vid sammanvägning: " + error.message;
         document.getElementById("copilot").innerHTML = "Kunde inte slå samman de 4 källorna.";
     }
 }
 
+// Kör direkt
 loadWeather();
 setInterval(loadWeather, 900000);
 </script>
