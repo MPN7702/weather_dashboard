@@ -54,6 +54,7 @@ header{
 .label{
     font-size:14px;
     opacity:.8;
+    margin-bottom: 5px;
 }
 
 .value{
@@ -128,7 +129,7 @@ Laddar...
 <div class="current">
 
 <div class="info">
-<div class="label">Temperatur (Kl 15)</div>
+<div class="label">Temperatur (Eftermiddag)</div>
 <div id="copilotTemp" class="value">-</div>
 </div>
 
@@ -179,12 +180,11 @@ async function loadWeather(){
     status.textContent = "Hämtar väderdata...";
 
     try {
-        // Genom att läsa 'weather.json' helt lokalt utan domän slipper vi CORS-blockeringar!
-        // cache: "no-store" tvingar fram den absolut senaste versionen som roboten sparat
+        // Läser weather.json helt lokalt från din GitHub Pages-mapp
         const response = await fetch('weather.json', { cache: "no-store" });
 
         if(!response.ok){
-            throw new Error("Kunde inte läsa weather.json.");
+            throw new Error("Kunde inte läsa weather.json. Säkerställ att filen skapats i ditt arkiv.");
         }
 
         const weather = await response.json();
@@ -194,13 +194,13 @@ async function loadWeather(){
         const omResponse = await fetch(openMeteoUrl);
         const omData = await omResponse.json();
 
-        // Koppla in medelvärdena från din robot till dina befintliga boxar (Eftermiddag kl 15:00)
-        document.getElementById("copilotTemp").textContent = parseFloat(weather.eftermiddag.temp).toFixed(1) + "°";
+        // Montera in värdena från din weather.json direkt i dina befintliga boxar
+        document.getElementById("copilotTemp").textContent = weather.eftermiddag.temp.toFixed(1) + "°";
         document.getElementById("copilotRain").textContent = weather.eftermiddag.rain + " mm";
         document.getElementById("copilotThunder").textContent = weather.eftermiddag.lightning + "%";
         document.getElementById("copilotConfidence").textContent = weather.eftermiddag.wind + " m/s";
 
-        // Generera den dynamiska Copilot-textanalysen baserat på rådatan
+        // Skapa Copilot-textbedömningen
         let text = `<b>VÄDERSTATUS FÖR TORBY IDAG:</b><br>`;
         text += `Förmiddagen bjuder på ${weather.formiddag.temp}°C med en vindstyrka på ${weather.formiddag.wind} m/s. `;
         text += `Under eftermiddagen stiger temperaturen till ${weather.eftermiddag.temp}°C. `;
@@ -215,7 +215,7 @@ async function loadWeather(){
 
         document.getElementById("copilot").innerHTML = text;
 
-        // Montera din 7-dagarsprognos
+        // Montera din ursprungliga 7-dagarsprognos
         let forecastHTML = "";
         for(let i = 0; i < 7; i++){
             const date = new Date(omData.daily.time[i]);
@@ -240,10 +240,10 @@ async function loadWeather(){
     }
 }
 
-// Starta direkt vid laddning
+// Kör direkt
 loadWeather();
 
-// Uppdatera automatiskt var 15:e minut
+// Uppdatera var 15:e minut
 setInterval(loadWeather, 900000);
 </script>
 
