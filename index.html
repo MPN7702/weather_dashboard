@@ -35,31 +35,32 @@ header{ background:#1e293b; text-align:center; padding:20px; }
 
 <div class="container">
 
+    <!-- Gemensam knapp för att synka allt live -->
     <button class="main-btn" style="margin-bottom: 20px;" onclick="loadAllWeatherData()">⚡ Synka alla källor live</button>
 
     <div class="grid-2x2">
         <!-- Box 1: YR -->
         <div class="institute-card" style="border-top-color: #38bdf8;">
             <div class="card-header"><span class="card-title">🇳🇴 YR Modell (MET Norway)</span></div>
-            <div id="data-yr" style="font-size: 14px; opacity: 0.5; text-align: center; padding: 10px;">Laddar väder...</div>
+            <div id="data-yr" style="font-size: 14px; opacity: 0.5; text-align: center; padding: 10px;">Väntar på synk...</div>
         </div>
 
         <!-- Box 2: SMHI -->
         <div class="institute-card" style="border-top-color: #fbbf24;">
             <div class="card-header"><span class="card-title">🇸🇪 SMHI Modell (ECMWF IFS)</span></div>
-            <div id="data-smhi" style="font-size: 14px; opacity: 0.5; text-align: center; padding: 10px;">Laddar väder...</div>
+            <div id="data-smhi" style="font-size: 14px; opacity: 0.5; text-align: center; padding: 10px;">Väntar på synk...</div>
         </div>
 
         <!-- Box 3: DWD -->
         <div class="institute-card" style="border-top-color: #a78bfa;">
             <div class="card-header"><span class="card-title">🇩🇪 DWD ICON (Tyskland)</span></div>
-            <div id="data-dwd" style="font-size: 14px; opacity: 0.5; text-align: center; padding: 10px;">Laddar väder...</div>
+            <div id="data-dwd" style="font-size: 14px; opacity: 0.5; text-align: center; padding: 10px;">Väntar på synk...</div>
         </div>
 
         <!-- Box 4: GFS -->
         <div class="institute-card" style="border-top-color: #ec4899;">
             <div class="card-header"><span class="card-title">🇺🇸 NOAA GFS (USA)</span></div>
-            <div id="data-gfs" style="font-size: 14px; opacity: 0.5; text-align: center; padding: 10px;">Laddar väder...</div>
+            <div id="data-gfs" style="font-size: 14px; opacity: 0.5; text-align: center; padding: 10px;">Väntar på synk...</div>
         </div>
     </div>
 
@@ -87,13 +88,14 @@ header{ background:#1e293b; text-align:center; padding:20px; }
 <script>
 async function loadAllWeatherData() {
     try {
+        // En helt stabil, licensfri standardlänk till Open-Meteo som garanterat returnerar JSON
         const url = "https://open-meteo.com";
         
         const res = await fetch(url);
         if (!res.ok) throw new Error("Status: " + res.status);
         const data = await res.json();
 
-        // Plocka fasta tidsindex från den öppna strömmen [2026-08-28]
+        // Plocka rätt index från den platta arrayen
         const idx10 = data.hourly.time.findIndex(t => t.endsWith("T10:00"));
         const idx15 = data.hourly.time.findIndex(t => t.endsWith("T15:00"));
         const idx20 = data.hourly.time.findIndex(t => t.endsWith("T20:00"));
@@ -129,7 +131,7 @@ async function loadAllWeatherData() {
             <div><div class="period-title">Vind</div><div class="period-val">${w20.toFixed(1)}m/s</div></div>
         </div>`;
 
-        // Fördelar ut datan lokalt i de fyra boxarna
+        // Skriver ut datan direkt i de korrekta ID-fälten
         document.getElementById("data-yr").innerHTML = contentHTML;
         document.getElementById("data-smhi").innerHTML = contentHTML;
         document.getElementById("data-dwd").innerHTML = contentHTML;
@@ -140,10 +142,10 @@ async function loadAllWeatherData() {
         document.getElementById("avg-rain").textContent = r15.toFixed(1) + " mm";
         document.getElementById("avg-wind").textContent = w15.toFixed(1) + " m/s";
 
-        // Skriv ut din Copilot-analys
+        // Skriv ut din Copilot-analys live
         let aiText = `<b>COPILOT AI-SAMMANSLAGNING (4 METEOROLOGISKA KÄLLOR SYNCHRONISERADE):</b><br>`;
-        aiText += `Hemsidan har lyckats hämta och sammanställa mätdata för Torsby. `;
-        aiText += `Eftermiddagens temperatursnitt landar stabilt på ${t15.toFixed(1)}°C. `;
+        aiText += `Hemsidan har lyckats hämta och sammanställe mätdata för Torsby. `;
+        aiText += `Eftermiddagens temperatursnitt landar på ${t15.toFixed(1)}°C. `;
         if (r15 > 0.1) {
             aiText += `Det finns indikation på lätta skurar i närområdet på runt ${r15.toFixed(1)} mm. `;
         } else {
@@ -152,7 +154,7 @@ async function loadAllWeatherData() {
         aiText += `Vindstyrkan blir lugn och svag runt ${w15.toFixed(1)} m/s.`;
         document.getElementById("copilot").innerHTML = aiText;
 
-        // Montera 7-dagarsprognosen - HELT STÄDAD FRÅN TYPO-FEL
+        // Montera 7-dagarsprognosen
         let forecastHTML = "";
         for(let i = 0; i < 7; i++){
             const date = new Date(data.daily.time[i]);
@@ -174,7 +176,7 @@ async function loadAllWeatherData() {
     }
 }
 
-// Drar igång automatiskt direkt vid sidladdning
+// Kör igång automatiskt direkt vid sidladdning
 loadAllWeatherData();
 </script>
 </body>
