@@ -200,7 +200,7 @@ Laddar global analys...
 const LAT = 60.1333;
 const LON = 13.0000;
 
-// SÄKER FUNKTION: Hämtar en enda modell helt isolerat för att helt undvika 400/HTML-fel
+// Hjälpfunktion för isolerade anrop
 async function fetchSingleModel(modelParam) {
     try {
         const url = `https://open-meteo.com{LAT}&longitude=${LON}&hourly=temperature_2m,precipitation,wind_speed_10m&models=${modelParam}&timezone=Europe%2FStockholm`;
@@ -217,7 +217,7 @@ async function loadWeather(){
     status.textContent = "Hämtar och väger samman 4 oberoende väderkällor...";
 
     try {
-        // 1. HÄMTA ALLA 4 MODELLER ISOLERAT I PARALLELLA ANROP (Garanterar 100% framgång)
+        // 1. HÄMTA PARALLELLT
         const [yrData, smhiData, dwdData, gfsData] = await Promise.all([
             fetchSingleModel("metno"),
             fetchSingleModel("ecmwf_ifs"),
@@ -258,14 +258,14 @@ async function loadWeather(){
                 sourcesHTML += `
                 <div class="source-card">
                     <div class="source-title">${title}</div>
-                    <div><b>维持 Temp:</b> ${t.toFixed(1)}°C</div>
+                    <div><b>🌡 Temp:</b> ${t.toFixed(1)}°C</div>
                     <div><b>💨 Vind:</b> ${w.toFixed(1)} m/s</div>
                     <div><b>🌧 Regn:</b> ${r.toFixed(1)} mm</div>
                 </div>`;
             }
         };
 
-        // Parsar varje dataträd helt säkert från de isolerade svaren
+        // Parsa de unika träden
         parseModel("🇳🇴 YR (MET Norway)", yrData, "hourly_metno");
         parseModel("🇸🇪 SMHI (ECMWF IFS)", smhiData, "hourly_ecmwf_ifs");
         parseModel("🇩🇪 DWD ICON (Tyskland)", dwdData, "hourly_dwd_icon");
@@ -285,7 +285,7 @@ async function loadWeather(){
         document.getElementById("copilotRain").textContent = weatherSnitt.rain.toFixed(1) + " mm";
         document.getElementById("copilotConfidence").textContent = weatherSnitt.wind.toFixed(1) + " m/s";
 
-        // 4. GENERERA COPLOT-BEDÖMNINGEN
+        // 4. TEXTBEDÖMNING
         let text = `<b>MULTIKÄLLS-BEDÖMNING FÖR TORSBY IDAG (KL 15:00):</b><br>`;
         text += `Genom att sammanfoga oberoende data från ${activeCount} globala institut har vi räknat ut ett säkert medelvärde. `;
         text += `Eftermiddagens temperatur beräknas bli ${weatherSnitt.temp.toFixed(1)}°C. `;
@@ -298,44 +298,38 @@ async function loadWeather(){
         text += `Vindstyrkan blir mycket lugn och behaglig runt ${weatherSnitt.wind.toFixed(1)} m/s.`;
         document.getElementById("copilot").innerHTML = text;
 
-        // 5. MONTERA 7-DAGARS PROGNOS (Hämtas säkert från första fungerande källa)
-        const baseData = yrData || smhiData || dwdData || gfsData;
-        
-        // Säkrad fallback om daily saknas på grund av natt-anrop
-        if (baseData && baseData.daily) {
-            let forecastHTML = "";
-            for(let i = 0; i < 7; i++){
-                const date = new Date(baseData.daily.time[i]);
-                forecastHTML += `
-                <div class="day">
-                    <strong>${date.toLocaleDateString("sv-SE", {weekday:"short"})}</strong>
-                    <br><br>
-                    🔺 ${Math.round(baseData.daily.temperature_2m_max[i])}°
-                    <br>
-                    🔻 ${Math.round(baseData.daily.temperature_2m_min[i])}°
-                    <br><br>
-                    🌧 ${baseData.daily.precipitation_probability_max[i] ?? 0}%
-                </div>
-                `;
-            }
-            document.getElementById("forecast").innerHTML = forecastHTML;
-        } else {
-            // Säkrad backup-hämtning av prognosen om nattanropet tömt daily-objektet
-            const backupRes = await fetch(`https://open-meteo.com{LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`);
-            const backupData = await backupRes.json();
-            let forecastHTML = "";
-            for(let i = 0; i < 7; i++){
-                const date = new Date(backupData.daily.time[i]);
-                forecastHTML += `
-                <div class="day">
-                    <strong>${date.toLocaleDateString("sv-SE", {weekday:"short"})}</strong>
-                    <br><br>
-                    🔺 ${Math.round(backupData.daily.temperature_2m_max[i])}°
-                    <br>
-                    🔻 ${Math.round(backupData.daily.temperature_2m_min[i])}°
-                    <br><br>
-                    🌧 ${backupData.daily.precipitation_probability_max[i] ?? 0}%
-                </div>
-                `;
-            }
-document.getElementById("forecast").innerHTML = forecastHTML;}status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE") + " (4 källor synkade)";} catch(error) {status.textContent = "Fel vid laddning: " + error.message;document.getElementById("copilot").innerHTML = "Kunde inte slå samman källorna just nu.";}}// Kör direktloadWeather();setInterval(loadWeather, 900000);
+        // 5. 7-DAGARS PROGNOS (Säkrad backup-hämtning för nattanrop)
+        const backupRes = await fetch(`https://open-meteo.com{LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`);
+        const backupData = await backupRes.json();
+        let forecastHTML = "";
+        for(let i = 0; i < 7; i++){
+            const date = new Date(backupData.daily.time[i]);
+            forecastHTML += `
+            <div class="day">
+                <strong>${date.toLocaleDateString("sv-SE", {weekday:"short"})}</strong>
+                <br><br>
+                🔺 ${Math.round(backupData.daily.temperature_2m_max[i])}°
+                <br>
+                🔻 ${Math.round(backupData.daily.temperature_2m_min[i])}°
+                <br><br>
+                🌧 ${backupData.daily.precipitation_probability_max[i] ?? 0}%
+            </div>
+            `;
+        }
+        document.getElementById("forecast").innerHTML = forecastHTML;
+
+        status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE") + " (4 källor synkade)";
+
+    } catch(error) {
+        status.textContent = "Fel vid laddning: " + error.message;
+        document.getElementById("copilot").innerHTML = "Kunde inte slå samman källorna just nu.";
+    }
+}
+
+// Kör direkt
+loadWeather();
+setInterval(loadWeather, 900000);
+</script>
+
+</body>
+</html>
