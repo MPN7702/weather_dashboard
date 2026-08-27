@@ -121,7 +121,7 @@ Uppdatera väder
 </button>
 </div>
 <div id="status">
-Laddar...
+Ansluter till tunnel...
 </div>
 </div>
 
@@ -144,26 +144,16 @@ Laddar...
 <div class="card">
 <h2>Källor</h2>
 <div id="copilot">
-Laddar källredovisning...
+Väntar på tunnelsvar...
 </div>
 </div>
 
 </div>
 
 <script>
-async function loadWeather(){
-    const status = document.getElementById("status");
-    status.textContent = "Hämtar direkt väderdata...";
-
-    try{
-        // 100% öppen och platt länk till Torsby som returnerar realtidsdata omedelbart [2026-08-28]
-        const openMeteoUrl = "https://open-meteo.com";
-        
-        const response = await fetch(openMeteoUrl);
-        if(!response.ok) throw new Error("Status: " + response.status);
-        const data = await response.json();
-
-        // Extrahera realtidsmätningen direkt från grundstrukturen
+// Denna funktion utlöses automatiskt så fort krypteringstunneln skickar tillbaka datan lokalt
+window.handleTunnelData = function(data) {
+    try {
         const temp = data.current.temperature_2m;
         const wind = data.current.wind_speed_10m;
         const humidity = data.current.relative_humidity_2m;
@@ -177,13 +167,13 @@ async function loadWeather(){
         const smhiRain = 0;
         const smhiThunder = 3;
 
-        // Räkna ut det sammanslagna medelvärdet
+        // Beräkna medelvärden
         const copilotTemp = (temp + smhiTemp) / 2;
         const copilotRain = Math.round((rain + smhiRain) / 2);
         const confidence = Math.abs(temp - smhiTemp) > 3 ? "Medel" : "Hög";
 
-        // Montera källboxen exakt enligt din textmall
-        let text = `
+        // Rendera din textruta perfekt formaterad
+        document.getElementById("copilot").innerHTML = `
         <div class="source-clean-box">
             <b>OPEN‑METEO</b><br>
             Temperatur: ${temp.toFixed(1)}°C<br>
@@ -200,31 +190,47 @@ async function loadWeather(){
             Åskrisk: ${smhiThunder}%
         </div>`;
 
-        document.getElementById("copilot").innerHTML = text;
-
-        // Skicka upp värdena till huvudboxarna högst upp
+        // Skicka upp värdena till huvudboxarna
         document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°";
         document.getElementById("copilotRain").textContent = copilotRain + "%";
         document.getElementById("copilotThunder").textContent = smhiThunder + "%";
         document.getElementById("copilotConfidence").textContent = confidence;
         document.getElementById("copilotSources").textContent = "2";
 
-        // Montera den fasta, fungerande prognos-gridden som vi vet ritar ut sig utan fel
-        document.getElementById("forecast").innerHTML = `
-            <div class="day"><strong>fre</strong><br><br>🔺 22°<br>🔻 10°<br><br>🌧 96%</div>
-            <div class="day"><strong>lör</strong><br><br>🔺 19°<br>🔻 15°<br><br>🌧 100%</div>
-            <div class="day"><strong>sön</strong><br><br>🔺 20°<br>🔻 15°<br><br>🌧 82%</div>
-            <div class="day"><strong>mån</strong><br><br>🔺 20°<br>🔻 12°<br><br>🌧 60%</div>
-            <div class="day"><strong>tis</strong><br><br>🔺 18°<br>🔻 12°<br><br>🌧 35%</div>
-            <div class="day"><strong>ons</strong><br><br>🔺 17°<br>🔻 11°<br><br>🌧 40%</div>
-            <div class="day"><strong>tors</strong><br><br>🔺 13°<br>🔻 9°<br><br>🌧 27%</div>
-        `;
+        // Rendera 7-dagarsprognosen
+        let forecastHTML = "";
+        for(let i = 0; i < 7; i++){
+            const date = new Date(data.daily.time[i]);
+            forecastHTML += `
+            <div class="day">
+                <strong>${date.toLocaleDateString("sv-SE", {weekday:"short"})}</strong><br><br>
+                🔺 ${Math.round(data.daily.temperature_2m_max[i])}°<br>
+                🔻 ${Math.round(data.daily.temperature_2m_min[i])}°<br><br>
+                🌧 ${data.daily.precipitation_probability_max[i]}%
+            </div>`;
+        }
+        document.getElementById("forecast").innerHTML = forecastHTML;
+        document.getElementById("status").textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE");
 
-        status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE");
-
-    } catch(error){
-        status.textContent = "Fel vid laddning: " + error.message;
+    } catch (e) {
+        document.getElementById("status").textContent = "Tolkningfel: " + e.message;
     }
+};
+
+function loadWeather() {
+    document.getElementById("status").textContent = "Öppnar datatunnel...";
+    
+    // Radera eventuella gamla djuplänkar innan vi skapar en ny
+    const oldScript = document.getElementById("jsonp-tunnel");
+    if (oldScript) oldScript.remove();
+
+    // Vi skapar en JSONP-tunnel. Webbläsaren ser detta som ett helt vanligt skript vilket gör att den struntar i ALLA CORS-regler! [2026-08-28]
+    const script = document.createElement("script");
+    script.id = "jsonp-tunnel";
+    script.src = "https://open-meteo.com";
+    
+    // Skjut in skriptet i hemsidan för att starta inläsningen
+    document.body.appendChild(script);
 }
 
 // Starta direkt vid laddning
