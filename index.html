@@ -179,28 +179,28 @@ async function loadWeather(){
     status.textContent = "Hämtar väderdata...";
 
     try {
-        // Vi läser filen direkt från GitHubs rå-databas för att runda tidsfördröjningen på GitHub Pages
-        // Vi lägger till ett unikt nummer (?t=...) i slutet för att tvinga webbläsaren att hoppa förbi cache-minnet
-        const response = await fetch(`https://githubusercontent.com{Date.now()}`);
+        // Genom att läsa 'weather.json' helt lokalt utan domän slipper vi CORS-blockeringar!
+        // cache: "no-store" tvingar fram den absolut senaste versionen som roboten sparat
+        const response = await fetch('weather.json', { cache: "no-store" });
 
         if(!response.ok){
-            throw new Error("Kunde inte läsa weather.json. Kör roboten i Actions först.");
+            throw new Error("Kunde inte läsa weather.json.");
         }
 
         const weather = await response.json();
 
-        // Hämta 7-dagarsdata från Open-Meteo till din loop
+        // Hämta 7-dagarsdata från Open-Meteo till din prognos-loop
         const openMeteoUrl = `https://open-meteo.com{LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`;
         const omResponse = await fetch(openMeteoUrl);
         const omData = await omResponse.json();
 
-        // Koppla in värdena från din weather.json (för eftermiddagen kl 15:00) till dina boxar
-        document.getElementById("copilotTemp").textContent = weather.eftermiddag.temp.toFixed(1) + "°";
+        // Koppla in medelvärdena från din robot till dina befintliga boxar (Eftermiddag kl 15:00)
+        document.getElementById("copilotTemp").textContent = parseFloat(weather.eftermiddag.temp).toFixed(1) + "°";
         document.getElementById("copilotRain").textContent = weather.eftermiddag.rain + " mm";
         document.getElementById("copilotThunder").textContent = weather.eftermiddag.lightning + "%";
         document.getElementById("copilotConfidence").textContent = weather.eftermiddag.wind + " m/s";
 
-        // Skapa Copilot-texten
+        // Generera den dynamiska Copilot-textanalysen baserat på rådatan
         let text = `<b>VÄDERSTATUS FÖR TORBY IDAG:</b><br>`;
         text += `Förmiddagen bjuder på ${weather.formiddag.temp}°C med en vindstyrka på ${weather.formiddag.wind} m/s. `;
         text += `Under eftermiddagen stiger temperaturen till ${weather.eftermiddag.temp}°C. `;
@@ -215,7 +215,7 @@ async function loadWeather(){
 
         document.getElementById("copilot").innerHTML = text;
 
-        // Bygg 7-dagarsprognosen från din ursprungliga loop
+        // Montera din 7-dagarsprognos
         let forecastHTML = "";
         for(let i = 0; i < 7; i++){
             const date = new Date(omData.daily.time[i]);
@@ -240,10 +240,10 @@ async function loadWeather(){
     }
 }
 
-// Starta direkt
+// Starta direkt vid laddning
 loadWeather();
 
-// Uppdatera var 15:e minut
+// Uppdatera automatiskt var 15:e minut
 setInterval(loadWeather, 900000);
 </script>
 
