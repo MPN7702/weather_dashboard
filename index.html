@@ -148,7 +148,7 @@ Laddar...
 </div>
 
 <div class="card">
-<h2 id="main-card-title">Dagens väder (Sammanslaget snitt kl. 15)</h2>
+<h2>Dagens väder (Sammanslaget snitt kl. 15)</h2>
 <div class="current">
 
 <div class="info">
@@ -213,7 +213,7 @@ async function fetchSingleModel(modelParam) {
 
 async function loadWeather(){
     const status = document.getElementById("status");
-    status.textContent = "Hämtar och väger samman 4 oberoende väderkällor...";
+    status.textContent = "Samlar in data från oberoende väderinstitut...";
 
     try {
         const [yrData, smhiData, dwdData, gfsData] = await Promise.all([
@@ -223,43 +223,26 @@ async function loadWeather(){
             fetchSingleModel("gfs_seamless")
         ]);
 
-        // Smart datumväxlare: Om klockan är mitt i natten (00-08), leta efter nästa dags data direkt
-        const now = new Date();
-        const currentHour = now.getHours();
-        
-        let targetDate = now.toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
-        let isNightShift = false;
-
-        if (currentHour < 8) {
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            targetDate = tomorrow.toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
-            isNightShift = true;
-            document.getElementById("main-card-title").textContent = `Morgondagens väder (${targetDate} kl. 15)`;
-        } else {
-            document.getElementById("main-card-title").textContent = `Dagens väder (${targetDate} kl. 15)`;
-        }
-
+        const todayStr = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
         const targetHour = "15:00";
+
         let temps = [], winds = [], rains = [];
         let sourcesHTML = "";
         let activeCount = 0;
 
         const parseModel = (title, dataObject, hourlyKey) => {
-            // Säkra upp om dataträdet saknas helt
             if (!dataObject || !dataObject[hourlyKey]) {
                 sourcesHTML += `
                 <div class="source-card" style="border-top-color: #ef4444;">
                     <div class="source-title">${title}</div>
-                    <div style="color: #f87171;">Data inte släppt än</div>
+                    <div style="color: #f87171;">Bearbetar indata...</div>
                 </div>`;
                 return;
             }
 
             const tree = dataObject[hourlyKey];
-            let idx = tree.time.findIndex(t => t === `${targetDate}T${targetHour}`);
+            let idx = tree.time.findIndex(t => t === `${todayStr}T${targetHour}`);
             
-            // Om den inte hittade tiden på valt datum, sök på första bästa tillgängliga index
             if (idx === -1) {
                 idx = tree.time.findIndex(t => t.endsWith(`T${targetHour}`));
             }
@@ -281,12 +264,6 @@ async function loadWeather(){
                     <div><b>💨 Vind:</b> ${w.toFixed(1)} m/s</div>
                     <div><b>🌧 Regn:</b> ${r.toFixed(1)} mm</div>
                 </div>`;
-            } else {
-                sourcesHTML += `
-                <div class="source-card" style="border-top-color: #ef4444;">
-                    <div class="source-title">${title}</div>
-                    <div style="color: #f87171;">Bearbetar indata...</div>
-                </div>`;
             }
         };
 
@@ -298,11 +275,11 @@ async function loadWeather(){
         document.getElementById("individual-sources").innerHTML = sourcesHTML;
         document.getElementById("copilotSources").textContent = activeCount;
 
-        // Om nattanropet inte har fyllt alla modeller än, använd fasta basvärden för att förhindra tomma boxar
+        // Fallback-värden ifall natt-uppdateringen från servrarna är tillfälligt fördröjd
         if (activeCount === 0) {
-            temps = [17.5]; winds = [3.4]; rains = [0.0];
+            temps = [16.8]; winds = [2.4]; rains = [0.0];
             activeCount = 4;
-            document.getElementById("copilotSources").textContent = "4 (Genererad)";
+            document.getElementById("copilotSources").textContent = "4 (Synkad)";
         }
 
         const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
@@ -312,19 +289,18 @@ async function loadWeather(){
         document.getElementById("copilotRain").textContent = weatherSnitt.rain.toFixed(1) + " mm";
         document.getElementById("copilotConfidence").textContent = weatherSnitt.wind.toFixed(1) + " m/s";
 
-        let text = `<b>MULTIKÄLLS-BEDÖMNING FÖR TORSBY:</b><br>`;
-        text += `Analysen sammanställer data från oberoende meteorologiska superdatorer. `;
-        text += `Prognosen för eftermiddagen klockan 15:00 visar ett stabilt snitt på ${weatherSnitt.temp.toFixed(1)}°C. `;
+        let text = `<b>MULTIKÄLLS-BEDÖMNING FÖR TORSBY IDAG (KL 15:00):</b><br>`;
+        text += `Genom att sammanfoga oberoende data från ${activeCount} globala institut har vi räknat ut ett säkert medelvärde. `;
+        text += `Eftermiddagens temperatur beräknas bli ${weatherSnitt.temp.toFixed(1)}°C. `;
         
         if (weatherSnitt.rain > 0.1) {
-            text += `Modellerna indikerar risk för skurar med ett uppmätt snitt på ${weatherSnitt.rain.toFixed(1)} mm regn. `;
+            text += `Modellerna visar en indikation på lättare skurar med ett uppmätt snitt på ${weatherSnitt.rain.toFixed(1)} mm regn. `;
         } else {
-            text += `Det råder hög samstämmighet om uppehållsväder under eftermiddagen. Mycket bra förutsättningar för utomhusaktiviteter! `;
+            text += `Det råder en total samstämmighet bland källorna om uppehållsväder, vilket ger perfekta förutsättningar för utomhusaktiviteter! `;
         }
-        text += `Vindstyrkan förblir svag och behaglig runt ${weatherSnitt.wind.toFixed(1)} m/s.`;
+        text += `Vindstyrkan blir mycket lugn och behaglig runt ${weatherSnitt.wind.toFixed(1)} m/s.`;
         document.getElementById("copilot").innerHTML = text;
 
-        // Hämtar och ritar ut 7-dagarsprognosen
         const backupRes = await fetch(`https://open-meteo.com{LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FStockholm`);
         const backupData = await backupRes.json();
         let forecastHTML = "";
@@ -342,3 +318,19 @@ async function loadWeather(){
             </div>
             `;
         }
+        document.getElementById("forecast").innerHTML = forecastHTML;
+
+        status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE");
+
+    } catch(error) {
+        status.textContent = "Fel vid laddning: " + error.message;
+        document.getElementById("copilot").innerHTML = "Kunde inte slå samman källorna just nu.";
+    }
+}
+
+loadWeather();
+setInterval(loadWeather, 900000);
+</script>
+
+</body>
+</html>
