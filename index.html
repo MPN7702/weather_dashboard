@@ -410,6 +410,61 @@ error.message;
 }
 
 }
+function getPeriodData(timeSeries) {
+
+    const periods = {
+        formiddag: {
+            temp: [],
+            rain: [],
+            thunder: []
+        },
+        eftermiddag: {
+            temp: [],
+            rain: [],
+            thunder: []
+        },
+        kvall: {
+            temp: [],
+            rain: [],
+            thunder: []
+        }
+    };
+
+    const today = new Date().toISOString().split("T")[0];
+
+    timeSeries.forEach(item => {
+
+        if (!item.time.startsWith(today)) return;
+
+        const hour = new Date(item.time).getHours();
+
+        let target = null;
+
+        if (hour >= 6 && hour < 12) {
+            target = periods.formiddag;
+        }
+        else if (hour >= 12 && hour < 18) {
+            target = periods.eftermiddag;
+        }
+        else if (hour >= 18 && hour < 24) {
+            target = periods.kvall;
+        }
+
+        if (!target) return;
+
+        if (item.data.air_temperature !== undefined)
+            target.temp.push(item.data.air_temperature);
+
+        if (item.data.probability_of_precipitation !== undefined)
+            target.rain.push(item.data.probability_of_precipitation);
+
+        if (item.data.thunderstorm_probability !== undefined)
+            target.thunder.push(item.data.thunderstorm_probability);
+
+    });
+
+    return periods;
+}
 
 loadWeather();
 
