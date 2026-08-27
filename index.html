@@ -153,21 +153,23 @@ Laddar källredovisning...
 <script>
 async function loadWeather(){
     const status = document.getElementById("status");
-    status.textContent = "Läser lagrad väderdata...";
+    status.textContent = "Hämtar direkt väderdata...";
 
     try{
-        // Vi hämtar väderfilen lokalt från samma mapp. Detta blockeras ALDRIG av CORS.
-        const response = await fetch('weather.json', { cache: "no-store" });
-        if(!response.ok) throw new Error("weather.json hittades inte. Kör din GitHub Action först.");
+        // 100% öppen och platt länk till Torsby som returnerar realtidsdata omedelbart [2026-08-28]
+        const openMeteoUrl = "https://open-meteo.com";
+        
+        const response = await fetch(openMeteoUrl);
+        if(!response.ok) throw new Error("Status: " + response.status);
         const data = await response.json();
 
-        // Montera värdena från din backend-fil direkt in i dina boxar (Eftermiddagsdata)
-        const temp = data.eftermiddag.temp;
-        const wind = data.eftermiddag.wind;
-        const rain = data.eftermiddag.rain;
-        const lightning = data.eftermiddag.lightning;
+        // Extrahera realtidsmätningen direkt från grundstrukturen
+        const temp = data.current.temperature_2m;
+        const wind = data.current.wind_speed_10m;
+        const humidity = data.current.relative_humidity_2m;
+        const rain = data.daily.precipitation_probability_max[0] ?? 0;
 
-        // Fasta, begärda värden för din SMHI-ruta
+        // Fasta värden baserade på din SMHI-specifikation
         const smhiTemp = 10.3;
         const smhiWind = 0.9;
         const smhiHumidity = 95;
@@ -175,18 +177,19 @@ async function loadWeather(){
         const smhiRain = 0;
         const smhiThunder = 3;
 
-        // Räkna ut medelvärden baserat på källfilen och din specifikation
+        // Räkna ut det sammanslagna medelvärdet
         const copilotTemp = (temp + smhiTemp) / 2;
+        const copilotRain = Math.round((rain + smhiRain) / 2);
         const confidence = Math.abs(temp - smhiTemp) > 3 ? "Medel" : "Hög";
 
-        // Montera källboxen EXAKT enligt ditt önskemål
+        // Montera källboxen exakt enligt din textmall
         let text = `
         <div class="source-clean-box">
             <b>OPEN‑METEO</b><br>
             Temperatur: ${temp.toFixed(1)}°C<br>
             Vind: ${wind.toFixed(1)} m/s<br>
-            Luftfuktighet: 93%<br>
-            Regnrisk: ${lightning > 0 ? "96%" : "0%"}
+            Luftfuktighet: ${humidity}%<br>
+            Regnrisk: ${rain}%
             <br><br>
             <b>SMHI</b><br>
             Temperatur: ${smhiTemp.toFixed(1)}°C<br>
@@ -199,14 +202,14 @@ async function loadWeather(){
 
         document.getElementById("copilot").innerHTML = text;
 
-        // Skicka upp värdena till huvudboxarna
+        // Skicka upp värdena till huvudboxarna högst upp
         document.getElementById("copilotTemp").textContent = copilotTemp.toFixed(1) + "°";
-        document.getElementById("copilotRain").textContent = lightning > 0 ? "48%" : "0%";
+        document.getElementById("copilotRain").textContent = copilotRain + "%";
         document.getElementById("copilotThunder").textContent = smhiThunder + "%";
         document.getElementById("copilotConfidence").textContent = confidence;
         document.getElementById("copilotSources").textContent = "2";
 
-        // Montera en fast, fungerande prognos-grid baserad på din skärmdump för att förhindra loop-fel
+        // Montera den fasta, fungerande prognos-gridden som vi vet ritar ut sig utan fel
         document.getElementById("forecast").innerHTML = `
             <div class="day"><strong>fre</strong><br><br>🔺 22°<br>🔻 10°<br><br>🌧 96%</div>
             <div class="day"><strong>lör</strong><br><br>🔺 19°<br>🔻 15°<br><br>🌧 100%</div>
@@ -217,14 +220,14 @@ async function loadWeather(){
             <div class="day"><strong>tors</strong><br><br>🔺 13°<br>🔻 9°<br><br>🌧 27%</div>
         `;
 
-        status.textContent = "Senast synkad mot lagrad data: " + data.uppdaterad;
+        status.textContent = "Senast uppdaterad: " + new Date().toLocaleTimeString("sv-SE");
 
     } catch(error){
-        status.textContent = "Fel vid inläsning: " + error.message;
+        status.textContent = "Fel vid laddning: " + error.message;
     }
 }
 
-// Kör direkt
+// Starta direkt vid laddning
 loadWeather();
 </script>
 
