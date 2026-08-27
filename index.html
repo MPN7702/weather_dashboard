@@ -3,347 +3,198 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Väder Torsby</title>
+<title>Väder Dashboard - 4 Källor</title>
 
 <style>
-*{
-    box-sizing:border-box;
-}
-
-body{
-    margin:0;
-    background:#0f172a;
-    color:white;
-    font-family:Arial,sans-serif;
-}
-
-header{
-    background:#1e293b;
-    text-align:center;
-    padding:20px;
-}
-
-.container{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
-}
-
-.card{
-    background:#1e293b;
-    border-radius:12px;
-    padding:20px;
-    margin-bottom:20px;
-}
-
-.current{
-    display:flex;
-    flex-wrap:wrap;
-    gap:15px;
-}
-
-.info{
-    flex:1;
-    min-width:180px;
-    background:#334155;
-    border-radius:8px;
-    padding:15px;
-    text-align:center;
-}
-
-.label{
-    font-size:14px;
-    opacity:.8;
-    margin-bottom: 5px;
-}
-
-.value{
-    font-size:32px;
-    font-weight:bold;
-}
-
-.forecast{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-    gap:10px;
-}
-
-.day{
-    background:#334155;
-    padding:12px;
-    border-radius:8px;
-    text-align:center;
-}
-
-button{
-    background:#2563eb;
-    color:white;
-    border:none;
-    padding:12px 20px;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:16px;
-}
-
-button:hover{
-    background:#1d4ed8;
-}
-
-#status{
-    text-align:center;
-    margin-top:15px;
-}
-
-.copilot-text {
-    line-height: 1.6;
-    color: #e2e8f0;
-    background: #1e1b4b;
-    padding: 15px;
-    border-radius: 8px;
-    border-left: 4px solid #6366f1;
-}
-
-/* Stil för tidsraderna och källkorten */
-.period-section {
-    margin-top: 15px;
-    margin-bottom: 25px;
-}
-
-.period-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: #38bdf8;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-left: 3px solid #38bdf8;
-    padding-left: 8px;
-}
-
-.sources-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 12px;
-}
-
-.source-card {
-    background: #334155;
-    padding: 12px;
-    border-radius: 8px;
-    border-top: 3px solid #60a5fa;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.source-name {
-    font-weight: bold;
-    color: #93c5fd;
-    margin-bottom: 5px;
-    font-size: 13px;
-}
+*{ box-sizing:border-box; }
+body{ margin:0; background:#0f172a; color:white; font-family:Arial,sans-serif; }
+header{ background:#1e293b; text-align:center; padding:20px; }
+.container{ max-width:1100px; margin:auto; padding:20px; }
+.card{ background:#1e293b; border-radius:12px; padding:20px; margin-bottom:20px; position: relative; }
+.grid-2x2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 20px; }
+.institute-card { background: #1e293b; border-radius: 12px; padding: 20px; border-top: 4px solid #3b82f6; }
+.period-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; background: #334155; padding: 10px; border-radius: 8px; text-align: center; }
+.period-title { font-size: 11px; opacity: 0.8; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; }
+.period-val { font-size: 14px; font-weight: bold; }
+.card-header { display: flex; justify-content: space-between; items-center; border-bottom: 1px solid #475569; padding-bottom: 8px; margin-bottom: 10px; }
+.card-title { font-weight: bold; color: #93c5fd; font-size: 16px; }
+.mini-btn { background: #3b82f6; color: white; border: none; padding: 4px 10px; font-size: 12px; border-radius: 4px; cursor: pointer; }
+.mini-btn:hover { background: #2563eb; }
+.main-btn { background: #10b981; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+.main-btn:hover { background: #059669; }
+.copilot-text { line-height: 1.6; color: #e2e8f0; background: #1e1b4b; padding: 15px; border-radius: 8px; border-left: 4px solid #10b981; }
+.forecast { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; }
+.day { background:#334155; padding:12px; border-radius:8px; text-align:center; }
+.summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; margin-bottom: 15px; }
+.summary-box { background: #334155; padding: 15px; border-radius: 8px; }
 </style>
-
 </head>
 <body>
 
 <header>
-<h1>🌤 Väder Torsby (Multi-Källor)</h1>
+    <h1>🌤 Weather Copilot Dashboard</h1>
 </header>
 
 <div class="container">
 
-<div class="card">
-<div style="text-align:center;">
-<button onclick="loadWeather()">
-Uppdatera väder
-</button>
-</div>
-<div id="status">
-Laddar...
-</div>
-</div>
+    <!-- DE 4 SÄRDEKILDA KÄLLORNA I EN GRIDSYSTEM -->
+    <div class="grid-2x2">
+        
+        <!-- Box 1: YR -->
+        <div class="institute-card" style="border-top-color: #38bdf8;">
+            <div class="card-header">
+                <span class="card-title">🇳🇴 YR (MET Norway)</span>
+                <button class="mini-btn" onclick="fetchSource('yr', 'metno')">🔄 Refresh</button>
+            </div>
+            <div id="status-yr" style="font-size:12px; opacity:0.6;">Laddar...</div>
+            <div id="data-yr"></div>
+        </div>
 
-<div class="card">
-<h2>Dagens väder (Sammanslagt dagsmedelsnitt)</h2>
-<div class="current">
+        <!-- Box 2: SMHI -->
+        <div class="institute-card" style="border-top-color: #fbbf24;">
+            <div class="card-header">
+                <span class="card-title">🇸🇪 SMHI (ECMWF IFS)</span>
+                <button class="mini-btn" onclick="fetchSource('smhi', 'ecmwf_ifs')">🔄 Refresh</button>
+            </div>
+            <div id="status-smhi" style="font-size:12px; opacity:0.6;">Laddar...</div>
+            <div id="data-smhi"></div>
+        </div>
 
-<div class="info">
-<div class="label">Temperatur (Snitt)</div>
-<div id="copilotTemp" class="value">-</div>
-</div>
+        <!-- Box 3: DWD -->
+        <div class="institute-card" style="border-top-color: #a78bfa;">
+            <div class="card-header">
+                <span class="card-title">🇩🇪 DWD ICON (Tyskland)</span>
+                <button class="mini-btn" onclick="fetchSource('dwd', 'dwd_icon')">🔄 Refresh</button>
+            </div>
+            <div id="status-dwd" style="font-size:12px; opacity:0.6;">Laddar...</div>
+            <div id="data-dwd"></div>
+        </div>
 
-<div class="info">
-<div class="label">Regnmängd (Totalt)</div>
-<div id="copilotRain" class="value">-</div>
-</div>
+        <!-- Box 4: GFS -->
+        <div class="institute-card" style="border-top-color: #ec4899;">
+            <div class="card-header">
+                <span class="card-title">🇺🇸 NOAA GFS (USA)</span>
+                <button class="mini-btn" onclick="fetchSource('gfs', 'gfs_seamless')">🔄 Refresh</button>
+            </div>
+            <div id="status-gfs" style="font-size:12px; opacity:0.6;">Laddar...</div>
+            <div id="data-gfs"></div>
+        </div>
 
-<div class="info">
-<div class="label">Vindhastighet (Snitt)</div>
-<div id="copilotConfidence" class="value">-</div>
-</div>
-
-<div class="info">
-<div class="label">Källor vägda</div>
-<div id="copilotSources" class="value">4</div>
-</div>
-
-</div>
-</div>
-
-<div class="card">
-<h2>7-dagars prognos</h2>
-<div id="forecast" class="forecast">
-</div>
-</div>
-
-<div class="card">
-<h2>Copilot Multi-Källsbedömning</h2>
-<div id="copilot" class="copilot-text">
-Laddar global analys...
-</div>
-</div>
-
-<!-- UPPDATERAT BLOCK: 4 källor uppdelade på 3 rader (Förmiddag, Eftermiddag, Kväll) -->
-<div class="card">
-<h2>Separerade källor per tidsblock</h2>
-
-<!-- Rad 1: Förmiddag -->
-<div class="period-section">
-    <div class="period-title">🌅 Förmiddag (Kl. 10:00)</div>
-    <div id="sources-formiddag" class="sources-grid">
-        <!-- Fylls i dynamiskt -->
     </div>
-</div>
 
-<!-- Rad 2: Eftermiddag -->
-<div class="period-section">
-    <div class="period-title">☀️ Eftermiddag (Kl. 15:00)</div>
-    <div id="sources-eftermiddag" class="sources-grid">
-        <!-- Fylls i dynamiskt -->
-    </div>
-</div>
+    <!-- BOX 5: ORKESTRATORN (COPILOT SAMMANSLAGNING) -->
+    <div class="card" style="border-top: 4px solid #10b981;">
+        <div class="card-header">
+            <span class="card-title" style="color: #34d399;">✨ Copilot Orkestrering & Sammanslagning</span>
+            <button class="main-btn" onclick="calculateSammanslagning()">⚡ Generera AI-Snitt</button>
+        </div>
+        
+        <div class="summary-grid">
+            <div class="summary-box"><div class="label" style="opacity:0.7;font-size:13px;">Snittemp (Eftermiddag)</div><div id="avg-temp" style="font-size:24px;font-weight:bold;">-</div></div>
+            <div class="summary-box"><div class="label" style="opacity:0.7;font-size:13px;">Ack. Regnmängd</div><div id="avg-rain" style="font-size:24px;font-weight:bold;">-</div></div>
+            <div class="summary-box"><div class="label" style="opacity:0.7;font-size:13px;">Snittvind</div><div id="avg-wind" style="font-size:24px;font-weight:bold;">-</div></div>
+        </div>
 
-<!-- Rad 3: Kväll -->
-<div class="period-section">
-    <div class="period-title">🌌 Kväll (Kl. 20:00)</div>
-    <div id="sources-kvall" class="sources-grid">
-        <!-- Fylls i dynamiskt -->
+        <div id="copilot" class="copilot-text">
+            Klicka på "Generera AI-Snitt" ovan för att sammanfoga informationen från de källor som laddats in.
+        </div>
     </div>
-</div>
-</div>
+
+    <!-- 7-DAGARS PROGNOS -->
+    <div class="card">
+        <h2>7-dagars prognos</h2>
+        <div id="forecast" class="forecast">Laddar prognos-grid...</div>
+    </div>
 
 </div>
 
 <script>
-// Platt URL till Open-Meteo utan strängvariabler för att eliminera alla tolkningsfel
-async function fetchSingleModel(modelParam) {
+// Global lagring av rådata i minnet så att box 5 kan läsa av dem live [2026-08-28]
+let loadedData = { yr: null, smhi: null, dwd: null, gfs: null };
+
+// Helt platt och stabil URL-struktur utan klamrar eller strängmallar [2026-08-28]
+async function fetchSource(key, modelParam) {
+    const statusEl = document.getElementById("status-" + key);
+    const dataEl = document.getElementById("data-" + key);
+    statusEl.textContent = "Hämtar data...";
+    
     try {
         const url = "https://open-meteo.com" + modelParam + "&timezone=Europe%2FStockholm";
         const res = await fetch(url);
-        if (!res.ok) return null;
-        return await res.json();
-    } catch (e) {
-        return null;
+        if (!res.ok) throw new Error("Serverfel: " + res.status);
+        const data = await res.json();
+        
+        // Hitta rätt dataträd i svaret
+        const hourly = data["hourly_" + modelParam] || data.hourly;
+        
+        // Matchning av tider för idag (Fredag 28 Aug) [2026-08-28]
+        const todayStr = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
+        const hours = ["10:00", "15:00", "20:00"];
+        let parsed = { formiddag: null, eftermiddag: null, kvall: null };
+        
+        hours.forEach(h => {
+            let idx = hourly.time.findIndex(t => t === todayStr + "T" + h);
+            if (idx === -1) idx = hourly.time.findIndex(t => t.endsWith("T" + h)); // Fallback
+            
+            if (idx !== -1) {
+                parsed[h === "10:00" ? "formiddag" : h === "15:00" ? "eftermiddag" : "kvall"] = {
+                    t: hourly.temperature_2m[idx],
+                    r: hourly.precipitation[idx],
+                    w: hourly.wind_speed_10m[idx] / 3.6 // km/h till m/s
+                };
+            }
+        });
+        
+        // Spara till det globala minnesobjektet
+        loadedData[key] = parsed;
+        
+        // Skapa den interna HTML-strukturen för boxen (Förmiddag, Eftermiddag, Kväll)
+        let html = "";
+        const labels = { formiddag: "Förmiddag (10)", eftermiddag: "Eftermiddag (15)", kvall: "Kväll (20)" };
+        
+        for (const [pKey, pVal] of Object.entries(parsed)) {
+            if (pVal) {
+                html += `
+                <div class="period-row">
+                    <div><div class="period-title">${labels[pKey]}</div><div class="period-val">${pVal.t.toFixed(1)}°</div></div>
+                    <div><div class="period-title">Regn</div><div class="period-val">${pVal.r.toFixed(1)}mm</div></div>
+                    <div><div class="period-title">Vind</div><div class="period-val">${pVal.w.toFixed(1)}m/s</div></div>
+                </div>`;
+            }
+        }
+        
+        dataEl.innerHTML = html;
+        statusEl.textContent = "Uppdaterad: " + new Date().toLocaleTimeString("sv-SE");
+        
+    } catch (err) {
+        statusEl.textContent = "Fel: " + err.message;
+        dataEl.innerHTML = `<div style="color:#f87171;font-size:12px;margin-top:10px;">Källan blockeras eller saknar data just nu. Tryck på Refresh igen.</div>`;
     }
 }
 
-async function loadWeather(){
-    const status = document.getElementById("status");
-    status.textContent = "Hämtar och strukturerar 4 oberoende väderkällor...";
-
-    try {
-        const [yrData, smhiData, dwdData, gfsData] = await Promise.all([
-            fetchSingleModel("metno"),
-            fetchSingleModel("ecmwf_ifs"),
-            fetchSingleModel("dwd_icon"),
-            fetchSingleModel("gfs_seamless")
-        ]);
-
-        const todayStr = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
-        const targetHours = ["10:00", "15:00", "20:00"];
-
-        // Lagring för beräkningar
-        let globalTemps = [], globalWinds = [], globalRains = [];
-
-        // Struktur för att hålla HTML-strängarna för de tre raderna
-        let htmlBlocks = { formiddag: "", eftermiddag: "", kvall: "" };
-
-        const parseModelForPeriods = (title, dataObject, hourlyKey) => {
-            if (!dataObject || !dataObject[hourlyKey]) {
-                const errHTML = `<div class="source-card" style="border-top-color: #ef4444;"><div class="source-name">${title}</div><span style="color: #f87171;">Uppdateras...</span></div>`;
-                htmlBlocks.formiddag += errHTML;
-                htmlBlocks.eftermiddag += errHTML;
-                htmlBlocks.kvall += errHTML;
-                return;
-            }
-
-            const tree = dataObject[hourlyKey];
-
-            targetHours.forEach(hour => {
-                let idx = tree.time.findIndex(t => t === `${todayStr}T${hour}`);
-                if (idx === -1) {
-                    idx = tree.time.findIndex(t => t.endsWith(`T${hour}`));
-                }
-
-                const periodKey = hour === "10:00" ? "formiddag" : hour === "15:00" ? "eftermiddag" : "kvall";
-
-                if (idx !== -1 && tree.temperature_2m[idx] !== null) {
-                    const t = tree.temperature_2m[idx];
-                    const w = tree.wind_speed_10m[idx] / 3.6; // km/h till m/s
-                    const r = tree.precipitation[idx];
-
-                    globalTemps.push(t);
-                    globalWinds.push(w);
-                    globalRains.push(r);
-
-                    htmlBlocks[periodKey] += `
-                    <div class="source-card">
-                        <div class="source-name">${title}</div>
-                        <div>🌡 <b>Temp:</b> ${t.toFixed(1)}°C</div>
-                        <div>💨 <b>Vind:</b> ${w.toFixed(1)} m/s</div>
-                        <div></div>🌧 <b>Regn:</b> ${r.toFixed(1)} mm</div>
-                    </div>`;
-                } else {
-                    htmlBlocks[periodKey] += `
-                    <div class="source-card" style="border-top-color: #ef4444;">
-                        <div class="source-name">${title}</div>
-                        <span style="color: #f87171;">Saknar tidsindex</span>
-                    </div>`;
-                }
-            });
-        };
-
-        // Kör bearbetningen för alla 4 källor över de 3 tidsblocken
-        parseModelForPeriods("🇳🇴 YR (MET Norway)", yrData, "hourly_metno");
-        parseModelForPeriods("🇸🇪 SMHI (ECMWF IFS)", smhiData, "hourly_ecmwf_ifs");
-        parseModelForPeriods("🇩🇪 DWD ICON (Tyskland)", dwdData, "hourly_dwd_icon");
-        parseModelOut = parseModelForPeriods("🇺🇸 NOAA GFS (USA)", gfsData, "hourly_gfs_seamless");
-
-        // Skriv ut de tre raderna på skärmen
-        document.getElementById("sources-formiddag").innerHTML = htmlBlocks.formiddag;
-        document.getElementById("sources-eftermiddag").innerHTML = htmlBlocks.eftermiddag;
-        document.getElementById("sources-kvall").innerHTML = htmlBlocks.kvall;
-
-        // Beräkna dagsmedel oavsett API-status
-        if (globalTemps.length === 0) { globalTemps = [15.4]; globalWinds = [2.8]; globalRains = [0.0]; }
-        const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
-
-        const dagsSnitt = { temp: avg(globalTemps), wind: avg(globalWinds), rain: globalRains.reduce((a, b) => a + b, 0) / 4 };
-
-        // Sätt dagsboxarna högst upp
-        document.getElementById("copilotTemp").textContent = dagsSnitt.temp.toFixed(1) + "°";
-        document.getElementById("copilotRain").textContent = dagsSnitt.rain.toFixed(1) + " mm";
-        document.getElementById("copilotConfidence").textContent = dagsSnitt.wind.toFixed(1) + " m/s";
-
-        // Skapa Copilot-analys
-        let text = `<b>COPILOT MULTI-KÄLLSANALYS FÖR TORSBY IDAG:</b><br>`;
-        text += `Genom att väga samman prognoserna för förmiddag, eftermiddag och kväll från 4 globala institut ser vi ett stabilt dygnsmedel på ${dagsSnitt.temp.toFixed(1)}°C. `;
-        text += `Modellerna visar bäst förutsättningar mitt på dagen, medan kvällen blir svalare och behaglig med svaga vindar runt ${dagsSnitt.wind.toFixed(1)} m/s. `;
-        if (dagsSnitt.rain > 0.4) {
-            text += `Vissa lokala regnskurar kan dra förbi under dygnet, men inga ihållande oväder indikeras.`;
-        } else {
-            text += `Samtliga källor uppvisar hög stabilitet och förutspår uppehållsväder över hela dagen.`;
+// 5:E BOXEN: Läser av de andra boxarna och slår samman värdena
+function calculateSammanslagning() {
+    let activeTemps = [], activeWinds = [], activeRains = [];
+    
+    // Gå igenom minnesstrukturen och se vilka rutor som har giltig data för eftermiddagen (kl 15)
+    for (const [key, data] of Object.entries(loadedData)) {
+        if (data && data.eftermiddag) {
+            activeTemps.push(data.eftermiddag.t);
+            activeWinds.push(data.eftermiddag.w);
+            activeRains.push(data.eftermiddag.r);
         }
-        document.getElementById("copilot").innerHTML = text;
-
-        // 7-dagarsprognos (Helt platt URL utan klamrar)
+    }
+    
+    if (activeTemps.length === 0) {
+        document.getElementById("copilot").innerHTML = "<span style='color:#f87171;'>Kunde inte beräkna snitt. Du måste ladda eller uppdatera minst en av de 4 boxarna ovan först!</span>";
+        return;
+    }
+    
+    const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+    const totalRain = activeRains.reduce((a, b) => a + b, 0) / activeRains.length;
+    
+    const finalTemp = avg(activeTemps);
+    const finalWind = avg(activeWinds);
+    
+    // Montera i medelsnittsboxarna
+    document.getElementById("avg-temp").textContent = finalTemp.toFixed(1) + "°C";
