@@ -21,12 +21,12 @@ h1 {
 
 .container {
     display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 15px;
 }
 
 .weather-box {
-    background: white;
+    background: #fff;
     border-radius: 12px;
     padding: 15px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
@@ -45,6 +45,13 @@ h1 {
 
 .value {
     font-weight: bold;
+    color: #222;
+}
+
+.updated {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #666;
 }
 </style>
 </head>
@@ -53,12 +60,12 @@ h1 {
 <h1>Väderprognoser för Torsby</h1>
 
 <div class="container">
-    <div class="weather-box" id="box1"><div class="loading">Laddar ECMWF...</div></div>
-    <div class="weather-box" id="box2"><div class="loading">Laddar ICON...</div></div>
-    <div class="weather-box" id="box3"><div class="loading">Laddar GFS...</div></div>
-    <div class="weather-box" id="box4"><div class="loading">Laddar UKMO...</div></div>
-    <div class="weather-box" id="box5"><div class="loading">Laddar GEM...</div></div>
-    <div class="weather-box" id="box6"><div class="loading">Laddar MeteoFrance...</div></div>
+    <div class="weather-box" id="box1"><div class="loading">Laddar...</div></div>
+    <div class="weather-box" id="box2"><div class="loading">Laddar...</div></div>
+    <div class="weather-box" id="box3"><div class="loading">Laddar...</div></div>
+    <div class="weather-box" id="box4"><div class="loading">Laddar...</div></div>
+    <div class="weather-box" id="box5"><div class="loading">Laddar...</div></div>
+    <div class="weather-box" id="box6"><div class="loading">Laddar...</div></div>
 </div>
 
 <script>
@@ -69,52 +76,48 @@ const LON = 13.006;
 const models = [
     {
         id: "box1",
-        namn: "ECMWF",
-        model: "ecmwf"
-    },
-    {
-        id: "box2",
-        namn: "ICON",
+        namn: "ICON Global",
         model: "icon_global"
     },
     {
-        id: "box3",
+        id: "box2",
         namn: "GFS",
         model: "gfs_global"
     },
     {
-        id: "box4",
-        namn: "UKMO",
-        model: "ukmo_global"
-    },
-    {
-        id: "box5",
+        id: "box3",
         namn: "GEM",
         model: "gem_global"
     },
     {
-        id: "box6",
+        id: "box4",
+        namn: "JMA",
+        model: "jma_seamless"
+    },
+    {
+        id: "box5",
         namn: "MétéoFrance",
         model: "meteofrance_seamless"
+    },
+    {
+        id: "box6",
+        namn: "Best Match",
+        model: "best_match"
     }
 ];
 
 async function loadWeather(source) {
 
-    try {
+    const url =
+        `https://api.open-meteo.com/v1/forecast` +
+        `?latitude=${LAT}` +
+        `&longitude=${LON}` +
+        `&models=${source.model}` +
+        `&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m` +
+        `&daily=precipitation_probability_max` +
+        `&forecast_days=1`;
 
-        const url =
-            `https://api.open-meteo.com/v1/forecast` +
-            `?latitude=${LAT}` +
-            `&longitude=${LON}` +
-            `&models=${source.model}` +
-            `&current=` +
-            `temperature_2m,` +
-            `relative_humidity_2m,` +
-            `surface_pressure,` +
-            `wind_speed_10m` +
-            `&daily=precipitation_probability_max` +
-            `&forecast_days=1`;
+    try {
 
         const response = await fetch(url);
         const data = await response.json();
@@ -127,46 +130,46 @@ async function loadWeather(source) {
 
         let thunderRisk = "-";
 
-        if (rainRisk !== "-") {
-            thunderRisk = Math.round(rainRisk * 0.6);
-            if (thunderRisk > 100) thunderRisk = 100;
+        if (typeof rainRisk === "number") {
+            thunderRisk = Math.min(Math.round(rainRisk * 0.6), 100);
         }
 
         document.getElementById(source.id).innerHTML = `
             <h2>${source.namn}</h2>
 
             Temperatur:
-            <span class="value">${temp} °C</span>
-            <br><br>
+            <span class="value">${temp} °C</span><br><br>
 
             Vind:
-            <span class="value">${wind} m/s</span>
-            <br><br>
+            <span class="value">${wind} m/s</span><br><br>
 
             Luftfuktighet:
-            <span class="value">${humidity} %</span>
-            <br><br>
+            <span class="value">${humidity} %</span><br><br>
 
             Lufttryck:
-            <span class="value">${pressure} hPa</span>
-            <br><br>
+            <span class="value">${pressure} hPa</span><br><br>
 
             Regnrisk:
-            <span class="value">${rainRisk} %</span>
-            <br><br>
+            <span class="value">${rainRisk} %</span><br><br>
 
             Åskrisk:
             <span class="value">${thunderRisk} %</span>
+
+            <div class="updated">
+                Uppdaterad: ${new Date().toLocaleTimeString("sv-SE")}
+            </div>
         `;
 
     } catch (error) {
 
         document.getElementById(source.id).innerHTML = `
             <h2>${source.namn}</h2>
-            Fel vid hämtning av data.
+            <span style="color:red;">
+                Kunde inte hämta data.
+            </span>
         `;
 
-        console.error(error);
+        console.error(source.namn, error);
     }
 }
 
