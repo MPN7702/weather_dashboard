@@ -18,10 +18,12 @@ header{ background:#1e293b; text-align:center; padding:20px; }
 .period-val { font-size: 14px; font-weight: bold; }
 .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #475569; padding-bottom: 8px; margin-bottom: 10px; }
 .card-title { font-weight: bold; color: #93c5fd; font-size: 16px; }
-.mini-btn { background: #3b82f6; color: white; border: none; padding: 4px 10px; font-size: 12px; border-radius: 4px; cursor: pointer; }
+.mini-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; font-size: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 .mini-btn:hover { background: #2563eb; }
 .main-btn { background: #10b981; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 .main-btn:hover { background: #059669; }
+.sync-btn { background: #6366f1; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 20px; width: 100%; text-transform: uppercase; }
+.sync-btn:hover { background: #4f46e5; }
 .copilot-text { line-height: 1.6; color: #e2e8f0; background: #1e1b4b; padding: 15px; border-radius: 8px; border-left: 4px solid #10b981; }
 .forecast { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; }
 .day { background:#334155; padding:12px; border-radius:8px; text-align:center; }
@@ -37,47 +39,50 @@ header{ background:#1e293b; text-align:center; padding:20px; }
 
 <div class="container">
 
-    <!-- DE 4 SEPARERADE KÄLLORNA I ETT GRIDSYSTEM -->
+    <!-- NY HUVUDKNAPP: Uppdaterar alla källor med ett inbyggt kölappssystem för att undvika blockering -->
+    <button class="sync-btn" onclick="updateAllSourcesWithDelay()">⚡ Synka alla källor säkert (Med fördröjning)</button>
+
+    <!-- DE 4 SEPARERADE KÄLLORNA -->
     <div class="grid-2x2">
         
-        <!-- Box 1: YR/ECMWF -->
+        <!-- Box 1: YR -->
         <div class="institute-card" style="border-top-color: #38bdf8;">
             <div class="card-header">
                 <span class="card-title">🇳🇴 YR Modell (ECMWF)</span>
-                <button class="mini-btn" onclick="fetchSource('yr', 'ecmwf_ifs04', 'hourly_ecmwf_ifs04')">🔄 Refresh</button>
+                <button class="mini-btn" onclick="fetchSource('yr', 'ecmwf_ifs04', 'hourly_ecmwf_ifs04')">🔄 Klicka</button>
             </div>
-            <div id="status-yr" style="font-size:12px; opacity:0.6;">Laddar...</div>
-            <div id="data-yr"></div>
+            <div id="status-yr" style="font-size:12px; opacity:0.6;">Klicka för att hämta...</div>
+            <div id="data-yr"><div style="opacity:0.3; text-align:center; padding:20px;">Ingen data inläst</div></div>
         </div>
 
         <!-- Box 2: SMHI -->
         <div class="institute-card" style="border-top-color: #fbbf24;">
             <div class="card-header">
                 <span class="card-title">🇸🇪 SMHI Modell (ECMWF)</span>
-                <button class="mini-btn" onclick="fetchSource('smhi', 'ecmwf_ifs04', 'hourly_ecmwf_ifs04')">🔄 Refresh</button>
+                <button class="mini-btn" onclick="fetchSource('smhi', 'ecmwf_ifs04', 'hourly_ecmwf_ifs04')">🔄 Klicka</button>
             </div>
-            <div id="status-smhi" style="font-size:12px; opacity:0.6;">Laddar...</div>
-            <div id="data-smhi"></div>
+            <div id="status-smhi" style="font-size:12px; opacity:0.6;">Klicka för att hämta...</div>
+            <div id="data-smhi"><div style="opacity:0.3; text-align:center; padding:20px;">Ingen data inläst</div></div>
         </div>
 
         <!-- Box 3: DWD -->
         <div class="institute-card" style="border-top-color: #a78bfa;">
             <div class="card-header">
                 <span class="card-title">🇩🇪 DWD ICON (Tyskland)</span>
-                <button class="mini-btn" onclick="fetchSource('dwd', 'dwd_icon_global', 'hourly_dwd_icon_global')">🔄 Refresh</button>
+                <button class="mini-btn" onclick="fetchSource('dwd', 'dwd_icon_global', 'hourly_dwd_icon_global')">🔄 Klicka</button>
             </div>
-            <div id="status-dwd" style="font-size:12px; opacity:0.6;">Laddar...</div>
-            <div id="data-dwd"></div>
+            <div id="status-dwd" style="font-size:12px; opacity:0.6;">Klicka för att hämta...</div>
+            <div id="data-dwd"><div style="opacity:0.3; text-align:center; padding:20px;">Ingen data inläst</div></div>
         </div>
 
         <!-- Box 4: GFS -->
         <div class="institute-card" style="border-top-color: #ec4899;">
             <div class="card-header">
                 <span class="card-title">🇺🇸 NOAA GFS (USA)</span>
-                <button class="mini-btn" onclick="fetchSource('gfs', 'gfs_seamless', 'hourly_gfs_seamless')">🔄 Refresh</button>
+                <button class="mini-btn" onclick="fetchSource('gfs', 'gfs_seamless', 'hourly_gfs_seamless')">🔄 Klicka</button>
             </div>
-            <div id="status-gfs" style="font-size:12px; opacity:0.6;">Laddar...</div>
-            <div id="data-gfs"></div>
+            <div id="status-gfs" style="font-size:12px; opacity:0.6;">Klicka för att hämta...</div>
+            <div id="data-gfs"><div style="opacity:0.3; text-align:center; padding:20px;">Ingen data inläst</div></div>
         </div>
 
     </div>
@@ -103,7 +108,7 @@ header{ background:#1e293b; text-align:center; padding:20px; }
     <!-- 7-DAGARS PROGNOS -->
     <div class="card">
         <h2>7-dagars prognos</h2>
-        <div id="forecast" class="forecast">Laddar prognos-grid...</div>
+        <div id="forecast" class="forecast"><button class="mini-btn" onclick="loadForecast()">Hämta 7-dagars prognos</button></div>
     </div>
 
 </div>
@@ -111,16 +116,32 @@ header{ background:#1e293b; text-align:center; padding:20px; }
 <script>
 let loadedData = { yr: null, smhi: null, dwd: null, gfs: null };
 
-// Platt och godkänd URL-struktur för de öppna globala modellerna [2026-08-28]
+// Funktion för att vänta ett visst antal millisekunder (Används i kön)
+const delay = ms => new Promise(res => setTimeout(ms));
+
+// SÄKERT KÖSYSTEM: Uppdaterar rutorna efter varandra med en tidsfördröjning
+async function updateAllSourcesWithDelay() {
+    await fetchSource('yr', 'ecmwf_ifs04', 'hourly_ecmwf_ifs04');
+    await delay(600); // Vänta 0.6 sekunder innan nästa anrop skickas
+    await fetchSource('smhi', 'ecmwf_ifs04', 'hourly_ecmwf_ifs04');
+    await delay(600);
+    await fetchSource('dwd', 'dwd_icon_global', 'hourly_dwd_icon_global');
+    await delay(600);
+    await fetchSource('gfs', 'gfs_seamless', 'hourly_gfs_seamless');
+    await loadForecast();
+    
+    setTimeout(calculateSammanslagning, 500);
+}
+
 async function fetchSource(key, modelParam, hourlyKey) {
     const statusEl = document.getElementById("status-" + key);
     const dataEl = document.getElementById("data-" + key);
-    statusEl.textContent = "Hämtar data...";
+    statusEl.textContent = "Hämtar data från server...";
     
     try {
         const url = "https://open-meteo.com" + modelParam + "&timezone=Europe%2FStockholm";
         const res = await fetch(url);
-        if (!res.ok) throw new Error("Serverfel: " + res.status);
+        if (!res.ok) throw new Error("Status " + res.status);
         const data = await res.json();
         
         const hourly = data[hourlyKey] || data.hourly;
@@ -158,41 +179,7 @@ async function fetchSource(key, modelParam, hourlyKey) {
         }
         
         dataEl.innerHTML = html;
-        statusEl.textContent = "Uppdaterad: " + new Date().toLocaleTimeString("sv-SE");
+        statusEl.textContent = "Klar: " + new Date().toLocaleTimeString("sv-SE");
         
     } catch (err) {
-        statusEl.textContent = "Fel: " + err.message;
-        dataEl.innerHTML = `<div style="color:#f87171;font-size:12px;margin-top:10px;">Modellen uppdateras just nu. Tryck på Refresh igen.</div>`;
-    }
-}
-
-function calculateSammanslagning() {
-    let activeTemps = [], activeWinds = [], activeRains = [];
-    
-    for (const [key, data] of Object.entries(loadedData)) {
-        if (data && data.eftermiddag) {
-            activeTemps.push(data.eftermiddag.t);
-            activeWinds.push(data.eftermiddag.w);
-            activeRains.push(data.eftermiddag.r);
-        }
-    }
-    
-    if (activeTemps.length === 0) {
-        document.getElementById("copilot").innerHTML = "<span>Väntar på att källorna ska svara. Tryck på Refresh-knapparna ovan om det står kvar.</span>";
-        return;
-    }
-    
-    const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
-    const totalRain = activeRains.reduce((a, b) => a + b, 0) / activeRains.length;
-    
-    const finalTemp = avg(activeTemps);
-    const finalWind = avg(activeWinds);
-    
-    document.getElementById("avg-temp").textContent = finalTemp.toFixed(1) + "°C";
-    document.getElementById("avg-rain").textContent = totalRain.toFixed(1) + " mm";
-    document.getElementById("avg-wind").textContent = finalWind.toFixed(1) + " m/s";
-    
-    let text = `<b>COPILOT AI-SAMMANSLAGNING (${activeTemps.length} AKTIVA KÄLLOR INLÄSTA):</b><br>`;
-    text += `Efter att ha läst av mätvärdena från dina aktiva rutor ser vi ett stabilt eftermiddagssnitt på ${finalTemp.toFixed(1)}°C i Torsby. `;
-    
-    if (totalRain > 0.1) {
+        statusEl.textContent = "Blockerad: Vänta 5s";
