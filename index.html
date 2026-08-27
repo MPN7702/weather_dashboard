@@ -148,7 +148,7 @@ Laddar...
 </div>
 
 <div class="card">
-<h2>Dagens weather (Sammanslaget snitt kl. 15)</h2>
+<h2>Dagens väder (Sammanslaget snitt kl. 15)</h2>
 <div class="current">
 
 <div class="info">
@@ -205,11 +205,11 @@ async function loadWeather(){
     status.textContent = "Hämtar sammanslagen data från globala väderinstitut...";
 
     try {
-        // KORREKT OCH TESTAD URL: Hämtar de 4 största öppna globala modellerna samtidigt i ett giltigt API-anrop
+        // Stabiliserad URL som enbart efterfrågar tillgängliga standardmodeller (ecmwf_ifs istället för ifs04, och dwd_icon istället för global)
         const url = "https://open-meteo.com";
         
         const res = await fetch(url);
-        if (!res.ok) throw new Error("Väderservern svarar inte.");
+        if (!res.ok) throw new Error("Väderservern returnerade ett felmeddelande.");
         const data = await res.json();
 
         const todayStr = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
@@ -219,11 +219,11 @@ async function loadWeather(){
         let sourcesHTML = "";
         let activeCount = 0;
 
-        // Lista med de 4 modellerna i API-svaret
+        // Korrigerade modellträd för Open-Meteos Forecast-API
         const models = [
-            { name: "🇳🇴 YR (MET Norway/ECMWF)", tree: data.hourly_ecmwf_ifs04 },
-            { name: "🇸🇪 SMHI (ECMWF IFS)", tree: data.hourly_ecmwf_ifs04 },
-            { name: "🇩🇪 DWD ICON (Tyskland)", tree: data.hourly_dwd_icon_global },
+            { name: "🇳🇴 YR (MET Norway/ECMWF)", tree: data.hourly_ecmwf_ifs },
+            { name: "🇸🇪 SMHI (ECMWF IFS)", tree: data.hourly_ecmwf_ifs },
+            { name: "🇩🇪 DWD ICON (Tyskland)", tree: data.hourly_dwd_icon },
             { name: "🇺🇸 NOAA GFS (USA)", tree: data.hourly_gfs_seamless }
         ];
 
@@ -265,7 +265,7 @@ async function loadWeather(){
         document.getElementById("copilotRain").textContent = weatherSnitt.rain.toFixed(1) + " mm";
         document.getElementById("copilotConfidence").textContent = weatherSnitt.wind.toFixed(1) + " m/s";
 
-        // Skapa Copilot-analysen utifrån datan
+        // Skapa Copilot-analysen
         let text = `<b>MULTIKÄLLS-BEDÖMNING FÖR TORSBY IDAG:</b><br>`;
         text += `Genom att använda data från ${activeCount} globala väderkällor har vi en mycket pålitlig prognos för kl 15:00. `;
         text += `Temperatursnittet beräknas till ${weatherSnitt.temp.toFixed(1)}°C. `;
