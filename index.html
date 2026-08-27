@@ -71,15 +71,12 @@
   </main>
 
   <script>
-    // Ditt användarnamn är nu korrekt inlagt i systemet
-    const GITHUB_USER = "MPN7702";
-    const REPO_NAME = "vader-copilot";
-
     async function loadWeatherData() {
       try {
-        const res = await fetch(`https://githubusercontent.com{GITHUB_USER}/${REPO_NAME}/main/weather.json`);
+        // Vi hämtar filen helt lokalt för att helt runda GitHubs CORS-blockeringar
+        const res = await fetch('weather.json', { cache: "no-store" });
         
-        if (!res.ok) throw new Error("Kunde inte nå weather.json");
+        if (!res.ok) throw new Error("Kunde inte läsa weather.json");
         const weather = await res.json();
 
         document.getElementById("updated-time").innerText = `${weather.info} (Senast synkad kl. ${weather.uppdaterad})`;
@@ -102,7 +99,7 @@
         document.getElementById("k-wind").innerText = `${weather.kvall.wind} m/s`;
         document.getElementById("k-light").innerText = `${weather.kvall.lightning}%`;
 
-        // Copilot-bedömning
+        // Lokal Copilot-bedömning utifrån den sammanslagna datan
         const aiTextElement = document.getElementById("ai-text");
         const badge = document.getElementById("risk-badge");
 
@@ -121,7 +118,7 @@
         aiTextElement.innerText = assessment;
 
       } catch (error) {
-        document.getElementById("ai-text").innerText = "Kunde inte hämta data. Kontrollera att din weather.json-fil har skapats korrekt via GitHub Actions.";
+        document.getElementById("ai-text").innerText = "Kunde inte läsa in instrumentpanelens data. Säkerställ att filen 'weather.json' finns sparad i ditt arkiv.";
         console.error(error);
       }
     }
