@@ -129,7 +129,7 @@ Laddar...
 <div class="current">
 
 <div class="info">
-<div class="label">Temperatur (Kl 15)</div>
+<div class="label">Temperatur (Eftermiddag)</div>
 <div id="copilotTemp" class="value">-</div>
 </div>
 
@@ -172,16 +172,13 @@ Laddar global analys...
 </div>
 
 <script>
-const LAT = 60.1333;
-const LON = 13.0;
-
 async function loadWeather(){
     const status = document.getElementById("status");
     status.textContent = "Hämtar och väger samman 4 globala väderkällor...";
 
     try {
-        // HÄMTAR ALLA 4 MODELLER PARALLELLT (Yr/MetNo, ECMWF, Tyska DWD ICON, Amerikanska GFS)
-        const openMeteoUrl = `https://open-meteo.com{LAT}&longitude=${LON}&hourly=temperature_2m,precipitation,wind_speed_10m,thunderstorm_probability&models=metno,ecmwf_ifs,dwd_icon,gfs_seamless&timezone=Europe%2FStockholm`;
+        // Platt webbadress helt utan mallsträngar för att undvika alla typer av tolkningsfel i webbläsaren
+        const openMeteoUrl = "https://open-meteo.com";
         
         const response = await fetch(openMeteoUrl);
         if(!response.ok) throw new Error("Kunde inte nå väderdatabasen.");
@@ -190,14 +187,12 @@ async function loadWeather(){
         const todayStr = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
         const targetHours = ["10:00", "15:00", "20:00"];
 
-        // Strukturer för att lagra råvärden från de 4 modellerna för att räkna snitt
         let periods = {
             formiddag: { temps: [], winds: [], rains: [], lightnings: [] },
             eftermiddag: { temps: [], winds: [], rains: [], lightnings: [] },
             kvall: { temps: [], winds: [], rains: [], lightnings: [] }
         };
 
-        // Funktion för att trycka in data från Open-Meteos olika modellträd
         const extractModelData = (hourlyTree) => {
             if (!hourlyTree || !hourlyTree.time) return;
             hourlyTree.time.forEach((timeStr, index) => {
@@ -205,20 +200,18 @@ async function loadWeather(){
                 if (date === todayStr && targetHours.includes(time)) {
                     const p = time === "10:00" ? "formiddag" : time === "15:00" ? "eftermiddag" : "kvall";
                     if (hourlyTree.temperature_2m?.[index] !== undefined) periods[p].temps.push(hourlyTree.temperature_2m[index]);
-                    if (hourlyTree.wind_speed_10m?.[index] !== undefined) periods[p].winds.push(hourlyTree.wind_speed_10m[index] / 3.6); // km/h till m/s
+                    if (hourlyTree.wind_speed_10m?.[index] !== undefined) periods[p].winds.push(hourlyTree.wind_speed_10m[index] / 3.6);
                     if (hourlyTree.precipitation?.[index] !== undefined) periods[p].rains.push(hourlyTree.precipitation[index]);
                     if (hourlyTree.thunderstorm_probability?.[index] !== undefined) periods[p].lightnings.push(hourlyTree.thunderstorm_probability[index]);
                 }
             });
         };
 
-        // Kör extraktion för alla 4 källor
         extractModelData(data.hourly_metno || data.hourly);
         extractModelData(data.hourly_ecmwf_ifs);
         extractModelData(data.hourly_dwd_icon);
         extractModelData(data.hourly_gfs_seamless);
 
-        // Beräkna slutgiltiga medelvärden
         const calcAvg = (arr) => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
         const calcMax = (arr) => arr.length ? Math.max(...arr) : 0;
 
@@ -228,17 +221,15 @@ async function loadWeather(){
             kvall: { temp: calcAvg(periods.kvall.temps), wind: calcAvg(periods.kvall.winds), rain: calcAvg(periods.kvall.rains), lightning: calcMax(periods.kvall.lightnings) }
         };
 
-        // 3. MONTERA IN DATA I DINA BOXAR (Huvudfokus eftermiddag kl 15)
         document.getElementById("copilotTemp").textContent = weather.eftermiddag.temp.toFixed(1) + "°";
         document.getElementById("copilotRain").textContent = weather.eftermiddag.rain.toFixed(1) + " mm";
         document.getElementById("copilotThunder").textContent = weather.eftermiddag.lightning.toFixed(0) + "%";
         document.getElementById("copilotConfidence").textContent = weather.eftermiddag.wind.toFixed(1) + " m/s";
 
-        // 4. GENERERA DET AVANCERADE COPILOT-TEXTBLOCKET BASERAT PÅ ALLA 4 KÄLLOR
         let text = `<b>MULTIKÄLLS-BEDÖMNING UTIFRÅN YR, SMHI, DWD OCH GFS:</b><br>`;
         text += `Genom att väga samman data från 4 oberoende meteorologiska superdatorer ser vi en stark samstämmighet för dygnet i Torsby. `;
         text += `Förmiddagen inleds med ett snitt på ${weather.formiddag.temp.toFixed(1)}°C. `;
-        text += `Under eftermiddagen stabiliseras temperaturen runt ${weather.eftermiddag.temp.toFixed(1)}°C. `;
+        text += `Under eftermiddagen stiger temperaturerna till runt ${weather.eftermiddag.temp.toFixed(1)}°C. `;
         
         if (weather.eftermiddag.rain > 0.2 || weather.eftermiddag.lightning > 15) {
             text += `Modellerna flaggar gemensamt för risk för mindre skurar (${weather.eftermiddag.rain.toFixed(1)} mm) med en maximal åskrisk på ${weather.eftermiddag.lightning.toFixed(0)}% i närområdet. `;
@@ -246,11 +237,10 @@ async function loadWeather(){
             text += `Samtliga 4 källor är enade om en torr eftermiddag med mycket låg åskrisk (${weather.eftermiddag.lightning.toFixed(0)}%). `;
         }
         
-        text += `Kvällen blir klar och stabil med ett temperatursnitt på ${weather.kvall.temp.toFixed(1)}°C och svaga, trygga vindar runt ${weather.kvall.wind.toFixed(1)} m/s.`;
+        text += `Kvällen avslutas svalt och behaglig runt ${weather.kvall.temp.toFixed(1)}°C med en lugn vindstyrka på ${weather.kvall.wind.toFixed(1)} m/s.`;
 
         document.getElementById("copilot").innerHTML = text;
 
-        // 5. MONTERA DIN 7-DAGARS PROGNOS-GRID (Använder det globala snittet)
         let forecastHTML = "";
         for(let i = 0; i < 7; i++){
             const date = new Date(data.daily.time[i]);
@@ -276,10 +266,7 @@ async function loadWeather(){
     }
 }
 
-// Kör direkt vid laddning
 loadWeather();
-
-// Uppdatera var 15:e minut
 setInterval(loadWeather, 900000);
 </script>
 
