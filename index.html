@@ -20,7 +20,7 @@
   </header>
 
   <main class="w-full max-w-4xl space-y-6">
-    <!-- Copilot Bedömning (Mörkt tema baserat på din skiss) -->
+    <!-- Copilot Bedömning -->
     <section class="bg-gradient-to-br from-slate-900 to-indigo-950 border border-indigo-500/20 rounded-xl p-6 shadow-xl">
       <div class="flex items-center space-x-2 mb-3">
         <span class="text-xl">✨</span>
@@ -31,7 +31,7 @@
       </p>
     </section>
 
-    <!-- Väderkort för Förmiddag, Eftermiddag, Kväll -->
+    <!-- Väderkort -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-4" id="weather-cards">
       
       <!-- Förmiddag -->
@@ -71,45 +71,49 @@
   </main>
 
   <script>
+    // Ditt användarnamn är nu korrekt inlagt i systemet
+    const GITHUB_USER = "MPN7702";
+    const REPO_NAME = "vader-copilot";
+
     async function loadWeatherData() {
       try {
-        // Eftersom index.html ligger i samma mapp på GitHub, läser vi weather.json direkt lokalt
-        const res = await fetch('weather.json');
+        const res = await fetch(`https://githubusercontent.com{GITHUB_USER}/${REPO_NAME}/main/weather.json`);
+        
+        if (!res.ok) throw new Error("Kunde inte nå weather.json");
         const weather = await res.json();
 
-        // Skriv ut uppdateringstiden
         document.getElementById("updated-time").innerText = `${weather.info} (Senast synkad kl. ${weather.uppdaterad})`;
 
-        // 1. Montera data för Förmiddag
+        // Montera Förmiddag
         document.getElementById("f-temp").innerText = `${weather.formiddag.temp}°C`;
         document.getElementById("f-rain").innerText = `${weather.formiddag.rain} mm`;
         document.getElementById("f-wind").innerText = `${weather.formiddag.wind} m/s`;
         document.getElementById("f-light").innerText = `${weather.formiddag.lightning}%`;
 
-        // 2. Montera data för Eftermiddag
+        // Montera Eftermiddag
         document.getElementById("e-temp").innerText = `${weather.eftermiddag.temp}°C`;
         document.getElementById("e-rain").innerText = `${weather.eftermiddag.rain} mm`;
         document.getElementById("e-wind").innerText = `${weather.eftermiddag.wind} m/s`;
         document.getElementById("e-light").innerText = `${weather.eftermiddag.lightning}%`;
 
-        // 3. Montera data för Kväll
+        // Montera Kväll
         document.getElementById("k-temp").innerText = `${weather.kvall.temp}°C`;
         document.getElementById("k-rain").innerText = `${weather.kvall.rain} mm`;
         document.getElementById("k-wind").innerText = `${weather.kvall.wind} m/s`;
         document.getElementById("k-light").innerText = `${weather.kvall.lightning}%`;
 
-        // 4. Dynamisk lokal Copilot-bedömning baserad på din dataström
+        // Copilot-bedömning
         const aiTextElement = document.getElementById("ai-text");
         const badge = document.getElementById("risk-badge");
 
-        let assessment = `Dagen bjuder på behagliga temperaturer upp emot ${weather.eftermiddag.temp}°C under eftermiddagen. `;
+        let assessment = `Dagen bjuder på temperaturer upp emot ${weather.eftermiddag.temp}°C under eftermiddagen. `;
         
         if (weather.eftermiddag.rain > 0.1 || weather.eftermiddag.lightning > 5) {
-          assessment += `Det finns dock en indikation på lätta skurar (${weather.eftermiddag.rain} mm) och en åskrisk på ${weather.eftermiddag.lightning}% framåt eftermiddagen. Kvällen blir betydligt lugnare och svalare med svaga vindar.`;
+          assessment += `Det finns indikation på lätta skurar (${weather.eftermiddag.rain} mm) och en lokal åskrisk på ${weather.eftermiddag.lightning}% framåt eftermiddagen. Kvällen blir betydligt lugnare med svaga vindar.`;
           badge.className = "px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-yellow-950 text-yellow-400 border border-yellow-800";
           badge.innerText = "Risknivå: Medel";
         } else {
-          assessment += "Ingen nederbörd eller åska väntas, vilket ger ett stabilt och bra väder för utomhusaktiviteter hela dagen.";
+          assessment += "Ingen nederbörd eller åska väntas, vilket ger ett mycket stabilt och bra väder för utomhusaktiviteter hela dagen.";
           badge.className = "px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-green-950 text-green-400 border border-green-800";
           badge.innerText = "Risknivå: Låg";
         }
@@ -117,7 +121,7 @@
         aiTextElement.innerText = assessment;
 
       } catch (error) {
-        document.getElementById("ai-text").innerText = "Kunde inte läsa in instrumentpanelens data. Kontrollera att din weather.json är skapad.";
+        document.getElementById("ai-text").innerText = "Kunde inte hämta data. Kontrollera att din weather.json-fil har skapats korrekt via GitHub Actions.";
         console.error(error);
       }
     }
