@@ -423,10 +423,7 @@ const response = await fetch(url);
 
 if (!response.ok) {
     throw new Error(`API-fel: ${response.status}`);
-}
 
-if (!response.ok) {
-    throw new Error(`API-fel: ${response.status}`);
 }
 
 const data = await response.json();
