@@ -560,7 +560,16 @@ function updateAIBox(hour){
         Math.round(avgRainRisk * 0.6),
         100
     );
+let aiText = "Stabilt väder väntas.";
 
+if(avgRainRisk >= 60)
+    aiText = "Ostadigt väder med hög regnrisk.";
+
+if(avgThunderRisk >= 50)
+    aiText = "Risk för åska.";
+
+if(avgWind >= 10)
+    aiText = "Blåsigt väder väntas.";
     document.getElementById("box7").innerHTML = `
 
         <h2>🧠 AI Konsensus</h2>
@@ -592,7 +601,10 @@ function updateAIBox(hour){
 
         Åskrisk:
         <b>${avgThunderRisk} %</b>
+<br><br>
 
+Bedömning:
+<b>${aiText}</b>
     `;
 
 }
