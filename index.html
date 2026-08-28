@@ -632,7 +632,7 @@ setInterval(async()=>{
 
     forecastIndex++;
 
-if (forecastIndex >= 24)
+if (forecastIndex >= startIndex + 24)
     forecastIndex = startIndex;
 
 showHour(forecastIndex);
