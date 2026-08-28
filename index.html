@@ -434,12 +434,6 @@ console.log(
     h.time?.[hour]
 );
 
-console.log(
-    "Visar:",
-    simulatedDate.toLocaleString("sv-SE"),
-    "Data:",
-    h.time?.[hour]
-);
 const temperature =
 h.temperature_2m?.[hour] ?? "-";
 
@@ -640,22 +634,14 @@ async function startDashboard(){
 
 setInterval(async()=>{
 
-forecastIndex++;
+    forecastIndex++;
 
-if (forecastIndex >= 48)
-    forecastIndex = 0;
+    if (forecastIndex >= 48)
+        forecastIndex = 0;
 
-showHour(forecastIndex);
+    showHour(forecastIndex);
 
-    simulatedDate = new Date(startDate);
-
-    updateDate();
-
-}
-
-
-
-countdown = 5;
+    countdown = 5;
 
 },5000);
 
@@ -682,8 +668,8 @@ function updateDate() {
         day: "numeric"
     };
 
-    const dateText =
-        simulatedDate.toLocaleDateString("sv-SE", options);
+const dateText =
+    new Date().toLocaleDateString("sv-SE", options);
 
     document.getElementById("currentDate").innerHTML =
         dateText.charAt(0).toUpperCase() +
