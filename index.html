@@ -328,8 +328,11 @@ document.getElementById("locationSelect")
     LAT = parseFloat(lat);
     LON = parseFloat(lon);
 
+    forecastIndex = startIndex;
+
     await loadAllData();
     await updateWeeklyForecast();
+    updateDate();
 
 });
 const models = [
