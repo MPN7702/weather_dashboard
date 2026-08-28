@@ -611,28 +611,34 @@ let rainRiskSum = 0;
 let rainAmountSum = 0;
 
     let count = 0;
-
+let weightSum = 0;
     models.forEach(model => {
 
         if(!model.data) return;
 
         const h = model.data.hourly;
 
-        tempSum += h.temperature_2m?.[hour] ?? 0;
+const weight =
+    weights[model.model] ?? 0;
+
+tempSum +=
+    (h.temperature_2m?.[hour] ?? 0)
+    * weight;
         windSum += h.wind_speed_10m?.[hour] ?? 0;
 windDirectionSum +=
     h.wind_direction_10m?.[hour] ?? 0;
         pressureSum += h.surface_pressure?.[hour] ?? 0;
         rainRiskSum += h.precipitation_probability?.[hour] ?? 0;
         rainAmountSum += h.precipitation?.[hour] ?? 0;
-
+weightSum += weight;
         count++;
 
     });
 
     if(count === 0) return;
 
-    const avgTemp = (tempSum / count).toFixed(1);
+const avgTemp =
+    (tempSum / weightSum).toFixed(1);
     let avgTempClass = "temp-mid";
 
 if (avgTemp <= 5)
