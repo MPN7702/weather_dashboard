@@ -379,7 +379,24 @@ document.getElementById("countdown").innerHTML =
 },1000);
 
 }
+function updateDate(){
 
+    const now = new Date();
+
+    const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    };
+
+    const dateText =
+        now.toLocaleDateString("sv-SE", options);
+
+    document.getElementById("currentDate").innerHTML =
+        dateText.charAt(0).toUpperCase() +
+        dateText.slice(1);
+}
 startDashboard();
 
 </script>
