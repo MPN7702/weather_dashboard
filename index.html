@@ -329,11 +329,8 @@ const models = [
 
 ];
 
-let currentHour = new Date().getHours();
-    const startHour = currentHour;
-const startDate = new Date();
+let forecastIndex = new Date().getHours();
 
-let simulatedDate = new Date(startDate);
 let countdown = 5;
 async function loadWeather(source){
 
@@ -405,8 +402,11 @@ function getWindArrow(degrees) {
     
 function showHour(hour){
 
+const forecastTime =
+    models[0]?.data?.hourly?.time?.[hour];
+
 document.getElementById("currentHour").innerHTML =
-`Tid: ${String(hour).padStart(2,"0")}:00`;
+`Tid: ${forecastTime}`;
 
 let temperatures = [];
 
@@ -643,7 +643,7 @@ await Promise.all(
 models.map(loadWeather)
 );
 
-showHour(currentHour);
+showHour(forecastIndex);
 
 }
 
@@ -655,23 +655,12 @@ async function startDashboard(){
 
 setInterval(async()=>{
 
-currentHour++;
+forecastIndex++;
 
-if(currentHour > 23){
+if (forecastIndex >= 48)
+    forecastIndex = 0;
 
-    currentHour = 0;
-
-    simulatedDate.setDate(
-        simulatedDate.getDate() + 1
-    );
-
-    updateDate();
-
-    await loadAllData();
-
-}
-
-if(currentHour === startHour){
+showHour(forecastIndex);
 
     simulatedDate = new Date(startDate);
 
@@ -679,7 +668,7 @@ if(currentHour === startHour){
 
 }
 
-showHour(currentHour);
+
 
 countdown = 5;
 
