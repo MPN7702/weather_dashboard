@@ -1,9 +1,6 @@
 name: Weather Update
 
 on:
-  schedule:
-    - cron: "0 * * * *"
-
   workflow_dispatch:
 
 permissions:
@@ -19,15 +16,18 @@ jobs:
 
       - name: Hämta väderdata
         run: |
-          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=icon_global&hourly=temperature_2m" -o weather.json
+          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&hourly=temperature_2m" -o weather.json
 
-      - name: Commit fil
+      - name: Visa fil
+        run: cat weather.json
+
+      - name: Commit
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
           git add weather.json
 
-          git diff --staged --quiet || git commit -m "Uppdatera väderdata"
+          git diff --staged --quiet || git commit -m "Update weather"
 
           git push
