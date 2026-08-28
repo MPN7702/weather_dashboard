@@ -613,6 +613,8 @@ async function startDashboard(){
 
     updateDate();
 
+    setInterval(updateDate, 60000);
+
     await loadAllData();
 
 setInterval(async()=>{
