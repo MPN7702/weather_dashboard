@@ -638,9 +638,11 @@ setInterval(async()=>{
     if (forecastIndex >= 48)
         forecastIndex = 0;
 
-    showHour(forecastIndex);
+showHour(forecastIndex);
 
-    countdown = 5;
+updateDate();
+
+countdown = 5;
 
 },5000);
 
