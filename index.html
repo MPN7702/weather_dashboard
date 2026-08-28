@@ -427,7 +427,7 @@ if(!model.data) return;
 const h = model.data.hourly;
 console.log(
     "Visar:",
-    simulatedDate.toISOString(),
+    simulatedDate.toLocaleString("sv-SE"),
     "Data:",
     h.time?.[hour]
 );
