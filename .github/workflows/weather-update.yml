@@ -35,3 +35,19 @@ jobs:
 
       - name: Visa filer
         run: ls -la temp
+      - name: Skapa weather.json
+        run: |
+          echo '{' > weather.json
+          echo '"updated":"test"' >> weather.json
+          echo '}' >> weather.json
+
+      - name: Spara till GitHub
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add weather.json
+
+          git commit -m "Update weather cache" || true
+
+          git push
