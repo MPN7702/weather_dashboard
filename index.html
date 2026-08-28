@@ -333,8 +333,7 @@ function getWindArrow(degrees) {
 }
     
 function showHour(hour){
-const rainRisk =
-    h.precipitation_probability?.[hour] ?? "-";
+
 document.getElementById("currentHour").innerHTML =
 `Timme: ${String(hour).padStart(2,"0")}:00`;
 
@@ -376,8 +375,12 @@ h.surface_pressure?.[hour] ?? "-";
 const rainRisk =
 h.precipitation_probability?.[hour] ?? "-";
 
+const rainAmount =
+h.precipitation?.[hour] ?? 0;
+
 const thunderRisk =
 Math.min(Math.round(rainRisk * 0.6),100);
+
 let rainAmountClass = "rain-low";
 
 if (rainAmount >= 2)
@@ -385,6 +388,7 @@ if (rainAmount >= 2)
 
 if (rainAmount >= 5)
     rainAmountClass = "rain-high";
+
 let trend = "➡";
 
 if(nextTemperature > temperature)
