@@ -351,6 +351,12 @@ const data = await response.json();
 
 source.data = data;
 
+console.log(
+    source.namn,
+    data.hourly.time[0],
+    data.hourly.time[data.hourly.time.length - 1]
+);
+
 }
 catch(error){
 
