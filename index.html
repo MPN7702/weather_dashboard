@@ -619,7 +619,6 @@ let pressureSum = 0;
 let rainRiskSum = 0;
 let rainAmountSum = 0;
 
-let count = 0;
 let weightSum = 0;
     models.forEach(model => {
 
@@ -649,11 +648,10 @@ rainAmountSum +=
     (h.precipitation?.[hour] ?? 0) * weight;
 
 weightSum += weight;
-count++;
 
     });
 
-    if(count === 0) return;
+if(weightSum === 0) return;
 
 const avgTemp =
     (tempSum / weightSum).toFixed(1);
