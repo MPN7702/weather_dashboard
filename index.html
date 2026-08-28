@@ -278,13 +278,7 @@ const url =
 `?latitude=${LAT}` +
 `&longitude=${LON}` +
 `&models=${source.model}` +
-`&hourly=` +
-`temperature_2m,` +
-`relative_humidity_2m,` +
-`surface_pressure,` +
-`wind_speed_10m,` +
-`wind_direction_10m,` +
-`precipitation_probability` +
+&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation+
 `&forecast_days=1`;
 
 const response = await fetch(url);
@@ -339,7 +333,8 @@ function getWindArrow(degrees) {
 }
     
 function showHour(hour){
-
+const rainRisk =
+    h.precipitation_probability?.[hour] ?? "-";
 document.getElementById("currentHour").innerHTML =
 `Timme: ${String(hour).padStart(2,"0")}:00`;
 
@@ -383,7 +378,13 @@ h.precipitation_probability?.[hour] ?? "-";
 
 const thunderRisk =
 Math.min(Math.round(rainRisk * 0.6),100);
+let rainAmountClass = "rain-low";
 
+if (rainAmount >= 2)
+    rainAmountClass = "rain-mid";
+
+if (rainAmount >= 5)
+    rainAmountClass = "rain-high";
 let trend = "➡";
 
 if(nextTemperature > temperature)
@@ -436,6 +437,11 @@ Regnrisk:
 <span class="${rainClass}">
 <b>${rainRisk} %</b>
 </span>
+
+<br><br>
+
+Regnmängd:
+<b>${rainAmount} mm</b>
 
 <br><br>
 
