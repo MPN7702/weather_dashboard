@@ -24,6 +24,11 @@ jobs:
           mkdir -p temp/Stollet
           mkdir -p temp/Likenas
           mkdir -p temp/Ostmark
+          mkdir -p temp/Holjes
+          mkdir -p temp/Ambjorby
+          mkdir -p temp/Varnas
+          mkdir -p temp/Vitsand
+          mkdir -p temp/Branas
 
           models=(
             icon_global
@@ -60,6 +65,11 @@ jobs:
           download_location Stollet 60.416 13.256
           download_location Likenas 60.640 13.220
           download_location Ostmark 60.314 12.996
+          download_location Holjes 60.815 12.790
+          download_location Ambjorby 60.480 13.115
+          download_location Varnas 60.285 13.173
+          download_location Vitsand 60.542 13.017
+          download_location Branas 60.689 13.189
 
       - name: Skapa weather.json
         run: |
@@ -115,6 +125,21 @@ jobs:
           echo ',' >> weather.json
 
           build_location Ostmark
+          echo ',' >> weather.json
+
+          build_location Holjes
+          echo ',' >> weather.json
+
+          build_location Ambjorby
+          echo ',' >> weather.json
+
+          build_location Varnas
+          echo ',' >> weather.json
+
+          build_location Vitsand
+          echo ',' >> weather.json
+
+          build_location Branas
 
           echo '}' >> weather.json
 
