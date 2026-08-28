@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -23,16 +22,16 @@ jobs:
           mkdir -p temp
 
           locations=(
-            "Torsby:60.136:13.006"
-            "Sysslebäck:60.729:13.006"
-            "Stöllet:60.416:13.256"
-            "Likenäs:60.640:13.220"
-            "Östmark:60.314:12.996"
-            "Höljes:60.815:12.790"
-            "Ambjörby:60.480:13.115"
-            "Värnäs:60.285:13.173"
-            "Vitsand:60.542:13.017"
-            "Branäs:60.689:13.189"
+            "Torsby|60.136|13.006"
+            "Syssleback|60.729|13.006"
+            "Stollet|60.416|13.256"
+            "Likenas|60.640|13.220"
+            "Ostmark|60.314|12.996"
+            "Holjes|60.815|12.790"
+            "Ambjorby|60.480|13.115"
+            "Varnas|60.285|13.173"
+            "Vitsand|60.542|13.017"
+            "Branas|60.689|13.189"
           )
 
           models=(
@@ -46,43 +45,43 @@ jobs:
 
           for loc in "${locations[@]}"
           do
-            IFS=":" read -r name lat lon <<< "$loc"
+            name=$(echo "$loc" | cut -d'|' -f1)
+            lat=$(echo "$loc" | cut -d'|' -f2)
+            lon=$(echo "$loc" | cut -d'|' -f3)
 
             mkdir -p "temp/$name"
 
             for model in "${models[@]}"
             do
-              curl -s \
+              curl -L -s \
               "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&models=$model&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" \
               -o "temp/$name/$model.json"
             done
 
-            curl -s \
+            curl -L -s \
             "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto&forecast_days=7" \
             -o "temp/$name/weekly.json"
-
           done
 
-      - name: Visa filer
-        run: find temp -type f | sort
-
-      - name: Skapa weather.json
+      - name: Bygg weather.json
         run: |
-          echo '{' > weather.json
+          cat > weather.json << 'EOF'
+          {
+          EOF
 
-          echo '"updated":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'",' >> weather.json
+          echo "\"updated\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"," >> weather.json
 
           locations=(
             "Torsby"
-            "Sysslebäck"
-            "Stöllet"
-            "Likenäs"
-            "Östmark"
-            "Höljes"
-            "Ambjörby"
-            "Värnäs"
+            "Syssleback"
+            "Stollet"
+            "Likenas"
+            "Ostmark"
+            "Holjes"
+            "Ambjorby"
+            "Varnas"
             "Vitsand"
-            "Branäs"
+            "Branas"
           )
 
           total=${#locations[@]}
@@ -130,13 +129,13 @@ jobs:
 
           echo '}' >> weather.json
 
-      - name: Spara till GitHub
+      - name: Commit changes
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
           git add weather.json
 
-          git commit -m "Update weather cache" || true
+          git commit -m "Update weather cache" || echo "No changes"
 
           git push
