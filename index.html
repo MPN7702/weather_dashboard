@@ -331,7 +331,7 @@ const models = [
 
 let currentHour = new Date().getHours();
 let countdown = 5;
-
+let simulatedDate = new Date();
 async function loadWeather(source){
 
 try{
@@ -617,8 +617,6 @@ async function startDashboard(){
 
     updateDate();
 
-    setInterval(updateDate, 60000);
-
     await loadAllData();
 
 setInterval(async()=>{
@@ -628,6 +626,10 @@ currentHour++;
 if(currentHour > 23){
 
     currentHour = 0;
+
+    simulatedDate.setDate(
+        simulatedDate.getDate() + 1
+    );
 
     updateDate();
 
@@ -657,8 +659,6 @@ document.getElementById("countdown").innerHTML =
 
 function updateDate() {
 
-    const now = new Date();
-
     const options = {
         weekday: "long",
         year: "numeric",
@@ -667,7 +667,7 @@ function updateDate() {
     };
 
     const dateText =
-        now.toLocaleDateString("sv-SE", options);
+        simulatedDate.toLocaleDateString("sv-SE", options);
 
     document.getElementById("currentDate").innerHTML =
         dateText.charAt(0).toUpperCase() +
