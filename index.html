@@ -233,6 +233,7 @@ const dayDate =
                 data.daily.precipitation_probability_max[i];
 const rainAmount =
     data.daily.precipitation_sum[i];
+            let rainHours = [];
 const windSpeed =
     (data.daily.wind_speed_10m_mean[i] * WIND_FACTOR)
     .toFixed(1);
@@ -252,7 +253,24 @@ if (rainAmount >= 20)
     thunderRisk += 15;
 
 thunderRisk = Math.min(thunderRisk, 100);
-let assessment = "";
+const dayString =
+    data.daily.time[i];
+
+for(let h = 0; h < 24; h++){
+
+    const hourlyIndex = i * 24 + h;
+
+    const rain =
+        data.hourly?.precipitation?.[hourlyIndex] ?? 0;
+
+    if(rain > 0.2){
+
+        rainHours.push(
+            h.toString().padStart(2,"0") + ":00"
+        );
+    }
+}
+            let assessment = "";
             assessment = "Normala väderförhållanden väntas.";
 if (rainRisk >= 80) {
     assessment +=
@@ -300,6 +318,13 @@ ${weekday} ${dayDate}
 
 💧 Regnmängd:
 <strong>${rainAmount} mm</strong><br>
+
+🌧️ Regntider:
+<strong>
+${rainHours.length
+    ? rainHours.join(", ")
+    : "Inget regn väntas"}
+</strong><br>
 
 ⚡ Åskrisk:
 <strong>${thunderRisk}%</strong><br>
