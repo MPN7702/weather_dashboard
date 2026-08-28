@@ -196,14 +196,25 @@ async function updateWeeklyForecast() {
 
     try {
 
-        const response =
-            await fetch("weather.json");
+let cache;
 
-        const cache =
-            await response.json();
+if(window.cachedWeather){
 
-        const data =
-            cache.weekly;
+    cache = window.cachedWeather;
+
+}else{
+
+    const response =
+        await fetch("weather.json");
+
+    cache =
+        await response.json();
+
+    window.cachedWeather = cache;
+}
+
+const data =
+    cache.best_match;
 
         if (!data || !data.daily)
             return;
@@ -415,6 +426,8 @@ async function loadWeather(source){
         source.data =
             window.cachedWeather[source.model];
 
+    }
+    catch(error){
 
         console.error(error);
 
@@ -424,16 +437,6 @@ async function loadWeather(source){
 
     }
 
-}
-catch(error){
-
-console.error(error);
-
-document.getElementById(source.id).innerHTML =
-`<h2>${source.namn}</h2>
-Fel vid hämtning av data`;
-
-}
 }
 function getWindDirection(degrees) {
 
@@ -475,8 +478,11 @@ function getWindArrow(degrees) {
     
 function showHour(hour){
 
-const forecastTime =
-    models[0]?.data?.hourly?.time?.[hour];
+    if(!models[0]?.data?.hourly)
+        return;
+
+    const forecastTime =
+        models[0]?.data?.hourly?.time?.[hour];
 
 const displayTime =
     new Date(forecastTime)
@@ -616,8 +622,11 @@ updateAIBox(hour);
 
 function updateAIBox(hour){
 
-const forecastTime =
-    models[0]?.data?.hourly?.time?.[hour];
+    if(!models[0]?.data?.hourly)
+        return;
+
+    const forecastTime =
+        models[0]?.data?.hourly?.time?.[hour];
 
 const displayTime =
     new Date(forecastTime)
