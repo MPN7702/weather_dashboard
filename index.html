@@ -461,8 +461,23 @@ function getWindArrow(degrees) {
     
 function showHour(hour){
 
+function updateAIBox(hour){
+
 const forecastTime =
     models[0]?.data?.hourly?.time?.[hour];
+
+if (!forecastTime) return;
+
+const displayTime =
+    new Date(forecastTime)
+        .toLocaleString("sv-SE", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+let tempSum = 0;
+let windSum = 0;
+...
 
 const displayTime =
     new Date(forecastTime)
