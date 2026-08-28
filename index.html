@@ -626,11 +626,32 @@ if (avgTemp >= 20)
     const avgWind = (windSum / count).toFixed(1);
     const avgPressure = (pressureSum / count).toFixed(1);
     const avgRainRisk = Math.round(rainRiskSum / count);
+    let avgRainClass = "rain-low";
+
+if (avgRainRisk >= 30)
+    avgRainClass = "rain-mid";
+
+if (avgRainRisk >= 70)
+    avgRainClass = "rain-high";
     const avgRainAmount = (rainAmountSum / count).toFixed(1);
+    let avgRainAmountClass = "rain-low";
+
+if (avgRainAmount >= 2)
+    avgRainAmountClass = "rain-mid";
+
+if (avgRainAmount >= 5)
+    avgRainAmountClass = "rain-high";
     const avgThunderRisk = Math.min(
         Math.round(avgRainRisk * 0.6),
         100
     );
+    let avgThunderClass = "rain-low";
+
+if (avgThunderRisk >= 30)
+    avgThunderClass = "rain-mid";
+
+if (avgThunderRisk >= 70)
+    avgThunderClass = "rain-high";
     let analysis = "";
 
 if (avgTemp >= 25)
@@ -712,18 +733,25 @@ Temperatur:
 
         <br><br>
 
-        Regnrisk:
-        <b>${avgRainRisk} %</b>
+Regnrisk:
+<span class="${avgRainClass}">
+<b>${avgRainRisk} %</b>
+</span>
 
         <br><br>
 
-        Regnmängd:
-        <b>${avgRainAmount} mm</b>
+Regnmängd:
+<span class="${avgRainAmountClass}">
+<b>${avgRainAmount} mm</b>
+</span>
 
         <br><br>
 
 Åskrisk:
+<span class="${avgThunderClass}">
 <b>${avgThunderRisk} %</b>
+</span>
+
 
 <br><br>
 
