@@ -22,6 +22,8 @@ jobs:
           mkdir -p temp/Torsby
           mkdir -p temp/Syssleback
           mkdir -p temp/Stollet
+          mkdir -p temp/Likenas
+          mkdir -p temp/Ostmark
 
           models=(
             icon_global
@@ -56,6 +58,8 @@ jobs:
           download_location Torsby 60.136 13.006
           download_location Syssleback 60.729 13.006
           download_location Stollet 60.416 13.256
+          download_location Likenas 60.640 13.220
+          download_location Ostmark 60.314 12.996
 
       - name: Skapa weather.json
         run: |
@@ -105,6 +109,12 @@ jobs:
           echo ',' >> weather.json
 
           build_location Stollet
+          echo ',' >> weather.json
+
+          build_location Likenas
+          echo ',' >> weather.json
+
+          build_location Ostmark
 
           echo '}' >> weather.json
 
