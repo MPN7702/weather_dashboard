@@ -591,6 +591,7 @@ function updateAIBox(hour){
 
 let tempSum = 0;
 let windSum = 0;
+let windDirectionSum = 0;
 let windDirSum = 0;
 let pressureSum = 0;
 let rainRiskSum = 0;
@@ -606,6 +607,8 @@ let rainAmountSum = 0;
 
         tempSum += h.temperature_2m?.[hour] ?? 0;
         windSum += h.wind_speed_10m?.[hour] ?? 0;
+        windDirectionSum +=
+    h.wind_direction_10m?.[hour] ?? 0;
         windDirSum += h.wind_direction_10m?.[hour] ?? 0;
         pressureSum += h.surface_pressure?.[hour] ?? 0;
         rainRiskSum += h.precipitation_probability?.[hour] ?? 0;
@@ -626,6 +629,8 @@ if (avgTemp <= 5)
 if (avgTemp >= 20)
     avgTempClass = "temp-hot";
     const avgWind = (windSum / count).toFixed(1);
+    const avgWindDirection =
+    windDirectionSum / count;
     const avgWindDirection =
     windDirSum / count;
     let windTrend = "➡";
