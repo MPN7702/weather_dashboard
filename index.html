@@ -371,16 +371,17 @@ setInterval(()=>{
 
 countdown--;
 
-if(countdown < 0)
-countdown = 5;
+if (countdown < 0)
+    countdown = 5;
 
 document.getElementById("countdown").innerHTML =
-`Nästa timme om ${countdown} sek`;
+    `Nästa timme om ${countdown} sek`;
 
-},1000);
+}, 1000);
 
 }
-function updateDate(){
+
+function updateDate() {
 
     const now = new Date();
 
@@ -397,16 +398,11 @@ function updateDate(){
     document.getElementById("currentDate").innerHTML =
         dateText.charAt(0).toUpperCase() +
         dateText.slice(1);
+
 }
-<script>
 
 function startDashboard() {
     // kod
 }
 
 startDashboard();
-
-</script>
-
-</body>
-</html>
