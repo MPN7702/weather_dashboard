@@ -534,6 +534,9 @@ function showHour(hour){
 const forecastTime =
     models[0]?.data?.hourly?.time?.[hour];
 
+if (!forecastTime)
+    return;
+
 const displayTime =
     new Date(forecastTime)
         .toLocaleString("sv-SE", {
@@ -674,6 +677,9 @@ function updateAIBox(hour){
 
 const forecastTime =
     models[0]?.data?.hourly?.time?.[hour];
+
+if (!forecastTime)
+    return;
 
 const displayTime =
     new Date(forecastTime)
@@ -893,7 +899,6 @@ ${analysis}
     `;
 
 }
-updateWeeklyForecast();
 async function loadAllData(){
 
 await Promise.all(
@@ -965,6 +970,7 @@ function updateDate() {
 }
 
 startDashboard();
+updateWeeklyForecast();
 
 </script>
 
