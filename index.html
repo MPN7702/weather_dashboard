@@ -156,17 +156,6 @@ Tid: 00:00
 Nästa timme om 5 sek
 </div>
 
-<div class="container">
-
-    <div class="weather-box" id="box1"></div>
-    <div class="weather-box" id="box2"></div>
-    <div class="weather-box" id="box3"></div>
-    <div class="weather-box" id="box4"></div>
-    <div class="weather-box" id="box5"></div>
-    <div class="weather-box" id="box6"></div>
-
-</div>
-
 <div class="weather-box" id="box7" style="margin-top:20px;">
     AI analyserar...
 </div>
@@ -193,12 +182,6 @@ Nästa timme om 5 sek
 
 <script>
 async function updateWeeklyForecast() {
-
-const lat = LAT;
-const lon = LON;
-
-    const url =
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto`;
 
     try {
 
@@ -237,8 +220,7 @@ const windSpeed =
 const windGust =
     (data.daily.wind_gusts_10m_mean[i] * WIND_FACTOR)
     .toFixed(1);
-            const pressure =
-    data.daily.surface_pressure_mean[i];
+const pressure = "-";
             let thunderRisk =
     Math.min(Math.round(rainRisk * 0.6), 100);
 
@@ -341,46 +323,6 @@ document.getElementById("locationSelect")
 
     const WIND_FACTOR = 0.5;
 
-const models = [
-
-{
-    id:"box1",
-    namn:"Vädertjänst Tyskland",
-    model:"icon_global",
-    data:null
-},
-{
-    id:"box2",
-    namn:"Vädertjänst USA",
-    model:"gfs_global",
-    data:null
-},
-{
-    id:"box3",
-    namn:"Vädertjänst Kanada",
-    model:"gem_global",
-    data:null
-},
-{
-    id:"box4",
-    namn:"Vädertjänst Europa",
-    model:"icon_eu",
-    data:null
-},
-{
-    id:"box5",
-    namn:"Vädertjänst Danmark",
-    model:"dmi_seamless",
-    data:null
-},
-{
-    id:"box6",
-    namn:"Mixad vädertjänst",
-    model:"best_match",
-    data:null
-}
-
-];
 
 const startIndex = new Date().getHours();
 let forecastIndex = startIndex;
@@ -390,14 +332,14 @@ async function loadWeather() {
 
     try {
 
-        const url =
-            `https://api.open-meteo.com/v1/forecast` +
-            `?latitude=${LAT}` +
-            `&longitude=${LON}` +
-            `&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation` +
-            `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean` +
-            `&forecast_days=7` +
-            `&timezone=auto`;
+const url =
+`https://api.open-meteo.com/v1/forecast` +
+`?latitude=${LAT}` +
+`&longitude=${LON}` +
+`&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation` +
+`&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean` +
+`&forecast_days=7` +
+`&timezone=auto`;
 
         const response = await fetch(url);
 
@@ -472,13 +414,12 @@ document.getElementById("currentHour").innerHTML =
 
 if (!weatherData?.hourly)
     return;
-
-if (!weatherData?.hourly)
-return;
  
 const h = weatherData.hourly;
-if (!weatherData?.hourly)
-    return;
+
+const temperature =
+h.temperature_2m?.[hour] ?? "-";
+
 const nextTemperature =
 h.temperature_2m?.[hour + 1] ?? temperature;
 
@@ -595,7 +536,7 @@ const displayTime =
         });
 
 
-  const h = weatherData.hourly;
+const h = weatherData.hourly;
 
 const avgTemp =
     Number(h.temperature_2m?.[hour] ?? 0);
@@ -603,8 +544,23 @@ const avgTemp =
 const avgWind =
     Number((h.wind_speed_10m?.[hour] ?? 0) * WIND_FACTOR);
 
+const avgWindDirection =
+    Number(h.wind_direction_10m?.[hour] ?? 0);
+
+const avgPressure =
+    Number(h.surface_pressure?.[hour] ?? 0);
+
+const avgRainRisk =
+    Number(h.precipitation_probability?.[hour] ?? 0);
+
+const avgRainAmount =
+    Number(h.precipitation?.[hour] ?? 0);
 
 let avgTempClass = "temp-mid";
+
+let avgRainClass = "rain-low";
+
+let avgRainAmountClass = "rain-low";
 
 
 if (avgTemp <= 5)
@@ -613,28 +569,11 @@ if (avgTemp <= 5)
 if (avgTemp >= 20)
     avgTempClass = "temp-hot";
 
-
-const avgWindDirection =
-    windDirectionSum / weightSum;
-
-if (isNaN(avgWindDirection))
-    return;
-
-const avgPressure =
-    (pressureSum / weightSum).toFixed(1);
-const avgRainRisk =
-    Math.round(rainRiskSum / weightSum);
-    let avgRainClass = "rain-low";
-
 if (avgRainRisk >= 30)
     avgRainClass = "rain-mid";
 
 if (avgRainRisk >= 70)
     avgRainClass = "rain-high";
-const avgRainAmount =
-    (rainAmountSum / weightSum).toFixed(1);
-    let avgRainAmountClass = "rain-low";
-
 if (avgRainAmount >= 2)
     avgRainAmountClass = "rain-mid";
 
