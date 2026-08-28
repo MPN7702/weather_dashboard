@@ -62,10 +62,13 @@ jobs:
           cat temp/dmi_seamless.json >> weather.json
           echo ',' >> weather.json
 
-          echo '"best_match":' >> weather.json
-          cat temp/best_match.json >> weather.json
+echo '"best_match":' >> weather.js**
+cat temp/best_match.json >> weat**r.json
+echo ',' >> weather.json
 
-          echo '}' >> weather.json
+**ho '"weekly":' >> weather.json
+ca**temp/weekly.json >> weather.json
+**cho '}' >> weather.json
 `
 
 echo '"weekly":' >> weather.json
