@@ -348,11 +348,7 @@ const data = await response.json();
 
 source.data = data;
 
-console.log(
-    source.namn,
-    data.hourly.time[0],
-    data.hourly.time[data.hourly.time.length - 1]
-);
+
 
 }
 catch(error){
@@ -413,7 +409,6 @@ let temperatures = [];
 models.forEach(model=>{
 
 if(!model.data) return;
-console.log(model.namn, model.data);
 temperatures.push(
 model.data.hourly.temperature_2m[hour]
 );
@@ -426,12 +421,6 @@ if(!model.data) return;
 
 const h = model.data.hourly;
 
-console.log(
-    "forecastIndex:",
-    forecastIndex,
-    "Prognostid:",
-    h.time?.[hour]
-);
 
 const temperature =
 h.temperature_2m?.[hour] ?? "-";
