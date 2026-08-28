@@ -37,7 +37,34 @@ jobs:
         run: ls -la temp
       - name: Skapa weather.json
         run: |
-          cp temp/best_match.json weather.json
+          echo '{' > weather.json
+
+          echo '"updated":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'",' >> weather.json
+
+          echo '"icon_global":' >> weather.json
+          cat temp/icon_global.json >> weather.json
+          echo ',' >> weather.json
+
+          echo '"gfs_global":' >> weather.json
+          cat temp/gfs_global.json >> weather.json
+          echo ',' >> weather.json
+
+          echo '"gem_global":' >> weather.json
+          cat temp/gem_global.json >> weather.json
+          echo ',' >> weather.json
+
+          echo '"icon_eu":' >> weather.json
+          cat temp/icon_eu.json >> weather.json
+          echo ',' >> weather.json
+
+          echo '"dmi_seamless":' >> weather.json
+          cat temp/dmi_seamless.json >> weather.json
+          echo ',' >> weather.json
+
+          echo '"best_match":' >> weather.json
+          cat temp/best_match.json >> weather.json
+
+          echo '}' >> weather.json
 
       - name: Spara till GitHub
         run: |
