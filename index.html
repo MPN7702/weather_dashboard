@@ -428,7 +428,10 @@ function getWindDirection(degrees) {
 }
 function getWindArrow(degrees) {
 
-const arrows = [
+    if (degrees === undefined || degrees === null)
+        return "";
+
+    const arrows = [
     "⬆️", // N
     "↗️", // NO
     "➡️", // O
@@ -626,10 +629,15 @@ if (avgTemp <= 5)
 
 if (avgTemp >= 20)
     avgTempClass = "temp-hot";
-    const avgWind = (windSum / count).toFixed(1);
+const avgWind = (windSum / count).toFixed(1);
+
 const avgWindDirection =
     windDirectionSum / count;
-    let windTrend = "➡";
+
+if (isNaN(avgWindDirection))
+    return;
+
+let windTrend = "➡";
 
 if (avgWind >= 10)
     windTrend = "⬆";
@@ -736,11 +744,8 @@ Temperatur:
         <br><br>
 
 Vind:
-<b>
-${avgWind} m/s
-${getWindArrow(avgWindDirection)}
-${getWindDirection(avgWindDirection)}
-</b>
+Vind:
+<b>${avgWind} m/s ${getWindArrow(avgWindDirection)} ${getWindDirection(avgWindDirection)}</b>
 
         <br><br>
 
