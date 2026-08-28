@@ -332,9 +332,6 @@ const models = [
 const startIndex = new Date().getHours();
 let forecastIndex = startIndex;
 
-let forecastIndex = startIndex;
-
-
 let countdown = 5;
 async function loadWeather(source){
 
@@ -634,8 +631,6 @@ async function startDashboard(){
 setInterval(async()=>{
 
     forecastIndex++;
-
-forecastIndex++;
 
 if (forecastIndex > 23)
     forecastIndex = 0;
