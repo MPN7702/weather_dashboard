@@ -18,24 +18,49 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Hämta alla modeller
+      - name: Hämta väderdata
         run: |
           mkdir -p temp
 
-          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=icon_global&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" -o temp/icon_global.json
+          locations=(
+            "Torsby:60.136:13.006"
+            "Sysslebäck:60.729:13.006"
+            "Stöllet:60.416:13.256"
+            "Likenäs:60.640:13.220"
+            "Östmark:60.314:12.996"
+            "Höljes:60.815:12.790"
+            "Ambjörby:60.480:13.115"
+            "Värnäs:60.285:13.173"
+            "Vitsand:60.542:13.017"
+            "Branäs:60.689:13.189"
+          )
 
-          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=gfs_global&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" -o temp/gfs_global.json
+          models=(
+            icon_global
+            gfs_global
+            gem_global
+            icon_eu
+            dmi_seamless
+            best_match
+          )
 
-          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=gem_global&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" -o temp/gem_global.json
+          for loc in "${locations[@]}"
+          do
+            IFS=":" read name lat lon <<< "$loc"
 
-          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=icon_eu&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" -o temp/icon_eu.json
+            mkdir -p "temp/$name"
 
-          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=dmi_seamless&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" -o temp/dmi_seamless.json
+            for model in "${models[@]}"
+            do
+              curl -s \
+              "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&models=$model&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" \
+              -o "temp/$name/$model.json"
+            done
 
-          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=best_match&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" -o temp/best_match.json
-
-          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto&forecast_days=7" -o temp/weekly.json
-
+            curl -s \
+            "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto&forecast_days=7" \
+            -o "temp/$name/weekly.json"
+          done
       - name: Visa filer
         run: ls -la temp
 
@@ -45,32 +70,61 @@ jobs:
 
           echo '"updated":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'",' >> weather.json
 
-          echo '"icon_global":' >> weather.json
-          cat temp/icon_global.json >> weather.json
-          echo ',' >> weather.json
+          locations=(
+            "Torsby"
+            "Sysslebäck"
+            "Stöllet"
+            "Likenäs"
+            "Östmark"
+            "Höljes"
+            "Ambjörby"
+            "Värnäs"
+            "Vitsand"
+            "Branäs"
+          )
 
-          echo '"gfs_global":' >> weather.json
-          cat temp/gfs_global.json >> weather.json
-          echo ',' >> weather.json
+          for ((i=0; i<${#locations[@]}; i++))
+          do
 
-          echo '"gem_global":' >> weather.json
-          cat temp/gem_global.json >> weather.json
-          echo ',' >> weather.json
+            ort="${locations[$i]}"
 
-          echo '"icon_eu":' >> weather.json
-          cat temp/icon_eu.json >> weather.json
-          echo ',' >> weather.json
+            echo "\"$ort\":{" >> weather.json
 
-          echo '"dmi_seamless":' >> weather.json
-          cat temp/dmi_seamless.json >> weather.json
-          echo ',' >> weather.json
+            echo '"icon_global":' >> weather.json
+            cat "temp/$ort/icon_global.json" >> weather.json
+            echo ',' >> weather.json
 
-          echo '"best_match":' >> weather.json
-          cat temp/best_match.json >> weather.json
-          echo ',' >> weather.json
+            echo '"gfs_global":' >> weather.json
+            cat "temp/$ort/gfs_global.json" >> weather.json
+            echo ',' >> weather.json
 
-          echo '"weekly":' >> weather.json
-          cat temp/weekly.json >> weather.json
+            echo '"gem_global":' >> weather.json
+            cat "temp/$ort/gem_global.json" >> weather.json
+            echo ',' >> weather.json
+
+            echo '"icon_eu":' >> weather.json
+            cat "temp/$ort/icon_eu.json" >> weather.json
+            echo ',' >> weather.json
+
+            echo '"dmi_seamless":' >> weather.json
+            cat "temp/$ort/dmi_seamless.json" >> weather.json
+            echo ',' >> weather.json
+
+            echo '"best_match":' >> weather.json
+            cat "temp/$ort/best_match.json" >> weather.json
+            echo ',' >> weather.json
+
+            echo '"weekly":' >> weather.json
+            cat "temp/$ort/weekly.json" >> weather.json
+
+            if [ $i -lt $((${#locations[@]} - 1)) ]
+            then
+              echo '},' >> weather.json
+            else
+              echo '}' >> weather.json
+            fi
+
+          done
 
           echo '}' >> weather.json
 
