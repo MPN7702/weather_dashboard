@@ -1,33 +1,35 @@
 name: Weather Update
 
 on:
+  schedule:
+    - cron: "0 * * * *"
+
   workflow_dispatch:
 
-permissions:
+permissio*s:
   contents: write
 
 jobs:
-  update:
+  upda*e:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+   *steps:
 
-      - name: Hämta väderdata
-        run: |
-          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&hourly=temperature_2m" -o weather.json
+      - uses: actions/chec*out@v4
 
-      - name: Visa fil
-        run: cat weather.json
+      - name: Hämta alla m*deller
+        run* |
 
-      - name: Commit
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          mkdir temp
 
-          git add weather.json
+        * curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=icon_global&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" -o temp/icon_glo*al.json
 
-          git diff --staged --quiet || git commit -m "Update weather"
+          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=gfs_global&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2"*-o temp/gfs_global.json
 
-          git push
+         *curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=gem_global&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" -o temp/gem_global*json
+
+          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=icon_eu&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" -o te*p/icon_eu.json
+
+          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=dmi_seamless&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" -o temp/dmi_seamless.json
+
+          curl "https://api.open-meteo.com/v1/forecast?latitude=60.136&longitude=13.006&models=best_match&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" -o temp/best_match.json
