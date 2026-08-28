@@ -308,13 +308,15 @@ ${assessment}
 let LAT = 60.136;
 let LON = 13.006;
 document.getElementById("locationSelect")
-.addEventListener("change", function() {
+.addEventListener("change", async function() {
 
     const [lat, lon] =
         this.value.split(",");
 
     LAT = parseFloat(lat);
     LON = parseFloat(lon);
+
+    await loadAllData();
 
 });
 const models = [
