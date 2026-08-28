@@ -416,7 +416,11 @@ models.forEach(model=>{
 if(!model.data) return;
 
 const h = model.data.hourly;
-
+console.log(
+    model.namn,
+    h.time?.[hour],
+    h.temperature_2m?.[hour]
+);
 const temperature =
 h.temperature_2m?.[hour] ?? "-";
 
