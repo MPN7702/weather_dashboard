@@ -181,8 +181,8 @@ Nästa timme om 5 sek
 <script>
 async function updateWeeklyForecast() {
 
-    const lat = 59.76;
-    const lon = 12.99;
+const lat = LAT;
+const lon = LON;
 
     const url =
         `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto`;
@@ -317,6 +317,7 @@ document.getElementById("locationSelect")
     LON = parseFloat(lon);
 
     await loadAllData();
+    await updateWeeklyForecast();
 
 });
 const models = [
