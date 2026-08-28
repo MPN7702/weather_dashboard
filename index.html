@@ -346,6 +346,7 @@ const weights = {
     gem_global: 0.03
 
 };
+    const WIND_FACTOR = 0.5;
 
 const models = [
 
@@ -499,7 +500,7 @@ const nextTemperature =
 h.temperature_2m?.[hour + 1] ?? temperature;
 
 const wind =
-h.wind_speed_10m?.[hour] ?? "-";
+((h.wind_speed_10m?.[hour] ?? 0) * WIND_FACTOR).toFixed(1);
 const windDirection =
 h.wind_direction_10m?.[hour] ?? 0;
 
@@ -633,7 +634,7 @@ tempSum +=
     (h.temperature_2m?.[hour] ?? 0) * weight;
 
 windSum +=
-    (h.wind_speed_10m?.[hour] ?? 0) * weight;
+    ((h.wind_speed_10m?.[hour] ?? 0) * WIND_FACTOR) * weight;
 
 windDirectionSum +=
     (h.wind_direction_10m?.[hour] ?? 0) * weight;
