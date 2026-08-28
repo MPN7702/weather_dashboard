@@ -428,16 +428,16 @@ function getWindDirection(degrees) {
 }
 function getWindArrow(degrees) {
 
-    const arrows = [
-        "⬇️", // N
-        "↙️", // NO
-        "⬅️", // O
-        "↖️", // SO
-        "⬆️", // S
-        "↗️", // SV
-        "➡️", // V
-        "↘️"  // NV
-    ];
+const arrows = [
+    "⬆️", // N
+    "↗️", // NO
+    "➡️", // O
+    "↘️", // SO
+    "⬇️", // S
+    "↙️", // SV
+    "⬅️", // V
+    "↖️"  // NV
+];
 
     return arrows[
         Math.round(degrees / 45) % 8
