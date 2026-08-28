@@ -3,377 +3,159 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Torsby Väder Dashboard</title>
+<title>Väderprognos</title>
 
 <style>
-
-body{
-    margin:0;
-    padding:20px;
-    background:#f2f4f8;
-    font-family:Arial,sans-serif;
+body {
+    font-family: Arial, sans-serif;
+    background: #1e293b;
+    color: white;
+    margin: 0;
+    padding: 20px;
 }
 
-h1{
-    text-align:center;
-    color:#0056b3;
-    margin-bottom:10px;
+.header {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-#currentHour{
-    text-align:center;
-    font-size:38px;
-    font-weight:bold;
-    color:#0056b3;
+#datum {
+    font-size: 1.2rem;
+    color: #cbd5e1;
 }
 
-#countdown{
-    text-align:center;
-    font-size:26px;
-    margin-bottom:25px;
-    color:#333;
+h1 {
+    margin: 10px 0;
 }
 
-.container{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-    gap:15px;
+.container {
+    max-width: 800px;
+    margin: auto;
 }
 
-.weather-box{
-    background:white;
-    padding:15px;
-    border-radius:12px;
-    box-shadow:0 2px 10px rgba(0,0,0,.15);
-    transition:all .3s;
+.card {
+    background: #334155;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
 }
 
-.weather-box h2{
-    margin-top:0;
-    color:#0056b3;
-    border-bottom:1px solid #ddd;
-    padding-bottom:8px;
+.value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #38bdf8;
 }
 
-.hot{
-    border:4px solid #00c853;
+.label {
+    color: #cbd5e1;
+    margin-top: 5px;
 }
 
-.cold{
-    border:4px solid #ff3d00;
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 20px;
 }
-
-.temp-hot{
-    color:#d50000;
-}
-
-.temp-mid{
-    color:#ff9800;
-}
-
-.temp-cold{
-    color:#1565c0;
-}
-
-.rain-low{
-    color:#00c853;
-}
-
-.rain-mid{
-    color:#ff9800;
-}
-
-.rain-high{
-    color:#d50000;
-}
-
-.value{
-    font-weight:bold;
-}
-
 </style>
-
 </head>
+
 <body>
 
-<h1>Torsby Väderdashboard</h1>
-
-<div id="currentHour">
-Timme: 00:00
-</div>
-
-<div id="countdown">
-Nästa timme om 5 sek
+<div class="header">
+    <div id="datum"></div>
+    <h1>Väderprognos</h1>
 </div>
 
 <div class="container">
 
-    <div class="weather-box" id="box1">Laddar...</div>
-    <div class="weather-box" id="box2">Laddar...</div>
-    <div class="weather-box" id="box3">Laddar...</div>
-    <div class="weather-box" id="box4">Laddar...</div>
-    <div class="weather-box" id="box5">Laddar...</div>
-    <div class="weather-box" id="box6">Laddar...</div>
+    <div class="grid">
+
+        <div class="card">
+            <div class="value" id="temp">--</div>
+            <div class="label">Temperatur</div>
+        </div>
+
+        <div class="card">
+            <div class="value" id="rain">--</div>
+            <div class="label">Regnrisk</div>
+        </div>
+
+        <div class="card">
+            <div class="value" id="thunder">--</div>
+            <div class="label">Åskrisk</div>
+        </div>
+
+    </div>
 
 </div>
 
 <script>
+function uppdateraDatum() {
+    const nu = new Date();
 
-const LAT = 60.136;
-const LON = 13.006;
-
-const models = [
-
-{
-    id:"box1",
-    namn:"ICON Global",
-    model:"icon_global",
-    data:null
-},
-{
-    id:"box2",
-    namn:"GFS",
-    model:"gfs_global",
-    data:null
-},
-{
-    id:"box3",
-    namn:"GEM",
-    model:"gem_global",
-    data:null
-},
-{
-    id:"box4",
-    namn:"JMA",
-    model:"jma_seamless",
-    data:null
-},
-{
-    id:"box5",
-    namn:"MétéoFrance",
-    model:"meteofrance_seamless",
-    data:null
-},
-{
-    id:"box6",
-    namn:"Best Match",
-    model:"best_match",
-    data:null
+    document.getElementById("datum").innerHTML =
+        nu.toLocaleDateString("sv-SE", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        }) +
+        " " +
+        nu.toLocaleTimeString("sv-SE");
 }
 
-];
+setInterval(uppdateraDatum, 1000);
+uppdateraDatum();
 
-let currentHour = 0;
-let countdown = 5;
+async function hamtaVader() {
 
-async function loadWeather(source){
+    const lat = 59.76;   // Torsby
+    const lon = 12.99;
 
-try{
+    const url =
+    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m&hourly=precipitation_probability`;
 
-const url =
-`https://api.open-meteo.com/v1/forecast` +
-`?latitude=${LAT}` +
-`&longitude=${LON}` +
-`&models=${source.model}` +
-`&hourly=` +
-`temperature_2m,` +
-`relative_humidity_2m,` +
-`surface_pressure,` +
-`wind_speed_10m,` +
-`precipitation_probability` +
-`&forecast_days=1`;
+    try {
 
-const response = await fetch(url);
-const data = await response.json();
+        const response = await fetch(url);
+        const data = await response.json();
 
-source.data = data;
+        document.getElementById("temp").innerText =
+            Math.round(data.current.temperature_2m) + "°C";
 
-}
-catch(error){
+        const rainRisk =
+            data.hourly.precipitation_probability[0];
 
-console.error(error);
+        document.getElementById("rain").innerText =
+            rainRisk + "%";
 
-document.getElementById(source.id).innerHTML =
-`<h2>${source.namn}</h2>
-Fel vid hämtning av data`;
+        let thunderRisk;
 
-}
-}
+        if (rainRisk < 20) {
+            thunderRisk = 5;
+        } else if (rainRisk < 50) {
+            thunderRisk = 20;
+        } else if (rainRisk < 70) {
+            thunderRisk = 40;
+        } else {
+            thunderRisk = 70;
+        }
 
-function showHour(hour){
+        document.getElementById("thunder").innerText =
+            thunderRisk + "%";
 
-document.getElementById("currentHour").innerHTML =
-`Timme: ${String(hour).padStart(2,"0")}:00`;
+    } catch(err) {
 
-let temperatures = [];
+        document.getElementById("temp").innerText = "Fel";
+        document.getElementById("rain").innerText = "Fel";
+        document.getElementById("thunder").innerText = "Fel";
 
-models.forEach(model=>{
-
-if(!model.data) return;
-
-temperatures.push(
-model.data.hourly.temperature_2m[hour]
-);
-
-});
-
-const highestTemp = Math.max(...temperatures);
-const lowestTemp = Math.min(...temperatures);
-
-models.forEach(model=>{
-
-if(!model.data) return;
-
-const h = model.data.hourly;
-
-const temperature =
-h.temperature_2m?.[hour] ?? "-";
-
-const nextTemperature =
-h.temperature_2m?.[hour + 1] ?? temperature;
-
-const humidity =
-h.relative_humidity_2m?.[hour] ?? "-";
-
-const wind =
-h.wind_speed_10m?.[hour] ?? "-";
-
-const pressure =
-h.surface_pressure?.[hour] ?? "-";
-
-const rainRisk =
-h.precipitation_probability?.[hour] ?? "-";
-
-const thunderRisk =
-Math.min(Math.round(rainRisk * 0.6),100);
-
-let trend = "➡";
-
-if(nextTemperature > temperature)
-trend = "⬆";
-
-if(nextTemperature < temperature)
-trend = "⬇";
-
-let tempClass = "temp-mid";
-
-if(temperature <= 5)
-tempClass = "temp-cold";
-
-if(temperature >= 20)
-tempClass = "temp-hot";
-
-let rainClass = "rain-low";
-
-if(rainRisk >= 30)
-rainClass = "rain-mid";
-
-if(rainRisk >= 70)
-rainClass = "rain-high";
-
-const box =
-document.getElementById(model.id);
-
-box.classList.remove("hot");
-box.classList.remove("cold");
-
-if(temperature === highestTemp)
-box.classList.add("hot");
-
-if(temperature === lowestTemp)
-box.classList.add("cold");
-
-box.innerHTML = `
-
-<h2>${model.namn}</h2>
-
-Temperatur:
-<span class="${tempClass}">
-<b>${temperature} °C ${trend}</b>
-</span>
-
-<br><br>
-
-Vind:
-<b>${wind} m/s</b>
-
-<br><br>
-
-Luftfuktighet:
-<b>${humidity} %</b>
-
-<br><br>
-
-Lufttryck:
-<b>${pressure} hPa</b>
-
-<br><br>
-
-Regnrisk:
-<span class="${rainClass}">
-<b>${rainRisk} %</b>
-</span>
-
-<br><br>
-
-Åskrisk:
-<b>${thunderRisk} %</b>
-
-`;
-
-});
-
+        console.error(err);
+    }
 }
 
-async function loadAllData(){
-
-await Promise.all(
-models.map(loadWeather)
-);
-
-showHour(currentHour);
-
-}
-
-async function startDashboard(){
-
-await loadAllData();
-
-setInterval(async()=>{
-
-currentHour++;
-
-if(currentHour > 23){
-
-currentHour = 0;
-
-await loadAllData();
-
-}
-
-showHour(currentHour);
-
-countdown = 5;
-
-},5000);
-
-setInterval(()=>{
-
-countdown--;
-
-if(countdown < 0)
-countdown = 5;
-
-document.getElementById("countdown").innerHTML =
-`Nästa timme om ${countdown} sek`;
-
-},1000);
-
-}
-
-startDashboard();
-
+hamtaVader();
+setInterval(hamtaVader, 600000);
 </script>
 
 </body>
