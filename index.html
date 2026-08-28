@@ -156,6 +156,17 @@ Tid: 00:00
 Nästa timme om 5 sek
 </div>
 
+<div class="container">
+
+    <div class="weather-box" id="box1"></div>
+    <div class="weather-box" id="box2"></div>
+    <div class="weather-box" id="box3"></div>
+    <div class="weather-box" id="box4"></div>
+    <div class="weather-box" id="box5"></div>
+    <div class="weather-box" id="box6"></div>
+
+</div>
+
 <div class="weather-box" id="box7" style="margin-top:20px;">
     AI analyserar...
 </div>
@@ -183,14 +194,20 @@ Nästa timme om 5 sek
 <script>
 async function updateWeeklyForecast() {
 
+const lat = LAT;
+const lon = LON;
+
+    const url =
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto`;
+
     try {
 
-const data = weatherData;
-if (!data || !data.daily)
-    return;
+        const response = await fetch(url);
+        const data = await response.json();
+
         let html = "";
 
-for (let i = 0; i < data.daily.time.length; i++) {
+        for (let i = 0; i < 7; i++) {
 
             const date =
                 new Date(data.daily.time[i]);
@@ -221,7 +238,8 @@ const windSpeed =
 const windGust =
     (data.daily.wind_gusts_10m_mean[i] * WIND_FACTOR)
     .toFixed(1);
-    const pressure = "-";
+            const pressure =
+    data.daily.surface_pressure_mean[i];
             let thunderRisk =
     Math.min(Math.round(rainRisk * 0.6), 100);
 
@@ -304,7 +322,6 @@ ${assessment}
 
 let LAT = 60.136;
 let LON = 13.006;
-    let weatherData = null;
 document.getElementById("locationSelect")
 .addEventListener("change", async function() {
 
@@ -321,44 +338,91 @@ document.getElementById("locationSelect")
     updateDate();
 
 });
+const weights = {
 
+    icon_eu: 0.30,
+    dmi_seamless: 0.25,
+    icon_global: 0.20,
+    best_match: 0.15,
+    gfs_global: 0.07,
+    gem_global: 0.03
+
+};
     const WIND_FACTOR = 0.5;
 
+const models = [
+
+{
+    id:"box1",
+    namn:"Vädertjänst Tyskland",
+    model:"icon_global",
+    data:null
+},
+{
+    id:"box2",
+    namn:"Vädertjänst USA",
+    model:"gfs_global",
+    data:null
+},
+{
+    id:"box3",
+    namn:"Vädertjänst Kanada",
+    model:"gem_global",
+    data:null
+},
+{
+    id:"box4",
+    namn:"Vädertjänst Europa",
+    model:"icon_eu",
+    data:null
+},
+{
+    id:"box5",
+    namn:"Vädertjänst Danmark",
+    model:"dmi_seamless",
+    data:null
+},
+{
+    id:"box6",
+    namn:"Mixad vädertjänst",
+    model:"best_match",
+    data:null
+}
+
+];
 
 const startIndex = new Date().getHours();
 let forecastIndex = startIndex;
 
 let countdown = 5;
-async function loadWeather() {
+async function loadWeather(source){
 
-    try {
+try{
 
 const url =
-`https://api.open-meteo.com/v1/forecast` +
-`?latitude=${LAT}` +
+`https://api.open-meteo.com/v1/forecast?latitude=${LAT}` +
 `&longitude=${LON}` +
+`&models=${source.model}` +
 `&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation` +
-`&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean` +
-`&forecast_days=7` +
-`&timezone=auto`;
-console.log(url);
-        const response = await fetch(url);
+`&forecast_days=2`;
 
-        if (!response.ok) {
-            throw new Error(`API-fel: ${response.status}`);
-        }
+const response = await fetch(url);
+const data = await response.json();
 
-        weatherData = await response.json();
+source.data = data;
 
-    } catch (error) {
 
-        console.error(error);
 
-        document.getElementById("forecastContent").innerHTML =
-            "Kunde inte hämta väderdata.";
+}
+catch(error){
 
-    }
+console.error(error);
 
+document.getElementById(source.id).innerHTML =
+`<h2>${source.namn}</h2>
+Fel vid hämtning av data`;
+
+}
 }
 function getWindDirection(degrees) {
 
@@ -399,10 +463,9 @@ function getWindArrow(degrees) {
 }
     
 function showHour(hour){
-if (!weatherData?.hourly)
-    return;
+
 const forecastTime =
-    weatherData?.hourly?.time?.[hour];
+    models[0]?.data?.hourly?.time?.[hour];
 
 const displayTime =
     new Date(forecastTime)
@@ -414,10 +477,23 @@ const displayTime =
 document.getElementById("currentHour").innerHTML =
 `Klockan: ${displayTime} (24-timmarsprognos)`;
 
-if (!weatherData?.hourly)
-    return;
- 
-const h = weatherData.hourly;
+let temperatures = [];
+
+models.forEach(model=>{
+
+if(!model.data) return;
+temperatures.push(
+model.data.hourly.temperature_2m[hour]
+);
+
+})
+
+models.forEach(model=>{
+
+if(!model.data) return;
+
+const h = model.data.hourly;
+
 
 const temperature =
 h.temperature_2m?.[hour] ?? "-";
@@ -473,6 +549,52 @@ rainClass = "rain-mid";
 
 if(rainRisk >= 70)
 rainClass = "rain-high";
+
+const box =
+document.getElementById(model.id);
+
+box.innerHTML = `
+
+<h2>${model.namn}</h2>
+
+Temperatur:
+<span class="${tempClass}">
+<b>${temperature} °C ${trend}</b>
+</span>
+
+<br><br>
+
+Vind:
+<b>${wind} m/s ${getWindArrow(windDirection)} ${getWindDirection(windDirection)}</b>
+
+<br><br>
+
+Lufttryck:
+<b>${pressure} hPa</b>
+
+<br><br>
+
+Regnrisk:
+<span class="${rainClass}">
+<b>${rainRisk} %</b>
+</span>
+
+<br><br>
+
+Regnmängd:
+<span class="${rainAmountClass}">
+<b>${rainAmount} mm</b>
+</span>
+
+<br><br>
+
+Åskrisk:
+<b>${thunderRisk} %</b>
+
+`;
+
+});
+
  
 
 updateAIBox(hour);
@@ -482,10 +604,9 @@ updateAIBox(hour);
  
 
 function updateAIBox(hour){
-if (!weatherData?.hourly)
-    return;
+
 const forecastTime =
-    weatherData?.hourly?.time?.[hour];
+    models[0]?.data?.hourly?.time?.[hour];
 
 const displayTime =
     new Date(forecastTime)
@@ -494,45 +615,82 @@ const displayTime =
             minute: "2-digit"
         });
 
+let tempSum = 0;
+let windSum = 0;
+let windDirectionSum = 0;
+let pressureSum = 0;
+let rainRiskSum = 0;
+let rainAmountSum = 0;
 
-const h = weatherData.hourly;
+let weightSum = 0;
+    models.forEach(model => {
+
+        if(!model.data) return;
+
+        const h = model.data.hourly;
+
+const weight =
+    weights[model.model] ?? 0;
+
+tempSum +=
+    (h.temperature_2m?.[hour] ?? 0) * weight;
+
+windSum +=
+    ((h.wind_speed_10m?.[hour] ?? 0) * WIND_FACTOR) * weight;
+
+windDirectionSum +=
+    (h.wind_direction_10m?.[hour] ?? 0) * weight;
+
+pressureSum +=
+    (h.surface_pressure?.[hour] ?? 0) * weight;
+
+rainRiskSum +=
+    (h.precipitation_probability?.[hour] ?? 0) * weight;
+
+rainAmountSum +=
+    (h.precipitation?.[hour] ?? 0) * weight;
+
+weightSum += weight;
+
+    });
+
+if(weightSum === 0) return;
 
 const avgTemp =
-    Number(h.temperature_2m?.[hour] ?? 0);
+    (tempSum / weightSum).toFixed(1);
 
-const avgWind =
-    Number((h.wind_speed_10m?.[hour] ?? 0) * WIND_FACTOR);
-
-const avgWindDirection =
-    Number(h.wind_direction_10m?.[hour] ?? 0);
-
-const avgPressure =
-    Number(h.surface_pressure?.[hour] ?? 0);
-
-const avgRainRisk =
-    Number(h.precipitation_probability?.[hour] ?? 0);
-
-const avgRainAmount =
-    Number(h.precipitation?.[hour] ?? 0);
-
-let avgTempClass = "temp-mid";
-
-let avgRainClass = "rain-low";
-
-let avgRainAmountClass = "rain-low";
-
+    let avgTempClass = "temp-mid";
 
 if (avgTemp <= 5)
     avgTempClass = "temp-cold";
 
 if (avgTemp >= 20)
     avgTempClass = "temp-hot";
+const avgWind =
+    (windSum / weightSum).toFixed(1);
+
+
+const avgWindDirection =
+    windDirectionSum / weightSum;
+
+if (isNaN(avgWindDirection))
+    return;
+
+const avgPressure =
+    (pressureSum / weightSum).toFixed(1);
+const avgRainRisk =
+    Math.round(rainRiskSum / weightSum);
+    let avgRainClass = "rain-low";
 
 if (avgRainRisk >= 30)
     avgRainClass = "rain-mid";
 
 if (avgRainRisk >= 70)
     avgRainClass = "rain-high";
+const avgRainAmount =
+    (rainAmountSum / weightSum).toFixed(1);
+    let avgRainAmountClass = "rain-low";
+
 if (avgRainAmount >= 2)
     avgRainAmountClass = "rain-mid";
 
@@ -668,14 +826,14 @@ ${analysis}
     `;
 
 }
-
+updateWeeklyForecast();
 async function loadAllData(){
 
-    await loadWeather();
+await Promise.all(
+models.map(loadWeather)
+);
 
-    showHour(forecastIndex);
-
-    updateWeeklyForecast();
+showHour(forecastIndex);
 
 }
 
@@ -716,12 +874,12 @@ document.getElementById("countdown").innerHTML =
 
 function updateDate() {
 
-const forecastTime =
-    weatherData?.hourly?.time?.[forecastIndex];
+    const forecastTime =
+        models[0]?.data?.hourly?.time?.[forecastIndex];
 
     if (!forecastTime) return;
 
-    const date = new Date(forecastTime);
+    const date = new Date(föresatte);
 
     const options = {
         weekday: "long",
