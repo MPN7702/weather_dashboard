@@ -310,6 +310,23 @@ Fel vid hämtning av data`;
 
 }
 }
+function getWindDirection(degrees) {
+
+    const directions = [
+        "N",
+        "NO",
+        "O",
+        "SO",
+        "S",
+        "SV",
+        "V",
+        "NV"
+    ];
+
+    return directions[
+        Math.round(degrees / 45) % 8
+    ];
+}
 
 function showHour(hour){
 
