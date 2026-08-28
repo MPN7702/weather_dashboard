@@ -156,7 +156,7 @@ async function updateWeeklyForecast() {
     const lon = 12.99;
 
     const url =
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max&timezone=auto`;
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max,surface_pressure_mean&timezone=auto`;
 
     try {
 
@@ -190,6 +190,8 @@ const rainAmount =
 
 const windGust =
     data.daily.wind_gusts_10m_max[i];
+            const pressure =
+    data.daily.surface_pressure_mean[i];
             let thunderRisk =
     Math.min(Math.round(rainRisk * 0.6), 100);
 
@@ -255,7 +257,8 @@ ${weekday}
 
 💨 Kastvind:
 <strong>${windGust} m/s</strong><br>
-
+📈 Lufttryck:
+<strong>${pressure} hPa</strong><br>
 🌧️ Regnrisk:
 <strong>${rainRisk}%</strong><br>
 
