@@ -190,7 +190,7 @@ if (!data || !data.daily)
     return;
         let html = "";
 
-        for (let i = 0; i < 7; i++) {
+for (let i = 0; i < data.daily.time.length; i++) {
 
             const date =
                 new Date(data.daily.time[i]);
@@ -221,7 +221,7 @@ const windSpeed =
 const windGust =
     (data.daily.wind_gusts_10m_mean[i] * WIND_FACTOR)
     .toFixed(1);
-const pressure = "-";
+    const pressure = "-";
             let thunderRisk =
     Math.min(Math.round(rainRisk * 0.6), 100);
 
@@ -399,7 +399,8 @@ function getWindArrow(degrees) {
 }
     
 function showHour(hour){
-
+if (!weatherData?.hourly)
+    return;
 const forecastTime =
     weatherData?.hourly?.time?.[hour];
 
@@ -472,50 +473,6 @@ rainClass = "rain-mid";
 
 if(rainRisk >= 70)
 rainClass = "rain-high";
-
-const box =
-document.getElementById("box7");
-
-box.innerHTML = `
-
-<h2>Aktuell prognos</h2>
-
-Temperatur:
-<span class="${tempClass}">
-<b>${temperature} °C ${trend}</b>
-</span>
-
-<br><br>
-
-Vind:
-<b>${wind} m/s ${getWindArrow(windDirection)} ${getWindDirection(windDirection)}</b>
-
-<br><br>
-
-Lufttryck:
-<b>${pressure} hPa</b>
-
-<br><br>
-
-Regnrisk:
-<span class="${rainClass}">
-<b>${rainRisk} %</b>
-</span>
-
-<br><br>
-
-Regnmängd:
-<span class="${rainAmountClass}">
-<b>${rainAmount} mm</b>
-</span>
-
-<br><br>
-
-Åskrisk:
-<b>${thunderRisk} %</b>
-
-`;
-
  
 
 updateAIBox(hour);
@@ -525,7 +482,8 @@ updateAIBox(hour);
  
 
 function updateAIBox(hour){
-
+if (!weatherData?.hourly)
+    return;
 const forecastTime =
     weatherData?.hourly?.time?.[hour];
 
