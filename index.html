@@ -347,7 +347,9 @@ showHour(currentHour);
 
 async function startDashboard(){
 
-await loadAllData();
+    updateDate();
+
+    await loadAllData();
 
 setInterval(async()=>{
 
@@ -400,3 +402,10 @@ function updateDate() {
         dateText.slice(1);
 
 }
+
+startDashboard();
+
+</script>
+
+</body>
+</html>
