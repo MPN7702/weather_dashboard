@@ -622,16 +622,25 @@ const weight =
     weights[model.model] ?? 0;
 
 tempSum +=
-    (h.temperature_2m?.[hour] ?? 0)
-    * weight;
-        windSum += h.wind_speed_10m?.[hour] ?? 0;
+    (h.temperature_2m?.[hour] ?? 0) * weight;
+
+windSum +=
+    (h.wind_speed_10m?.[hour] ?? 0) * weight;
+
 windDirectionSum +=
-    h.wind_direction_10m?.[hour] ?? 0;
-        pressureSum += h.surface_pressure?.[hour] ?? 0;
-        rainRiskSum += h.precipitation_probability?.[hour] ?? 0;
-        rainAmountSum += h.precipitation?.[hour] ?? 0;
+    (h.wind_direction_10m?.[hour] ?? 0) * weight;
+
+pressureSum +=
+    (h.surface_pressure?.[hour] ?? 0) * weight;
+
+rainRiskSum +=
+    (h.precipitation_probability?.[hour] ?? 0) * weight;
+
+rainAmountSum +=
+    (h.precipitation?.[hour] ?? 0) * weight;
+
 weightSum += weight;
-        count++;
+count++;
 
     });
 
@@ -639,6 +648,7 @@ weightSum += weight;
 
 const avgTemp =
     (tempSum / weightSum).toFixed(1);
+
     let avgTempClass = "temp-mid";
 
 if (avgTemp <= 5)
@@ -646,10 +656,12 @@ if (avgTemp <= 5)
 
 if (avgTemp >= 20)
     avgTempClass = "temp-hot";
-const avgWind = (windSum / count).toFixed(1);
+const avgWind =
+    (windSum / weightSum).toFixed(1);
+
 
 const avgWindDirection =
-    windDirectionSum / count;
+    windDirectionSum / weightSum;
 
 if (isNaN(avgWindDirection))
     return;
@@ -661,8 +673,10 @@ if (avgWind >= 10)
 
 if (avgWind <= 2)
     windTrend = "⬇";
-    const avgPressure = (pressureSum / count).toFixed(1);
-    const avgRainRisk = Math.round(rainRiskSum / count);
+const avgPressure =
+    (pressureSum / weightSum).toFixed(1);
+const avgRainRisk =
+    Math.round(rainRiskSum / weightSum);
     let avgRainClass = "rain-low";
 
 if (avgRainRisk >= 30)
@@ -670,7 +684,8 @@ if (avgRainRisk >= 30)
 
 if (avgRainRisk >= 70)
     avgRainClass = "rain-high";
-    const avgRainAmount = (rainAmountSum / count).toFixed(1);
+const avgRainAmount =
+    (rainAmountSum / weightSum).toFixed(1);
     let avgRainAmountClass = "rain-low";
 
 if (avgRainAmount >= 2)
