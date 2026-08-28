@@ -345,6 +345,8 @@ h.temperature_2m?.[hour + 1] ?? temperature;
 
 const wind =
 h.wind_speed_10m?.[hour] ?? "-";
+const windDirection =
+h.wind_direction_10m?.[hour] ?? 0;
 
 const pressure =
 h.surface_pressure?.[hour] ?? "-";
