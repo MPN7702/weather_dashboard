@@ -210,6 +210,10 @@ const url =
 
         const response = await fetch(url);
         const data = await response.json();
+        if (!response.ok) {
+    throw new Error(`API-fel: ${response.status}`);
+}
+
 
         let html = "";
 
@@ -432,6 +436,11 @@ const url =
 `&forecast_days=2`;
 
 const response = await fetch(url);
+
+if (!response.ok) {
+    throw new Error(`API-fel: ${response.status}`);
+}
+
 const data = await response.json();
 
 source.data = data;
