@@ -608,6 +608,31 @@ function updateAIBox(hour){
         Math.round(avgRainRisk * 0.6),
         100
     );
+    let analysis = "";
+
+if (avgTemp >= 20)
+    analysis += "☀️ Varmt väder väntas. ";
+
+else if (avgTemp <= 5)
+    analysis += "❄️ Kyligt väder väntas. ";
+
+else
+    analysis += "🌤️ Temperaturen väntas vara behaglig. ";
+
+if (avgRainRisk >= 70)
+    analysis += "🌧️ Stor risk för regn. ";
+
+else if (avgRainRisk >= 40)
+    analysis += "🌦️ Viss risk för skurar. ";
+
+else
+    analysis += "🌤️ Liten risk för nederbörd. ";
+
+if (avgWind >= 10)
+    analysis += "💨 Blåsigt väder väntas. ";
+
+if (avgThunderRisk >= 50)
+    analysis += "⚡ Förhöjd risk för åska.";
     document.getElementById("box7").innerHTML = `
 
         <h2>🧠 Sammanvägt medelvärde</h2>
@@ -637,8 +662,14 @@ function updateAIBox(hour){
 
         <br><br>
 
-        Åskrisk:
-        <b>${avgThunderRisk} %</b>
+Åskrisk:
+<b>${avgThunderRisk} %</b>
+
+<br><br>
+
+<b>AI-bedömning:</b><br>
+${analysis}
+
     `;
 
 }
