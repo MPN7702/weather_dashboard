@@ -7,7 +7,23 @@
 <title>Torsby Väder Dashboard</title>
     
 <style>
+#weeklyForecast {
+    margin-top: 20px;
+    padding: 20px;
+    font-size: 16px;
+    line-height: 1.6;
+}
 
+#weeklyForecast h2 {
+    margin-bottom: 15px;
+}
+
+.forecast-day {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+    
 body{
     margin:0;
     padding:20px;
@@ -124,11 +140,92 @@ Nästa timme om 5 sek
     <div class="weather-box" id="box4">Laddar...</div>
     <div class="weather-box" id="box5">Laddar...</div>
     <div class="weather-box" id="box6">Laddar...</div>
-
+<div class="card" id="weeklyForecast">
+    <h2>📅 7-dygnsprognos</h2>
+    <div id="forecastContent">
+        Hämtar prognos...
+    </div>
+</div>
 </div>
 
 <script>
+async function updateWeeklyForecast() {
 
+    const lat = 59.76;
+    const lon = 12.99;
+
+    const url =
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
+
+    try {
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        let html = "";
+
+        for (let i = 0; i < 7; i++) {
+
+            const date =
+                new Date(data.daily.time[i]);
+
+            const weekday =
+                date.toLocaleDateString("sv-SE", {
+                    weekday: "long"
+                });
+
+            const maxTemp =
+                data.daily.temperature_2m_max[i];
+
+            const minTemp =
+                data.daily.temperature_2m_min[i];
+
+            const rainRisk =
+                data.daily.precipitation_probability_max[i];
+
+            let assessment = "";
+
+            if (rainRisk >= 80) {
+                assessment =
+                    "Mycket hög risk för regn. Planera för blöt väderlek.";
+            } else if (rainRisk >= 60) {
+                assessment =
+                    "Förhållandevis ostadigt med flera möjligheter till regn.";
+            } else if (rainRisk >= 40) {
+                assessment =
+                    "Viss risk för skurar under dagen.";
+            } else {
+                assessment =
+                    "Relativt stabilt väder med liten nederbördsrisk.";
+            }
+
+            if (maxTemp >= 25) {
+                assessment +=
+                    " Temperaturen väntas bli somrig och varm.";
+            }
+
+            html += `
+                <div class="forecast-day">
+                    <strong>${weekday}</strong><br>
+                    🌡️ ${minTemp}°C till ${maxTemp}°C<br>
+                    🌧️ Regnrisk: ${rainRisk}%<br>
+                    📋 Bedömning: ${assessment}
+                </div>
+            `;
+        }
+
+        document.getElementById("forecastContent").innerHTML =
+            html;
+
+    } catch (error) {
+
+        document.getElementById("forecastContent").innerHTML =
+            "Kunde inte hämta prognosen.";
+
+        console.error(error);
+    }
+}
+`
 const LAT = 60.136;
 const LON = 13.006;
 
@@ -334,7 +431,7 @@ Regnrisk:
 });
 
 }
-
+updateWeeklyForecast();
 async function loadAllData(){
 
 await Promise.all(
