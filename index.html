@@ -327,7 +327,24 @@ function getWindDirection(degrees) {
         Math.round(degrees / 45) % 8
     ];
 }
+function getWindArrow(degrees) {
 
+    const arrows = [
+        "⬆️", // N
+        "↗️", // NO
+        "➡️", // O
+        "↘️", // SO
+        "⬇️", // S
+        "↙️", // SV
+        "⬅️", // V
+        "↖️"  // NV
+    ];
+
+    return arrows[
+        Math.round(degrees / 45) % 8
+    ];
+}
+    
 function showHour(hour){
 
 document.getElementById("currentHour").innerHTML =
@@ -422,7 +439,7 @@ Temperatur:
 <br><br>
 
 Vind:
-<b>${wind} m/s</b>
+<b>${wind} m/s ${getWindDirection(windDirection)}</b>
 
 <br><br>
 
