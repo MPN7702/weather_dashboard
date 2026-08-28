@@ -611,17 +611,27 @@ function updateAIBox(hour){
     );
     let analysis = "";
 
-if (avgTemp >= 20)
-    analysis += "☀️ Varmt väder väntas. ";
+if (avgTemp >= 25)
+    analysis += "☀️ Mycket varmt sommarväder väntas. ";
+
+else if (avgTemp >= 20)
+    analysis += "🌤️ Varmt och behagligt väder väntas. ";
+
+else if (avgTemp <= 0)
+    analysis += "🥶 Minusgrader väntas. ";
 
 else if (avgTemp <= 5)
     analysis += "❄️ Kyligt väder väntas. ";
 
 else
-    analysis += "🌤️ Temperaturen väntas vara behaglig. ";
+    analysis += "🌤️ Temperaturen väntas vara normal för årstiden. ";
 
-if (avgRainRisk >= 70)
-    analysis += "🌧️ Stor risk för regn. ";
+
+if (avgRainRisk >= 80)
+    analysis += "🌧️ Mycket stor risk för regn. ";
+
+else if (avgRainRisk >= 60)
+    analysis += "🌦️ Förhöjd risk för regn under perioden. ";
 
 else if (avgRainRisk >= 40)
     analysis += "🌦️ Viss risk för skurar. ";
@@ -629,11 +639,36 @@ else if (avgRainRisk >= 40)
 else
     analysis += "🌤️ Liten risk för nederbörd. ";
 
-if (avgWind >= 10)
-    analysis += "💨 Blåsigt väder väntas. ";
 
-if (avgThunderRisk >= 50)
-    analysis += "⚡ Förhöjd risk för åska.";
+if (avgRainAmount >= 10)
+    analysis += "💧 Större regnmängder kan förekomma. ";
+
+else if (avgRainAmount >= 5)
+    analysis += "💧 Märkbar nederbörd väntas. ";
+
+
+if (avgWind >= 15)
+    analysis += "🌪️ Kraftiga vindar väntas. ";
+
+else if (avgWind >= 10)
+    analysis += "💨 Det blir blåsigt. ";
+
+else if (avgWind <= 2)
+    analysis += "🍃 Svaga vindar dominerar. ";
+
+
+if (avgThunderRisk >= 70)
+    analysis += "⛈️ Hög risk för åska. ";
+
+else if (avgThunderRisk >= 50)
+    analysis += "⚡ Förhöjd risk för åska. ";
+
+
+if (avgPressure >= 1020)
+    analysis += "📈 Högtryck dominerar väderbilden. ";
+
+else if (avgPressure <= 1000)
+    analysis += "📉 Lågtryck påverkar området. ";
     document.getElementById("box7").innerHTML = `
 
         <h2>🧠 Sammanvägt medelvärde</h2>
