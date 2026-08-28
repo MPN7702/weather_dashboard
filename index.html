@@ -51,7 +51,7 @@ h1{
     margin-bottom:10px;
 }
 
-#currentHour{
+#forecastIndex{
     text-align:center;
     font-size:38px;
     font-weight:bold;
@@ -127,7 +127,7 @@ h1{
 
 <div id="currentDate"></div>
 
-<div id="currentHour">
+<div id="forecastIndex">
 Tid: 00:00
 </div>
 
@@ -405,7 +405,7 @@ function showHour(hour){
 const forecastTime =
     models[0]?.data?.hourly?.time?.[hour];
 
-document.getElementById("currentHour").innerHTML =
+document.getElementById("forecastIndex").innerHTML =
 `Tid: ${forecastTime}`;
 
 let temperatures = [];
@@ -428,8 +428,8 @@ const h = model.data.hourly;
     console.log("Tider:", h.time);
 
 console.log(
-    "Klocka:",
-    currentHour,
+    "forecastIndex:",
+    forecastIndex,
     "Prognostid:",
     h.time?.[hour]
 );
@@ -443,8 +443,8 @@ const hourIndex =
 
 if (hourIndex === -1) return;
 console.log(
-    "currentHour:",
-    currentHour,
+    "forecastIndex:",
+    forecastIndex,
     "hour:",
     hour
 );
