@@ -458,7 +458,7 @@ function getWindArrow(degrees) {
 function showHour(hour){
 
 const forecastTime =
-    models[0]?.data?.hourly?.time?.[hour];
+    weatherData?.hourly?.time?.[hour];
 
 const displayTime =
     new Date(forecastTime)
@@ -470,23 +470,13 @@ const displayTime =
 document.getElementById("currentHour").innerHTML =
 `Klockan: ${displayTime} (24-timmarsprognos)`;
 
-let temperatures = [];
-
-models.forEach(model=>{
-
-if(!model.data) return;
-temperatures.push(
-model.data.hourly.temperature_2m[hour]
-);
-
-})
-
 if (!weatherData?.hourly)
     return;
 
-
-const temperature =
-h.temperature_2m?.[hour] ?? "-";
+if (!weatherData?.hourly)
+return;
+ 
+const h = weatherData.hourly;
 if (!weatherData?.hourly)
     return;
 const nextTemperature =
@@ -584,8 +574,6 @@ Regnmängd:
 
 `;
 
-});
-
  
 
 updateAIBox(hour);
@@ -615,32 +603,15 @@ const avgTemp =
 const avgWind =
     Number((h.wind_speed_10m?.[hour] ?? 0) * WIND_FACTOR);
 
-const avgWindDirection =
-    Number(h.wind_direction_10m?.[hour] ?? 0);
-
-const avgPressure =
-    Number(h.surface_pressure?.[hour] ?? 0);
-
-const avgRainRisk =
-    Number(h.precipitation_probability?.[hour] ?? 0);
-
-const avgRainAmount =
-    Number(h.precipitation?.[hour] ?? 0);
-
-
 
 let avgTempClass = "temp-mid";
 
-
-    let avgTempClass = "temp-mid";
 
 if (avgTemp <= 5)
     avgTempClass = "temp-cold";
 
 if (avgTemp >= 20)
     avgTempClass = "temp-hot";
-const avgWind =
-    (windSum / weightSum).toFixed(1);
 
 
 const avgWindDirection =
