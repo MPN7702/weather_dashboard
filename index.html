@@ -214,7 +214,7 @@ if(window.cachedWeather){
 }
 
 const data =
-    cache.best_match;
+    cache[currentLocation].weekly;
 
         if (!data || !data.daily)
             return;
@@ -336,14 +336,15 @@ ${assessment}
 
 let LAT = 60.136;
 let LON = 13.006;
+    let currentLocation = "Torsby";
 document.getElementById("locationSelect")
 .addEventListener("change", async function() {
 
-    const [lat, lon] =
-        this.value.split(",");
+const ortnamn =
+    this.options[this.selectedIndex].text;
 
-    LAT = parseFloat(lat);
-    LON = parseFloat(lon);
+currentLocation = ortnamn;
+
 
     forecastIndex = startIndex;
 
@@ -423,8 +424,8 @@ async function loadWeather(source){
 
         }
 
-        source.data =
-            window.cachedWeather[source.model];
+source.data =
+    window.cachedWeather[currentLocation][source.model];
 
     }
     catch(error){
