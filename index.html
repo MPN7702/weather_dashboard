@@ -201,15 +201,19 @@ if (rainAmount >= 20)
 
 thunderRisk = Math.min(thunderRisk, 100);
 let assessment = "";
-
-if (windSpeed >= 10) {
+            assessment = "Normala väderförhållanden väntas.";
+if (rainRisk >= 80) {
     assessment +=
-        " Blåsigt väder väntas.";
-}
-
-if (windGust >= 15) {
+        " Mycket hög risk för regn. Planera för blöt väderlek.";
+} else if (rainRisk >= 60) {
     assessment +=
-        " Kraftiga vindbyar kan förekomma.";
+        " Förhållandevis ostadigt med flera möjligheter till regn.";
+} else if (rainRisk >= 40) {
+    assessment +=
+        " Viss risk för skurar under dagen.";
+} else {
+    assessment +=
+        " Relativt stabilt väder med liten nederbördsrisk.";
 }
 
 if (rainRisk >= 80) {
@@ -246,8 +250,10 @@ else if (thunderRisk >= 30) {
 ${weekday}
 </strong><br>
 🌡️ ${minTemp}°C till ${maxTemp}°C<br>
-🌬️ Vind:
-<strong>${windSpeed} m/s</strong><br>
+🌬️ Medelvind:
+<strong>${windSpeed} m/s</strong>
+💨 Maxby:
+<strong>${windGust} m/s</strong>
 
 💨 Kastvind:
 <strong>${windGust} m/s</strong><br>
@@ -260,7 +266,9 @@ ${weekday}
 
 ⚡ Åskrisk:
 <strong>${thunderRisk}%</strong><br>
-📋 Bedömning: ${assessment}
+<br>
+📋 <strong>Bedömning:</strong><br>
+${assessment}
                 </div>
             `;
         }
