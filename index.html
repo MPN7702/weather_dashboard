@@ -79,14 +79,6 @@ h1{
     padding-bottom:8px;
 }
 
-.hot{
-    border:4px solid #00c853;
-}
-
-.cold{
-    border:4px solid #ff3d00;
-}
-
 .temp-hot{
     color:#d50000;
 }
@@ -416,15 +408,6 @@ rainClass = "rain-high";
 
 const box =
 document.getElementById(model.id);
-
-box.classList.remove("hot");
-box.classList.remove("cold");
-
-if(temperature === highestTemp)
-box.classList.add("hot");
-
-if(temperature === lowestTemp)
-box.classList.add("cold");
 
 box.innerHTML = `
 
