@@ -429,19 +429,19 @@ function getWindDirection(degrees) {
 function getWindArrow(degrees) {
 
     const arrows = [
-        "⬆️", // N
-        "↗️", // NO
-        "➡️", // O
-        "↘️", // SO
-        "⬇️", // S
-        "↙️", // SV
-        "⬅️", // V
-        "↖️"  // NV
+        "⬇️", // N
+        "↙️", // NO
+        "⬅️", // O
+        "↖️", // SO
+        "⬆️", // S
+        "↗️", // SV
+        "➡️", // V
+        "↘️"  // NV
     ];
 
     return arrows[
         Math.round(degrees / 45) % 8
-    ];    
+    ];
 }
     
 function showHour(hour){
