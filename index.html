@@ -214,7 +214,7 @@ if(window.cachedWeather){
 }
 
 const data =
-    cache[currentLocation].weekly;
+    cache.weekly;
 
         if (!data || !data.daily)
             return;
@@ -421,25 +421,11 @@ async function loadWeather(source){
 
             window.cachedWeather =
                 await response.json();
+
         }
 
-        console.log("MODEL:", source.model);
-        console.log("CACHE:", window.cachedWeather);
-
-        source.data =
-            window.cachedWeather[source.model];
-
-    }
-    catch(error){
-
-        console.error(error);
-
-    }
-
-}
-
 source.data =
-    window.cachedWeather[currentLocation][source.model];
+    window.cachedWeather[source.model];
 
     }
     catch(error){
