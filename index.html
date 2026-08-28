@@ -604,6 +604,20 @@ updateAIBox(hour);
 
 function updateAIBox(hour){
 
+const forecastTime =
+    models[0]?.data?.hourly?.time?.[hour];
+
+const displayTime =
+    new Date(forecastTime)
+        .toLocaleString("sv-SE", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+let tempSum = 0;
+let windSum = 0;
+...
+
 let tempSum = 0;
 let windSum = 0;
 let windDirectionSum = 0;
