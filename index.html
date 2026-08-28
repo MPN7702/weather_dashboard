@@ -156,7 +156,7 @@ async function updateWeeklyForecast() {
     const lon = 12.99;
 
     const url =
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&timezone=auto`;
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max&timezone=auto`;
 
     try {
 
@@ -185,6 +185,11 @@ async function updateWeeklyForecast() {
                 data.daily.precipitation_probability_max[i];
 const rainAmount =
     data.daily.precipitation_sum[i];
+            const windSpeed =
+    data.daily.wind_speed_10m_max[i];
+
+const windGust =
+    data.daily.wind_gusts_10m_max[i];
             let thunderRisk =
     Math.min(Math.round(rainRisk * 0.6), 100);
 
@@ -195,7 +200,15 @@ if (rainAmount >= 20)
     thunderRisk += 15;
 
 thunderRisk = Math.min(thunderRisk, 100);
+if (windSpeed >= 10) {
+    assessment +=
+        " Blåsigt väder väntas.";
+}
 
+if (windGust >= 15) {
+    assessment +=
+        " Kraftiga vindbyar kan förekomma.";
+}
             let assessment = "";
 
 if (rainRisk >= 80) {
@@ -231,12 +244,12 @@ else if (thunderRisk >= 30) {
                     <strong style="color:#60a5fa;font-size:18px;">
 ${weekday}
 </strong><br>
-                  🌡️ ${minTemp}°C till ${maxTemp}°C<br>
+🌡️ ${minTemp}°C till ${maxTemp}°C<br>
+🌬️ Vind: ${windSpeed} m/s<br>
+💨 Kastvind: ${windGust} m/s<br>
 🌧️ Regnrisk: ${rainRisk}%<br>
-💧 Regnmängd:
-<strong>${rainAmount} mm</strong><br>
-⚡ Åskrisk:
-<strong>${thunderRisk}%</strong>%<br>
+💧 Regnmängd: ${rainAmount} mm<br>
+⚡ Åskrisk: ${thunderRisk}%<br>
 📋 Bedömning: ${assessment}
                 </div>
             `;
