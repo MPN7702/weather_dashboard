@@ -624,6 +624,13 @@ if (avgTemp <= 5)
 if (avgTemp >= 20)
     avgTempClass = "temp-hot";
     const avgWind = (windSum / count).toFixed(1);
+    let windTrend = "➡";
+
+if (avgWind >= 10)
+    windTrend = "⬆";
+
+if (avgWind <= 2)
+    windTrend = "⬇";
     const avgPressure = (pressureSum / count).toFixed(1);
     const avgRainRisk = Math.round(rainRiskSum / count);
     let avgRainClass = "rain-low";
@@ -723,8 +730,8 @@ Temperatur:
 
         <br><br>
 
-        Vind:
-        <b>${avgWind} m/s</b>
+Vind:
+<b>${avgWind} m/s ${windTrend}</b>
 
         <br><br>
 
