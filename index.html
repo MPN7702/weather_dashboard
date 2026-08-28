@@ -677,13 +677,6 @@ const avgWindDirection =
 if (isNaN(avgWindDirection))
     return;
 
-let windTrend = "➡";
-
-if (avgWind >= 10)
-    windTrend = "⬆";
-
-if (avgWind <= 2)
-    windTrend = "⬇";
 const avgPressure =
     (pressureSum / weightSum).toFixed(1);
 const avgRainRisk =
