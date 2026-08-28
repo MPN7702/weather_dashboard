@@ -417,12 +417,26 @@ async function loadWeather(source){
         if(!window.cachedWeather){
 
             const response =
-                await fetch("weather.json");
+                await fetch("./weather.json");
 
             window.cachedWeather =
                 await response.json();
-
         }
+
+        console.log("MODEL:", source.model);
+        console.log("CACHE:", window.cachedWeather);
+
+        source.data =
+            window.cachedWeather[source.model];
+
+    }
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
 
 source.data =
     window.cachedWeather[currentLocation][source.model];
