@@ -433,21 +433,6 @@ console.log(
     "Prognostid:",
     h.time?.[hour]
 );
-const targetTime =
-    simulatedDate.toISOString().slice(0, 13);
-
-const hourIndex =
-    h.time.findIndex(time =>
-        time.startsWith(targetTime)
-    );
-
-if (hourIndex === -1) return;
-console.log(
-    "forecastIndex:",
-    forecastIndex,
-    "hour:",
-    hour
-);
 
 console.log(
     "Visar:",
