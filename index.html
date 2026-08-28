@@ -186,7 +186,8 @@ async function updateWeeklyForecast() {
     try {
 
 const data = weatherData;
-
+if (!data || !data.daily)
+    return;
         let html = "";
 
         for (let i = 0; i < 7; i++) {
@@ -709,12 +710,14 @@ ${analysis}
     `;
 
 }
-updateWeeklyForecast();
+
 async function loadAllData(){
 
     await loadWeather();
 
     showHour(forecastIndex);
+
+    updateWeeklyForecast();
 
 }
 
