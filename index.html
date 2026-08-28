@@ -627,9 +627,11 @@ currentHour++;
 
 if(currentHour > 23){
 
-currentHour = 0;
+    currentHour = 0;
 
-await loadAllData();
+    updateDate();
+
+    await loadAllData();
 
 }
 
