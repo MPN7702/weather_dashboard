@@ -339,7 +339,6 @@ document.getElementById("locationSelect")
 
 });
 
-};
     const WIND_FACTOR = 0.5;
 
 const models = [
@@ -485,14 +484,11 @@ model.data.hourly.temperature_2m[hour]
 if (!weatherData?.hourly)
     return;
 
-const h = weatherData.hourly;
-
-const h = model.data.hourly;
-
 
 const temperature =
 h.temperature_2m?.[hour] ?? "-";
-
+if (!weatherData?.hourly)
+    return;
 const nextTemperature =
 h.temperature_2m?.[hour + 1] ?? temperature;
 
@@ -546,11 +542,11 @@ if(rainRisk >= 70)
 rainClass = "rain-high";
 
 const box =
-document.getElementById(model.id);
+document.getElementById("box7");
 
 box.innerHTML = `
 
-<h2>${model.namn}</h2>
+<h2>Aktuell prognos</h2>
 
 Temperatur:
 <span class="${tempClass}">
@@ -631,39 +627,10 @@ const avgRainRisk =
 const avgRainAmount =
     Number(h.precipitation?.[hour] ?? 0);
 
-        if(!model.data) return;
 
-        const h = model.data.hourly;
 
-const weight =
-    weights[model.model] ?? 0;
+let avgTempClass = "temp-mid";
 
-tempSum +=
-    (h.temperature_2m?.[hour] ?? 0) * weight;
-
-windSum +=
-    ((h.wind_speed_10m?.[hour] ?? 0) * WIND_FACTOR) * weight;
-
-windDirectionSum +=
-    (h.wind_direction_10m?.[hour] ?? 0) * weight;
-
-pressureSum +=
-    (h.surface_pressure?.[hour] ?? 0) * weight;
-
-rainRiskSum +=
-    (h.precipitation_probability?.[hour] ?? 0) * weight;
-
-rainAmountSum +=
-    (h.precipitation?.[hour] ?? 0) * weight;
-
-weightSum += weight;
-
-    });
-
-if(weightSum === 0) return;
-
-const avgTemp =
-    (tempSum / weightSum).toFixed(1);
 
     let avgTempClass = "temp-mid";
 
@@ -879,7 +846,7 @@ document.getElementById("countdown").innerHTML =
 function updateDate() {
 
 const forecastTime =
-    weatherData?.hourly?.time?.[hour];
+    weatherData?.hourly?.time?.[forecastIndex];
 
     if (!forecastTime) return;
 
