@@ -205,13 +205,15 @@ const url =
 `&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean` +
 `&forecast_days=7` +
 `&timezone=auto`;
-    try {
+try {
 
-if (!response.ok) {
-    throw new Error(`API-fel: ${response.status}`);
-}
+    const response = await fetch(url);
 
-const data = await response.json();
+    if (!response.ok) {
+        throw new Error(`API-fel: ${response.status}`);
+    }
+
+    const data = await response.json();
 
 
         let html = "";
