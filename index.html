@@ -173,7 +173,7 @@ const models = [
 
 ];
 
-let currentHour = 0;
+let currentHour = new Date().getHours();
 let countdown = 5;
 
 async function loadWeather(source){
