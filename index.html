@@ -402,6 +402,8 @@ function getWindArrow(degrees) {
     return arrows[
         Math.round(degrees / 45) % 8
     ];
+updateAIBox(hour);
+    
 }
     
 function showHour(hour){
@@ -526,7 +528,79 @@ Regnmängd:
 `;
 
 });
+function updateAIBox(hour){
 
+    let tempSum = 0;
+    let windSum = 0;
+    let pressureSum = 0;
+    let rainRiskSum = 0;
+    let rainAmountSum = 0;
+
+    let count = 0;
+
+    models.forEach(model => {
+
+        if(!model.data) return;
+
+        const h = model.data.hourly;
+
+        tempSum += h.temperature_2m?.[hour] ?? 0;
+        windSum += h.wind_speed_10m?.[hour] ?? 0;
+        pressureSum += h.surface_pressure?.[hour] ?? 0;
+        rainRiskSum += h.precipitation_probability?.[hour] ?? 0;
+        rainAmountSum += h.precipitation?.[hour] ?? 0;
+
+        count++;
+
+    });
+
+    if(count === 0) return;
+
+    const avgTemp = (tempSum / count).toFixed(1);
+    const avgWind = (windSum / count).toFixed(1);
+    const avgPressure = (pressureSum / count).toFixed(1);
+    const avgRainRisk = Math.round(rainRiskSum / count);
+    const avgRainAmount = (rainAmountSum / count).toFixed(1);
+    const avgThunderRisk = Math.min(
+        Math.round(avgRainRisk * 0.6),
+        100
+    );
+
+    document.getElementById("box7").innerHTML = `
+
+        <h2>🧠 AI Konsensus</h2>
+
+        Temperatur:
+        <b>${avgTemp} °C</b>
+
+        <br><br>
+
+        Vind:
+        <b>${avgWind} m/s</b>
+
+        <br><br>
+
+        Lufttryck:
+        <b>${avgPressure} hPa</b>
+
+        <br><br>
+
+        Regnrisk:
+        <b>${avgRainRisk} %</b>
+
+        <br><br>
+
+        Regnmängd:
+        <b>${avgRainAmount} mm</b>
+
+        <br><br>
+
+        Åskrisk:
+        <b>${avgThunderRisk} %</b>
+
+    `;
+
+}
 }
 updateWeeklyForecast();
 async function loadAllData(){
