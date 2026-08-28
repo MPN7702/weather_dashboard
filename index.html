@@ -156,7 +156,7 @@ async function updateWeeklyForecast() {
     const lon = 12.99;
 
     const url =
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&timezone=auto`;
 
     try {
 
@@ -183,22 +183,45 @@ async function updateWeeklyForecast() {
 
             const rainRisk =
                 data.daily.precipitation_probability_max[i];
+const rainAmount =
+    data.daily.precipitation_sum[i];
+            let thunderRisk =
+    Math.min(Math.round(rainRisk * 0.6), 100);
+
+if (rainAmount >= 10)
+    thunderRisk += 15;
+
+if (rainAmount >= 20)
+    thunderRisk += 15;
+
+thunderRisk = Math.min(thunderRisk, 100);
 
             let assessment = "";
 
-            if (rainRisk >= 80) {
-                assessment =
-                    "Mycket hög risk för regn. Planera för blöt väderlek.";
-            } else if (rainRisk >= 60) {
-                assessment =
-                    "Förhållandevis ostadigt med flera möjligheter till regn.";
-            } else if (rainRisk >= 40) {
-                assessment =
-                    "Viss risk för skurar under dagen.";
-            } else {
-                assessment =
-                    "Relativt stabilt väder med liten nederbördsrisk.";
-            }
+         let assessment = "";
+
+if (rainRisk >= 80) {
+    assessment =
+        "Mycket hög risk för regn. Planera för blöt väderlek.";
+} else if (rainRisk >= 60) {
+    assessment =
+        "Förhållandevis ostadigt med flera möjligheter till regn.";
+} else if (rainRisk >= 40) {
+    assessment =
+        "Viss risk för skurar under dagen.";
+} else {
+    assessment =
+        "Relativt stabilt väder med liten nederbördsrisk.";
+}
+
+if (thunderRisk >= 60) {
+    assessment +=
+        " Förhöjd risk för åska.";
+}
+else if (thunderRisk >= 30) {
+    assessment +=
+        " Mindre risk för åska.";
+}
 
             if (maxTemp >= 25) {
                 assessment +=
@@ -208,9 +231,11 @@ async function updateWeeklyForecast() {
             html += `
                 <div class="forecast-day">
                     <strong>${weekday}</strong><br>
-                    🌡️ ${minTemp}°C till ${maxTemp}°C<br>
-                    🌧️ Regnrisk: ${rainRisk}%<br>
-                    📋 Bedömning: ${assessment}
+                  🌡️ ${minTemp}°C till ${maxTemp}°C<br>
+🌧️ Regnrisk: ${rainRisk}%<br>
+💧 Regnmängd: ${rainAmount} mm<br>
+⚡ Åskrisk: ${thunderRisk}%<br>
+📋 Bedömning: ${assessment}
                 </div>
             `;
         }
