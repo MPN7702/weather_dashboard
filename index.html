@@ -478,44 +478,7 @@ function getWindArrow(degrees) {
     ];
 }
 
-    if (hours.length === 0)
-        return "Inget regn väntas";
-
-    const result = [];
-
-    let start = hours[0];
-    let previous = hours[0];
-
-    for (let i = 1; i < hours.length; i++) {
-
-        const currentHour =
-            parseInt(hours[i].split(":")[0]);
-
-        const previousHour =
-            parseInt(previous.split(":")[0]);
-
-        if (currentHour === previousHour + 1) {
-
-            previous = hours[i];
-
-        } else {
-
-            result.push(
-                start === previous
-                    ? start
-                    : `${start}-${previous}`
-            );
-
-            start = hours[i];
-            previous = hours[i];
-        }
-    }
-
-    result.push(
-        start === previous
-            ? start
-            : `${start}-${previous}`
-    );
+  
 
     return result.join(", ");
 }  
