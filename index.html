@@ -660,6 +660,13 @@ document.getElementById("countdown").innerHTML =
 
 function updateDate() {
 
+    const forecastTime =
+        models[0]?.data?.hourly?.time?.[forecastIndex];
+
+    if (!forecastTime) return;
+
+    const date = new Date(forecastTime);
+
     const options = {
         weekday: "long",
         year: "numeric",
@@ -667,8 +674,15 @@ function updateDate() {
         day: "numeric"
     };
 
-const dateText =
-    new Date().toLocaleDateString("sv-SE", options);
+    const dateText =
+        date.toLocaleDateString("sv-SE", options);
+
+    document.getElementById("currentDate").innerHTML =
+        dateText.charAt(0).toUpperCase() +
+        dateText.slice(1);
+
+}
+``
 
     document.getElementById("currentDate").innerHTML =
         dateText.charAt(0).toUpperCase() +
