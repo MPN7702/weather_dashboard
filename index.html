@@ -232,10 +232,12 @@ const dayDate =
 const rainAmount =
     data.daily.precipitation_sum[i];
 const windSpeed =
-    data.daily.wind_speed_10m_mean[i];
+    (data.daily.wind_speed_10m_mean[i] * WIND_FACTOR)
+    .toFixed(1);
 
 const windGust =
-    data.daily.wind_gusts_10m_mean[i];
+    (data.daily.wind_gusts_10m_mean[i] * WIND_FACTOR)
+    .toFixed(1);
             const pressure =
     data.daily.surface_pressure_mean[i];
             let thunderRisk =
