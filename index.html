@@ -194,16 +194,19 @@ Nästa timme om 5 sek
 <script>
 async function updateWeeklyForecast() {
 
-const lat = LAT;
-const lon = LON;
-
-    const url =
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto`;
-
     try {
 
-        const response = await fetch(url);
-        const data = await response.json();
+        const response =
+            await fetch("weather.json");
+
+        const cache =
+            await response.json();
+
+        const data =
+            cache.weekly;
+
+        if (!data || !data.daily)
+            return;
 
         let html = "";
 
@@ -412,8 +415,6 @@ async function loadWeather(source){
         source.data =
             window.cachedWeather[source.model];
 
-    }
-    catch(error){
 
         console.error(error);
 
