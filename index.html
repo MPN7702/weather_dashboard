@@ -616,6 +616,13 @@ function updateAIBox(hour){
     if(count === 0) return;
 
     const avgTemp = (tempSum / count).toFixed(1);
+    let avgTempClass = "temp-mid";
+
+if (avgTemp <= 5)
+    avgTempClass = "temp-cold";
+
+if (avgTemp >= 20)
+    avgTempClass = "temp-hot";
     const avgWind = (windSum / count).toFixed(1);
     const avgPressure = (pressureSum / count).toFixed(1);
     const avgRainRisk = Math.round(rainRiskSum / count);
@@ -688,8 +695,10 @@ else if (avgPressure <= 1000)
 
         <h2>🧠 Samlad väderbild och AI-bedömning</h2>
 
-        Temperatur:
-        <b>${avgTemp} °C</b>
+Temperatur:
+<span class="${avgTempClass}">
+<b>${avgTemp} °C</b>
+</span>
 
         <br><br>
 
