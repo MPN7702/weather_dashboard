@@ -329,7 +329,8 @@ const models = [
 
 ];
 
-let forecastIndex = new Date().getHours();
+const startIndex = new Date().getHours();
+let forecastIndex = startIndex;
 
 let countdown = 5;
 async function loadWeather(source){
