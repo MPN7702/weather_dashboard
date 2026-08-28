@@ -156,7 +156,7 @@ async function updateWeeklyForecast() {
     const lon = 12.99;
 
     const url =
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_max,surface_pressure_mean&timezone=auto`;
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto`;
 
     try {
 
@@ -193,7 +193,7 @@ const windSpeed =
     data.daily.wind_speed_10m_mean[i];
 
 const windGust =
-    data.daily.wind_gusts_10m_max[i];
+    data.daily.wind_gusts_10m_mean[i];
             const pressure =
     data.daily.surface_pressure_mean[i];
             let thunderRisk =
