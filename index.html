@@ -330,6 +330,10 @@ const models = [
 ];
 
 let currentHour = new Date().getHours();
+    const startHour = currentHour;
+const startDate = new Date();
+
+let simulatedDate = new Date(startDate);
 let countdown = 5;
 let simulatedDate = new Date();
 async function loadWeather(source){
@@ -634,6 +638,14 @@ if(currentHour > 23){
     updateDate();
 
     await loadAllData();
+
+}
+
+if(currentHour === startHour){
+
+    simulatedDate = new Date(startDate);
+
+    updateDate();
 
 }
 
