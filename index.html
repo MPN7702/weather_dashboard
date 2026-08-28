@@ -426,6 +426,12 @@ if(!model.data) return;
 
 const h = model.data.hourly;
 
+console.log(
+    "Klocka:",
+    currentHour,
+    "Prognostid:",
+    h.time?.[hour]
+);
 const targetTime =
     simulatedDate.toISOString().slice(0, 13);
 
