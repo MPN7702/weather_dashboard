@@ -405,12 +405,14 @@ const forecastTime =
 const displayTime =
     new Date(forecastTime)
         .toLocaleString("sv-SE", {
+            day: "numeric",
+            month: "short",
             hour: "2-digit",
             minute: "2-digit"
         });
 
 document.getElementById("currentHour").innerHTML =
-`Tid: ${displayTime}`;
+displayTime;
 
 let temperatures = [];
 
