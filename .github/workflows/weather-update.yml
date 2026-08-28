@@ -46,7 +46,7 @@ jobs:
 
           for loc in "${locations[@]}"
           do
-            IFS=":" read name lat lon <<< "$loc"
+            IFS=":" read -r name lat lon <<< "$loc"
 
             mkdir -p "temp/$name"
 
@@ -60,9 +60,11 @@ jobs:
             curl -s \
             "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto&forecast_days=7" \
             -o "temp/$name/weekly.json"
+
           done
+
       - name: Visa filer
-        run: ls -la temp
+        run: find temp -type f | sort
 
       - name: Skapa weather.json
         run: |
@@ -83,9 +85,10 @@ jobs:
             "Branäs"
           )
 
-          for ((i=0; i<${#locations[@]}; i++))
-          do
+          total=${#locations[@]}
 
+          for ((i=0; i<total; i++))
+          do
             ort="${locations[$i]}"
 
             echo "\"$ort\":{" >> weather.json
@@ -117,13 +120,12 @@ jobs:
             echo '"weekly":' >> weather.json
             cat "temp/$ort/weekly.json" >> weather.json
 
-            if [ $i -lt $((${#locations[@]} - 1)) ]
+            if [ $i -lt $((total - 1)) ]
             then
               echo '},' >> weather.json
             else
               echo '}' >> weather.json
             fi
-
           done
 
           echo '}' >> weather.json
