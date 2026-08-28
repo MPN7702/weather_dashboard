@@ -397,21 +397,31 @@ let forecastIndex = startIndex;
 let countdown = 5;
 async function loadWeather(source){
 
-try{
+    try{
 
-const url =
-`https://api.open-meteo.com/v1/forecast?latitude=${LAT}` +
-`&longitude=${LON}` +
-`&models=${source.model}` +
-`&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation` +
-`&forecast_days=2`;
+        if(!window.cachedWeather){
 
-const response = await fetch(url);
-const data = await response.json();
+            const response =
+                await fetch("weather.json");
 
-source.data = data;
+            window.cachedWeather =
+                await response.json();
 
+        }
 
+        source.data =
+            window.cachedWeather[source.model];
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        document.getElementById(source.id).innerHTML =
+        `<h2>${source.namn}</h2>
+        Fel vid hämtning av data`;
+
+    }
 
 }
 catch(error){
