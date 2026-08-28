@@ -200,6 +200,8 @@ if (rainAmount >= 20)
     thunderRisk += 15;
 
 thunderRisk = Math.min(thunderRisk, 100);
+let assessment = "";
+
 if (windSpeed >= 10) {
     assessment +=
         " Blåsigt väder väntas.";
@@ -209,7 +211,6 @@ if (windGust >= 15) {
     assessment +=
         " Kraftiga vindbyar kan förekomma.";
 }
-            let assessment = "";
 
 if (rainRisk >= 80) {
     assessment =
@@ -245,11 +246,20 @@ else if (thunderRisk >= 30) {
 ${weekday}
 </strong><br>
 🌡️ ${minTemp}°C till ${maxTemp}°C<br>
-🌬️ Vind: ${windSpeed} m/s<br>
-💨 Kastvind: ${windGust} m/s<br>
-🌧️ Regnrisk: ${rainRisk}%<br>
-💧 Regnmängd: ${rainAmount} mm<br>
-⚡ Åskrisk: ${thunderRisk}%<br>
+🌬️ Vind:
+<strong>${windSpeed} m/s</strong><br>
+
+💨 Kastvind:
+<strong>${windGust} m/s</strong><br>
+
+🌧️ Regnrisk:
+<strong>${rainRisk}%</strong><br>
+
+💧 Regnmängd:
+<strong>${rainAmount} mm</strong><br>
+
+⚡ Åskrisk:
+<strong>${thunderRisk}%</strong><br>
 📋 Bedömning: ${assessment}
                 </div>
             `;
@@ -391,10 +401,7 @@ temperatures.push(
 model.data.hourly.temperature_2m[hour]
 );
 
-});
-
-const highestTemp = Math.max(...temperatures);
-const lowestTemp = Math.min(...temperatures);
+})
 
 models.forEach(model=>{
 
