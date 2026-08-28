@@ -169,7 +169,11 @@ async function updateWeeklyForecast() {
 
             const date =
                 new Date(data.daily.time[i]);
-
+const dayDate =
+    date.toLocaleDateString("sv-SE", {
+        day: "numeric",
+        month: "short"
+    });
             const weekday =
                 date.toLocaleDateString("sv-SE", {
                     weekday: "long"
@@ -248,8 +252,8 @@ else if (thunderRisk >= 30) {
 
             html += `
                 <div class="forecast-day">
-                    <strong style="color:#60a5fa;font-size:18px;">
-${weekday}
+<strong style="color:#60a5fa;font-size:18px;">
+${weekday} ${dayDate}
 </strong><br>
 🌡️ ${minTemp}°C till ${maxTemp}°C<br>
 🌬️ Medelvind:
