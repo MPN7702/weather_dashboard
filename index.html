@@ -17,8 +17,6 @@
     color:#e2e8f0;
     border-radius:12px;
     box-shadow:0 4px 12px rgba(0,0,0,.4);
-
-    text-align:center;
 }
 
 #weeklyForecast h2 {
@@ -199,22 +197,13 @@ async function updateWeeklyForecast() {
 const lat = LAT;
 const lon = LON;
 
-const url =
-`https://api.open-meteo.com/v1/forecast?latitude=${lat}` +
-`&longitude=${lon}` +
-`&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean` +
-`&forecast_days=7` +
-`&timezone=auto`;
-try {
+    const url =
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto`;
 
-    const response = await fetch(url);
+    try {
 
-    if (!response.ok) {
-        throw new Error(`API-fel: ${response.status}`);
-    }
-
-    const data = await response.json();
-
+        const response = await fetch(url);
+        const data = await response.json();
 
         let html = "";
 
@@ -242,7 +231,6 @@ const dayDate =
                 data.daily.precipitation_probability_max[i];
 const rainAmount =
     data.daily.precipitation_sum[i];
-        
 const windSpeed =
     (data.daily.wind_speed_10m_mean[i] * WIND_FACTOR)
     .toFixed(1);
@@ -250,7 +238,8 @@ const windSpeed =
 const windGust =
     (data.daily.wind_gusts_10m_mean[i] * WIND_FACTOR)
     .toFixed(1);
-const pressure = "-";
+            const pressure =
+    data.daily.surface_pressure_mean[i];
             let thunderRisk =
     Math.min(Math.round(rainRisk * 0.6), 100);
 
@@ -261,8 +250,7 @@ if (rainAmount >= 20)
     thunderRisk += 15;
 
 thunderRisk = Math.min(thunderRisk, 100);
-
-            let assessment = "";
+let assessment = "";
             assessment = "Normala väderförhållanden väntas.";
 if (rainRisk >= 80) {
     assessment +=
@@ -310,7 +298,6 @@ ${weekday} ${dayDate}
 
 💧 Regnmängd:
 <strong>${rainAmount} mm</strong><br>
-
 
 ⚡ Åskrisk:
 <strong>${thunderRisk}%</strong><br>
@@ -420,12 +407,6 @@ const url =
 `&forecast_days=2`;
 
 const response = await fetch(url);
-
-if (!response.ok) {
-    throw new Error(`API-fel: ${response.status}`);
-
-}
-
 const data = await response.json();
 
 source.data = data;
@@ -480,15 +461,11 @@ function getWindArrow(degrees) {
         Math.round(degrees / 45) % 8
     ];
 }
-
-  
+    
 function showHour(hour){
 
 const forecastTime =
     models[0]?.data?.hourly?.time?.[hour];
-
-if (!forecastTime)
-    return;
 
 const displayTime =
     new Date(forecastTime)
@@ -630,9 +607,6 @@ function updateAIBox(hour){
 
 const forecastTime =
     models[0]?.data?.hourly?.time?.[hour];
-
-if (!forecastTime)
-    return;
 
 const displayTime =
     new Date(forecastTime)
@@ -852,6 +826,7 @@ ${analysis}
     `;
 
 }
+updateWeeklyForecast();
 async function loadAllData(){
 
 await Promise.all(
@@ -923,7 +898,6 @@ function updateDate() {
 }
 
 startDashboard();
-updateWeeklyForecast();
 
 </script>
 
