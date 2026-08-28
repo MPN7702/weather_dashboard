@@ -37,9 +37,7 @@ jobs:
         run: ls -la temp
       - name: Skapa weather.json
         run: |
-          echo '{' > weather.json
-          echo '"updated":"test"' >> weather.json
-          echo '}' >> weather.json
+          cp temp/best_match.json weather.json
 
       - name: Spara till GitHub
         run: |
