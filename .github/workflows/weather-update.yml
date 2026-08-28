@@ -1,34 +1,12 @@
-name: Update Weather
+name: Weather Update
 
 on:
-  schedule:
-    - cron: '0 * * * *'
-
   workflow_dispatch:
 
 jobs:
-* update-weather:
-    runs*on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
 
     steps:
-    * - name: Checkout repository
-     *  uses: actions/checkout@v4
-
-     *- name: Setup Python
-        uses:*actions/setup-python@v5
-        wi*h:
-          python-version: "3.11*
-
-      - name: Install requests
- *      run: pip install requests
-
- *    - name: Run updater
-        ru*: python update_weather.py
-
-      * name: Commit weather.json
-       *run: |
-          git config user.n*me github-actions
-          git co*fig user.email github-actions@gith*b.com
-          git add weather.js*n
-          git commit -m "Update *eather cache" || exit 0
-          *it push
+      - name: Test
+        run: echo "Workflow fungerar"
