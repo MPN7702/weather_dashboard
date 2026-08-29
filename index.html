@@ -610,8 +610,6 @@ const h = model.data.hourly;
 const temperature =
 h.temperature_2m?.[hour] ?? "-";
 
-const nextTemperature =
-h.temperature_2m?.[hour + 1] ?? temperature;
 
 const wind =
 ((h.wind_speed_10m?.[hour] ?? 0) * WIND_FACTOR).toFixed(1);
