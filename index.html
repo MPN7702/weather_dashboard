@@ -214,7 +214,7 @@ if(window.cachedWeather){
 }
 
 const data =
-    cache.weekly;
+    cache[currentLocation].weekly;
 
         if (!data || !data.daily)
             return;
@@ -425,7 +425,7 @@ async function loadWeather(source){
         }
 
 source.data =
-    window.cachedWeather[source.model];
+    window.cachedWeather[currentLocation][source.model];
 
     }
     catch(error){
