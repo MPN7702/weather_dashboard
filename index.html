@@ -1079,13 +1079,13 @@ if(Number(avgRainAmount) > 10)
         Math.round(avgRainRisk * 0.6),
         100
     );
-    let avgThunderClass = "rain-low";
+let avgThunderClass = "";
 
-if (avgThunderRisk >= 30)
-    avgThunderClass = "rain-mid";
-
-if (avgThunderRisk >= 70)
+if (avgThunderRisk >= 80)
     avgThunderClass = "rain-high";
+
+else if (avgThunderRisk >= 50)
+    avgThunderClass = "rain-mid";
 
 document.getElementById("box7").innerHTML = `
 
