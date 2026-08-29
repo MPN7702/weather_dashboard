@@ -902,15 +902,18 @@ document.getElementById("box7").innerHTML = `
     font-weight:bold;
 ">
 
-    ${capitalizedDate}
+${capitalizedDate}
 
-    <br><br>
+<br><br>
 
-    Klockan: ${displayTime} (24-timmarsprognos)
+Klockan: ${displayTime} (24-timmarsprognos)
 
-    <br>
+<br>
 
+<span id="box7-timer">
     Nästa timme om ${countdown} sek
+</span>
+
 
 </div>
 
@@ -985,8 +988,6 @@ forecastIndex = startIndex;
 
 showHour(forecastIndex);
 
-updateDate();
-
 countdown = 5;
 
 },5000);
@@ -1007,31 +1008,6 @@ if(timerText){
 }
 
 }, 1000);
-
-}
-
-function updateDate() {
-
-    const forecastTime =
-        models[0]?.data?.hourly?.time?.[forecastIndex];
-
-    if (!forecastTime) return;
-
-    const date = new Date(forecastTime);
-
-    const options = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-    };
-
-    const dateText =
-        date.toLocaleDateString("sv-SE", options);
-
-    document.getElementById("currentDate").innerHTML =
-        dateText.charAt(0).toUpperCase() +
-        dateText.slice(1);
 
 }
 
