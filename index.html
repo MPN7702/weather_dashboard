@@ -246,65 +246,18 @@ const dayDate =
                 date.toLocaleDateString("sv-SE", {
                     weekday: "long"
                 });
-console.log("weekly:", data);
-console.log("model0 daily:", models[0].data?.daily);
-            console.log(
-    "rain test:",
-    models[0].data?.daily?.precipitation_sum
-);
-            console.log(
-    "temp max dag1:",
-    models[0].data?.daily?.temperature_2m_max?.[0]
-);
-console.log("location:", currentLocation);
 const maxTemp =
     data.daily.temperature_2m_max[i].toFixed(1);
 
-let minTempSum = 0;
-let minTempWeight = 0;
-
-models.forEach(model => {
-
-    const weight =
-        weights[model.model] ?? 0;
-
-const value =
-    daily?.temperature_2m_min?.[i];
-
-    if (value !== undefined) {
-
-        minTempSum += value * weight;
-        minTempWeight += weight;
-
-    }
-
-});
-
 const minTemp =
-    (minTempSum / minTempWeight).toFixed(1);
-
-let rainRiskSum = 0;
-let rainRiskWeight = 0;
-
-models.forEach(model => {
-
-    const weight =
-        weights[model.model] ?? 0;
-
-const value =
-    daily?.precipitation_probability_max?.[i];
-
-    if (value !== undefined) {
-
-        rainRiskSum += value * weight;
-        rainRiskWeight += weight;
-
-    }
-
-});
+    Number(
+        daily.temperature_2m_min[i]
+    ).toFixed(1);
 
 const rainRisk =
-    Math.round(rainRiskSum / rainRiskWeight);
+    Math.round(
+        daily.precipitation_probability_max[i]
+    );
 const rainAmount =
     (daily?.precipitation_sum?.[i] ?? 0)
     .toFixed(1);
