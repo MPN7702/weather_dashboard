@@ -251,17 +251,6 @@ const dayDate =
 const rainAmount =
     data.daily.precipitation_sum[i];
 
-if (rainAmount >= 10)
-    rainText = "Regn väntas större delen av dagen.";
-
-else if (rainAmount >= 5)
-    rainText = "Regn väntas under flera timmar.";
-
-else if (rainAmount >= 1)
-    rainText = "Kortare regnperioder väntas.";
-
-else
-    rainText = "Ingen tydlig regnperiod väntas.";
 const windSpeed =
     (data.daily.wind_speed_10m_mean[i] * WIND_FACTOR)
     .toFixed(1);
