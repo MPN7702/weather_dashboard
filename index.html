@@ -457,7 +457,13 @@ thunderRisk =
 let fishingAllowed = true;
 let fishingReason = "";
 
-if(Number(rainAmount) > 2){
+if(thunderRisk >= 50){
+
+    fishingAllowed = false;
+    fishingReason = "Hög åskrisk";
+
+}
+else if(Number(rainAmount) > 2){
 
     fishingAllowed = false;
     fishingReason = "För mycket regn";
@@ -475,12 +481,7 @@ else if(Number(windGust) > 10){
     fishingReason = "För kraftiga kastvindar";
 
 }
-else if(Number(windGust) > 10){
 
-    fishingAllowed = false;
-    fishingReason = "För kraftiga kastvindar";
-
-}
 let pikeScore = 0;
 let perchScore = 0;
 let zanderScore = 0;
