@@ -220,6 +220,7 @@ if(window.cachedWeather){
 
 const data =
     cache[currentLocation].weekly;
+        const daily = data.daily;
 
 if (!data || !data.daily)
     return;
@@ -256,9 +257,8 @@ models.forEach(model => {
     const weight =
         weights[model.model] ?? 0;
 
-    const value =
-        model.data?.daily?.temperature_2m_max?.[i];
-
+const value =
+    daily?.temperature_2m_max?.[i];
     if (value !== undefined) {
 
         maxTempSum += value * weight;
@@ -279,8 +279,8 @@ models.forEach(model => {
     const weight =
         weights[model.model] ?? 0;
 
-    const value =
-        model.data?.daily?.temperature_2m_min?.[i];
+const value =
+    daily?.temperature_2m_min?.[i];
 
     if (value !== undefined) {
 
@@ -302,8 +302,8 @@ models.forEach(model => {
     const weight =
         weights[model.model] ?? 0;
 
-    const value =
-        model.data?.daily?.precipitation_probability_max?.[i];
+const value =
+    daily?.precipitation_probability_max?.[i];
 
     if (value !== undefined) {
 
