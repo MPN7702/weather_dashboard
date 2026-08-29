@@ -564,36 +564,6 @@ if(!fishingAllowed){
     `;
 
 }
-let bestFish = "Gädda";
-let bestScore = pikeScore;
-
-if(perchScore > bestScore){
-
-    bestFish = "Abborre";
-    bestScore = perchScore;
-
-}
-
-if(zanderScore > bestScore){
-
-    bestFish = "Gös";
-    bestScore = zanderScore;
-
-}
-
-let fishingText = "";
-
-if(!fishingAllowed){
-
-    fishingText =
-        `🎣 Fiske: ❌ ${fishingReason}`;
-
-}else{
-
-    fishingText =
-        `🎣 Fiske: 🏆 ${bestFish}`;
-
-}
             html += `
                 <div class="forecast-day">
 <strong style="color:#60a5fa;font-size:18px;">
