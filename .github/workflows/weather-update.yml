@@ -3,7 +3,6 @@ name: Weather Update
 on:
   schedule:
     - cron: "0 * * * *"
-
   workflow_dispatch:
 
 permissions:
@@ -19,16 +18,20 @@ jobs:
 
       - name: Hämta väderdata
         run: |
-          mkdir -p temp/Torsby
-          mkdir -p temp/Syssleback
-          mkdir -p temp/Stollet
-          mkdir -p temp/Likenas
-          mkdir -p temp/Ostmark
-          mkdir -p temp/Holjes
-          mkdir -p temp/Ambjorby
-          mkdir -p temp/Varnas
-          mkdir -p temp/Vitsand
-          mkdir -p temp/Branas
+          mkdir -p temp
+
+          locations=(
+            "Torsby|60.136|13.006"
+            "Sysslebäck|60.729|13.006"
+            "Stöllet|60.416|13.256"
+            "Likenäs|60.640|13.220"
+            "Östmark|60.314|12.996"
+            "Höljes|60.815|12.790"
+            "Ambjörby|60.480|13.115"
+            "Värnäs|60.285|13.173"
+            "Vitsand|60.542|13.017"
+            "Branäs|60.689|13.189"
+          )
 
           models=(
             icon_global
@@ -39,37 +42,72 @@ jobs:
             best_match
           )
 
-          download_location () {
-            NAME=$1
-            LAT=$2
-            LON=$3
+          fetch_file() {
+            local url="$1"
+            local outfile="$2"
+
+            for attempt in 1 2 3
+            do
+              echo "Försök $attempt -> $outfile"
+
+              if curl -L -s \
+                --connect-timeout 30 \
+                --max-time 90 \
+                --retry 3 \
+                --retry-delay 5 \
+                "$url" \
+                -o "$outfile"
+              then
+
+                if [ -s "$outfile" ]; then
+                  return 0
+                fi
+
+              fi
+
+              echo "Misslyckades, väntar 10 sek..."
+              sleep 10
+
+            done
+
+            echo "KUNDE INTE HÄMTA: $outfile"
+
+            return 1
+          }
+
+          for loc in "${locations[@]}"
+          do
+            name=$(echo "$loc" | cut -d'|' -f1)
+            lat=$(echo "$loc" | cut -d'|' -f2)
+            lon=$(echo "$loc" | cut -d'|' -f3)
+
+            echo ""
+            echo "=================================="
+            echo "ORT: $name"
+            echo "=================================="
+
+            mkdir -p "temp/$name"
 
             for model in "${models[@]}"
             do
-              curl -L --fail --silent --show-error \
-                --connect-timeout 15 \
-                --max-time 60 \
-                "https://api.open-meteo.com/v1/forecast?latitude=$LAT&longitude=$LON&models=$model&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" \
-                -o "temp/$NAME/$model.json"
+              echo "Modell: $model"
+
+              fetch_file \
+              "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&models=$model&hourly=temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,precipitation_probability,precipitation&forecast_days=2" \
+              "temp/$name/$model.json"
+
+              sleep 1
             done
 
-            curl -L --fail --silent --show-error \
-              --connect-timeout 15 \
-              --max-time 60 \
-              "https://api.open-meteo.com/v1/forecast?latitude=$LAT&longitude=$LON&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto&forecast_days=7" \
-              -o "temp/$NAME/weekly.json"
-          }
+            echo "Weekly: $name"
 
-          download_location Torsby 60.136 13.006
-          download_location Syssleback 60.729 13.006
-          download_location Stollet 60.416 13.256
-          download_location Likenas 60.640 13.220
-          download_location Ostmark 60.314 12.996
-          download_location Holjes 60.815 12.790
-          download_location Ambjorby 60.480 13.115
-          download_location Varnas 60.285 13.173
-          download_location Vitsand 60.542 13.017
-          download_location Branas 60.689 13.189
+            fetch_file \
+            "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_gusts_10m_mean,surface_pressure_mean&timezone=auto&forecast_days=7" \
+            "temp/$name/weekly.json"
+
+            sleep 2
+
+          done
 
       - name: Skapa weather.json
         run: |
@@ -77,73 +115,64 @@ jobs:
 
           echo '"updated":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'",' >> weather.json
 
-          build_location () {
-            NAME=$1
+          locations=(
+            "Torsby"
+            "Sysslebäck"
+            "Stöllet"
+            "Likenäs"
+            "Östmark"
+            "Höljes"
+            "Ambjörby"
+            "Värnäs"
+            "Vitsand"
+            "Branäs"
+          )
 
-            echo "\"$NAME\":{" >> weather.json
+          total=${#locations[@]}
+
+          for ((i=0; i<total; i++))
+          do
+            ort="${locations[$i]}"
+
+            echo "\"$ort\":{" >> weather.json
 
             echo '"icon_global":' >> weather.json
-            cat "temp/$NAME/icon_global.json" >> weather.json
+            cat "temp/$ort/icon_global.json" >> weather.json
             echo ',' >> weather.json
 
             echo '"gfs_global":' >> weather.json
-            cat "temp/$NAME/gfs_global.json" >> weather.json
+            cat "temp/$ort/gfs_global.json" >> weather.json
             echo ',' >> weather.json
 
             echo '"gem_global":' >> weather.json
-            cat "temp/$NAME/gem_global.json" >> weather.json
+            cat "temp/$ort/gem_global.json" >> weather.json
             echo ',' >> weather.json
 
             echo '"icon_eu":' >> weather.json
-            cat "temp/$NAME/icon_eu.json" >> weather.json
+            cat "temp/$ort/icon_eu.json" >> weather.json
             echo ',' >> weather.json
 
             echo '"dmi_seamless":' >> weather.json
-            cat "temp/$NAME/dmi_seamless.json" >> weather.json
+            cat "temp/$ort/dmi_seamless.json" >> weather.json
             echo ',' >> weather.json
 
             echo '"best_match":' >> weather.json
-            cat "temp/$NAME/best_match.json" >> weather.json
+            cat "temp/$ort/best_match.json" >> weather.json
             echo ',' >> weather.json
 
             echo '"weekly":' >> weather.json
-            cat "temp/$NAME/weekly.json" >> weather.json
+            cat "temp/$ort/weekly.json" >> weather.json
 
-            echo '}' >> weather.json
-          }
-
-          build_location Torsby
-          echo ',' >> weather.json
-
-          build_location Syssleback
-          echo ',' >> weather.json
-
-          build_location Stollet
-          echo ',' >> weather.json
-
-          build_location Likenas
-          echo ',' >> weather.json
-
-          build_location Ostmark
-          echo ',' >> weather.json
-
-          build_location Holjes
-          echo ',' >> weather.json
-
-          build_location Ambjorby
-          echo ',' >> weather.json
-
-          build_location Varnas
-          echo ',' >> weather.json
-
-          build_location Vitsand
-          echo ',' >> weather.json
-
-          build_location Branas
+            if [ $i -lt $((total - 1)) ]; then
+              echo '},' >> weather.json
+            else
+              echo '}' >> weather.json
+            fi
+          done
 
           echo '}' >> weather.json
 
-      - name: Commit changes
+      - name: Commit weather.json
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
