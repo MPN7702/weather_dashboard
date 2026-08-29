@@ -76,7 +76,13 @@ h1{
     grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
     gap:15px;
 }
-
+.bottom-container{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:15px;
+    margin-top:20px;
+    align-items:start;
+}
 .weather-box{
     background:#1e293b;
     color:#e2e8f0;
@@ -172,12 +178,24 @@ Nästa timme om 5 sek
 
 </div>
 
-<div class="weather-box" id="box7" style="margin-top:20px;">
-    AI analyserar...
+<div class="bottom-row">
+
+<div class="bottom-container">
+
+    <div class="weather-box" id="box7">
+        AI analyserar...
+    </div>
+
+    <div id="weeklyForecast">
+        <h2>📅 Sammanställd 7-dygnsprognos</h2>
+        <div id="forecastContent">
+            Hämtar prognos...
+        </div>
+    </div>
+
 </div>
 
-
-<div id="weeklyForecast">
+</div>
     <h2>📅 Sammanställd 7-dygnsprognos</h2>
     <div id="forecastContent">
         Hämtar prognos...
