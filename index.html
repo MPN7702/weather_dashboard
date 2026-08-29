@@ -751,7 +751,6 @@ Regnmängd:
 });
 
  
-getConsensusRainPeriods();
 updateAIBox(hour);
 
 }
@@ -782,7 +781,8 @@ let rainAmountSum = 0;
 
 let weightSum = 0;
     models.forEach(model => {
-
+console.log(models);
+console.log("weightSum =", weightSum);
         if(!model.data) return;
 
         const h = model.data.hourly;
