@@ -311,8 +311,29 @@ models.forEach(model => {
 
 const rainRisk =
     Math.round(rainRiskSum / rainRiskWeight);
+let rainAmountSum = 0;
+let rainAmountWeight = 0;
+
+models.forEach(model => {
+
+    const weight =
+        weights[model.model] ?? 0;
+
+    const value =
+        model.data?.daily?.precipitation_sum?.[i];
+
+    if (value !== undefined) {
+
+        rainAmountSum += value * weight;
+        rainAmountWeight += weight;
+
+    }
+
+});
+
 const rainAmount =
-    data.daily.precipitation_sum[i];
+    (rainAmountSum / rainAmountWeight)
+    .toFixed(1);
 let rainHours = [];
 
 const currentDay =
@@ -457,7 +478,7 @@ models.forEach(model => {
 const windGust =
     ((windGustSum / windGustWeight) * WIND_FACTOR)
     .toFixed(1);
-``
+
 let pressureSum = 0;
 let pressureWeight = 0;
 
