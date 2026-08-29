@@ -921,7 +921,6 @@ ${analysis}
     `;
 
 }
-updateWeeklyForecast();
 async function loadAllData(){
 
 await Promise.all(
@@ -929,6 +928,8 @@ models.map(loadWeather)
 );
 
 showHour(forecastIndex);
+
+await updateWeeklyForecast();
 
 }
 
