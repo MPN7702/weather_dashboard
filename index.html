@@ -123,20 +123,6 @@ h1{
 .rain-high{
     color:#d50000;
 }
-    .fish-good{
-    color:#00c853;
-    font-weight:bold;
-}
-
-.fish-medium{
-    color:#ff9800;
-    font-weight:bold;
-}
-
-.fish-poor{
-    color:#d50000;
-    font-weight:bold;
-}
 .score-low{
     color:#ef4444;
 }
@@ -569,43 +555,32 @@ if(zanderScore > bestScore){
 
 }
 let fishingText = "";
-         const pikeClass =
-    pikeScore >= 7 ? "fish-good" :
-    pikeScore >= 5 ? "fish-medium" :
-    "fish-poor";
-
-const perchClass =
-    perchScore >= 7 ? "fish-good" :
-    perchScore >= 5 ? "fish-medium" :
-    "fish-poor";
-
-const zanderClass =
-    zanderScore >= 7 ? "fish-good" :
-    zanderScore >= 5 ? "fish-medium" :
-    "fish-poor";   
+  
 if(bestScore < 6 && fishingAllowed){
 
     fishingText = `
         🎣 Fiske: ⚠️ Ingen tydlig rekommendation
         <br>
-       🐟 Gädda:
-<span class="${pikeClass}">
-${pikeScore}/10
-</span>
-<br>
 
-🐟 Abborre:
-<span class="${perchClass}">
-${perchScore}/10
-</span>
-<br>
+        🐊 Gädda:
+        <span class="${getScoreClass(pikeScore)}">
+        <b>${pikeScore}/10</b>
+        </span>
 
-🐟 Gös:
-<span class="${zanderClass}">
-${zanderScore}/10
-</span>
+        <br>
+
+        🐟 Abborre:
+        <span class="${getScoreClass(perchScore)}">
+        <b>${perchScore}/10</b>
+        </span>
+
+        <br>
+
+        🐟 Gös:
+        <span class="${getScoreClass(zanderScore)}">
+        <b>${zanderScore}/10</b>
+        </span>
     `;
-
 }
 else if(!fishingAllowed){
 
