@@ -890,129 +890,7 @@ if (avgThunderRisk >= 30)
 
 if (avgThunderRisk >= 70)
     avgThunderClass = "rain-high";
-let fishingAllowed = true;
-let fishingReason = "";
 
-if(avgThunderRisk >= 50){
-
-    fishingAllowed = false;
-    fishingReason = "Hög åskrisk";
-
-}
-else if(avgRainAmount > 2){
-
-    fishingAllowed = false;
-    fishingReason = "För mycket regn";
-
-}
-else if(avgWind > 7){
-
-    fishingAllowed = false;
-    fishingReason = "För hård vind";
-
-}
-    let pikeScore = 0;
-let perchScore = 0;
-let zanderScore = 0;
-
-if(fishingAllowed){
-
-/* Gädda */
-
-if(avgWind >= 2 && avgWind <= 6)
-    pikeScore += 3;
-
-if(avgRainRisk >= 30)
-    pikeScore += 3;
-
-if(avgPressure >= 1000 && avgPressure <= 1015)
-    pikeScore += 4;
-
-
-/* Abborre */
-
-if(avgTemp >= 12)
-    perchScore += 3;
-
-if(avgPressure >= 1010)
-    perchScore += 3;
-
-if(avgWind <= 5)
-    perchScore += 2;
-
-if(avgRainRisk <= 40)
-    perchScore += 2;
-
-
-/* Gös */
-
-if(avgWind >= 2 && avgWind <= 7)
-    zanderScore += 3;
-
-if(avgPressure >= 995 && avgPressure <= 1015)
-    zanderScore += 3;
-
-if(avgRainRisk >= 20 && avgRainRisk <= 70)
-    zanderScore += 2;
-
-if(avgTemp >= 10)
-    zanderScore += 2;
-
-}
-   let bestFish = "Gädda";
-let bestScore = pikeScore;
-
-if(perchScore > bestScore){
-
-    bestFish = "Abborre";
-    bestScore = perchScore;
-
-}
-
-if(zanderScore > bestScore){
-
-    bestFish = "Gös";
-    bestScore = zanderScore;
-
-}
- let fishingText = "";
-
-if(!fishingAllowed){
-
-    fishingText = `
-        🎣 Fiskeläge:
-        <b>Olämpligt</b>
-
-        <br><br>
-
-        ⚠️ ${fishingReason}
-    `;
-
-}else{
-
-    fishingText = `
-        🎣 Fiskeläge:
-        <b>Lämpligt</b>
-
-        <br><br>
-
-        🐊 Gädda: <b>${pikeScore}/10</b>
-
-        <br>
-
-        🐟 Abborre: <b>${perchScore}/10</b>
-
-        <br>
-
-        🐟 Gös: <b>${zanderScore}/10</b>
-
-        <br><br>
-
-        🏆 Bästa val:
-        <b>${bestFish}</b>
-    `;
-
-}
 document.getElementById("box7").innerHTML = `
 
 <h2>Samlad väderbild (6 källor)</h2>
@@ -1080,10 +958,6 @@ Regnmängd:
 <span class="${avgThunderClass}">
 <b>${avgThunderRisk} %</b>
 </span>
-
-<br><br>
-
-${fishingText}
 
 `;
 }
