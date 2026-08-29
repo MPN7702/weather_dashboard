@@ -457,7 +457,7 @@ thunderRisk =
 let fishingAllowed = true;
 let fishingReason = "";
 
-else if(Number(rainAmount) > 2){
+if(Number(rainAmount) > 2){
 
     fishingAllowed = false;
     fishingReason = "För mycket regn";
@@ -487,8 +487,8 @@ if(fishingAllowed){
     if(Number(windSpeed) >= 2 && Number(windSpeed) <= 6)
         pikeScore += 3;
 
-    if(rainRisk >= 30)
-        pikeScore += 3;
+    if(rainRisk >= 20 && rainRisk <= 60)
+    pikeScore += 3;
 
     if(Number(pressure) >= 1000 && Number(pressure) <= 1015)
         pikeScore += 4;
