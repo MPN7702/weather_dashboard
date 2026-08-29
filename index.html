@@ -430,7 +430,8 @@ async function loadWeather(source){
         }
 
 source.data =
-    window.cachedWeather[currentLocation][source.model];
+    window.cachedWeather?.[currentLocation]?.[source.model];
+
 
     }
     catch(error){
