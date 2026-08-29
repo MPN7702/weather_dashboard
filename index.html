@@ -123,7 +123,21 @@ h1{
 .rain-high{
     color:#d50000;
 }
+.score-low{
+    color:#ef4444;
+}
 
+.score-mid{
+    color:#f97316;
+}
+
+.score-good{
+    color:#eab308;
+}
+
+.score-best{
+    color:#22c55e;
+}
 .value{
     font-weight:bold;
 }
@@ -568,11 +582,20 @@ else{
     fishingText = `
         🎣 Fiske: 🏆 ${bestFish}
         <br>
-        🐊 Gädda: ${pikeScore}/10
+        🐊 Gädda:
+<span class="${getScoreClass(pikeScore)}">
+<b>${pikeScore}/10</b>
+</span>
         <br>
-        🐟 Abborre: ${perchScore}/10
+        🐟 Abborre:
+<span class="${getScoreClass(perchScore)}">
+<b>${perchScore}/10</b>
+</span>
         <br>
-        🐟 Gös: ${zanderScore}/10
+        🐟 Gös:
+<span class="${getScoreClass(zanderScore)}">
+<b>${zanderScore}/10</b>
+</span>
     `;
 
 }
@@ -762,7 +785,19 @@ function getWindArrow(degrees) {
         Math.round(degrees / 45) % 8
     ];
 }
+function getScoreClass(score){
 
+    if(score >= 9)
+        return "score-best";
+
+    if(score >= 7)
+        return "score-good";
+
+    if(score >= 4)
+        return "score-mid";
+
+    return "score-low";
+}
 function showHour(hour){
 
     if(!models[0]?.data?.hourly)
