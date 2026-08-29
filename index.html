@@ -265,7 +265,7 @@ for (let h = 0; h < hourlyData.hourly.time.length; h++) {
 
     if (
         hourlyTime.startsWith(currentDay) &&
-        (hourlyData.hourly.precipitation[h] ?? 0) > 0
+        (hourlyData.hourly.precipitation[h] ?? 0) >= 0.3
     ) {
 
         rainHours.push(
@@ -604,6 +604,7 @@ function getWindArrow(degrees) {
 const periods = [];
 
 for(let hour = 0; hour < 24; hour++){
+let rainSupport = 0;
 
     periods.push(hour);
 
