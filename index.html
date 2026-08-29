@@ -1089,6 +1089,11 @@ await Promise.all(
 models.map(loadWeather)
 );
 
+console.log(
+    "HOURLY DATA:",
+    models[0].data.hourly
+);
+
 showHour(forecastIndex);
 
 await updateWeeklyForecast();
