@@ -305,22 +305,21 @@ if(start === previous){
 
 }else{
 
-if(start === previous){
-
-    rainPeriods.push(start);
-
-}else{
-
     rainPeriods.push(
         `${start}-${previous}`
     );
-
 }
 
             start = current;
             previous = current;
         }
     }
+
+if(start === previous){
+
+    rainPeriods.push(start);
+
+}else{
 
     rainPeriods.push(
         `${start}-${previous}`
