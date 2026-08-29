@@ -457,13 +457,7 @@ thunderRisk =
 let fishingAllowed = true;
 let fishingReason = "";
 
-if(thunderRisk >= 50){
-
-    fishingAllowed = false;
-    fishingReason = "Hög åskrisk";
-
-}
-else if(Number(rainAmount) > 2){
+if(Number(rainAmount) > 2){
 
     fishingAllowed = false;
     fishingReason = "För mycket regn";
