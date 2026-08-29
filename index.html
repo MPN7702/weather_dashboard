@@ -242,7 +242,11 @@ const dayDate =
                     weekday: "long"
                 });
 console.log("weekly:", data);
-console.log("model0:", models[0].data);
+console.log("model0 daily:", models[0].data?.daily);
+            console.log(
+    "temp max dag1:",
+    models[0].data?.daily?.temperature_2m_max?.[0]
+);
 console.log("location:", currentLocation);
 let maxTempSum = 0;
 let maxTempWeight = 0;
