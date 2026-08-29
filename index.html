@@ -340,7 +340,13 @@ const minTemp =
     Number(
         daily.temperature_2m_min[i]
     ).toFixed(1);
+let tempClass = "";
 
+if(Number(maxTemp) <= -20)
+    tempClass = "temp-cold";
+
+if(Number(maxTemp) >= 30)
+    tempClass = "temp-hot";
 const rainRisk =
     Math.round(
         daily.precipitation_probability_max[i]
@@ -464,7 +470,13 @@ const windSpeed =
         daily.wind_speed_10m_mean[i]
         * WIND_FACTOR
     ).toFixed(1);
+let windClass = "";
 
+if(Number(windSpeed) >= 20)
+    windClass = "wind-high";
+
+else if(Number(windSpeed) >= 10)
+    windClass = "wind-mid";
 const windGust =
     (
         daily.wind_gusts_10m_mean[i]
@@ -641,9 +653,14 @@ else{
 <strong style="color:#60a5fa;font-size:18px;">
 ${weekday} ${dayDate}
 </strong><br>
-🌡️ ${minTemp}°C till ${maxTemp}°C<br>
+🌡️
+<span class="${tempClass}">
+<strong>${minTemp}°C till ${maxTemp}°C</strong>
+</span><br>
 🌬️ Medelvind:
+<span class="${windClass}">
 <strong>${windSpeed} m/s</strong>
+</span>
 
 💨 Kastvind:
 <strong>${windGust} m/s</strong><br>
