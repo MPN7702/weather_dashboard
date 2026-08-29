@@ -123,6 +123,14 @@ h1{
 .rain-high{
     color:#d50000;
 }
+    .wind-mid{
+    color:#ff9800;
+}
+
+.wind-high{
+    color:#d50000;
+}
+
 .score-low{
     color:#ef4444;
 }
@@ -854,6 +862,13 @@ h.temperature_2m?.[hour] ?? "-";
 
 const wind =
 ((h.wind_speed_10m?.[hour] ?? 0) * WIND_FACTOR).toFixed(1);
+    let windClass = "";
+
+if(Number(wind) >= 20)
+    windClass = "wind-high";
+
+else if(Number(wind) >= 10)
+    windClass = "wind-mid";
 const windDirection =
 h.wind_direction_10m?.[hour] ?? 0;
 
@@ -877,13 +892,13 @@ if (rainAmount >= 2)
 if (rainAmount >= 5)
     rainAmountClass = "rain-high";
 
-let tempClass = "temp-mid";
+let tempClass = "";
 
-if(temperature <= 5)
-tempClass = "temp-cold";
+if(temperature <= -20)
+    tempClass = "temp-cold";
 
-if(temperature >= 20)
-tempClass = "temp-hot";
+if(temperature >= 30)
+    tempClass = "temp-hot";
 
 let rainClass = "rain-low";
 
@@ -908,7 +923,9 @@ Temperatur:
 <br><br>
 
 Vind:
+<span class="${windClass}">
 <b>${wind} m/s ${getWindArrow(windDirection)} ${getWindDirection(windDirection)}</b>
+</span>
 
 <br><br>
 
