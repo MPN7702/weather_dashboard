@@ -221,6 +221,10 @@ if(window.cachedWeather){
 const data =
     cache[currentLocation].weekly;
         const daily = data.daily;
+        console.log(
+    "WEEKLY DAILY:",
+    daily
+);
 
 if (!data || !data.daily)
     return;
