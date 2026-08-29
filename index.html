@@ -219,7 +219,7 @@ if(window.cachedWeather){
 }
 
 const data =
-    models[0]?.data;
+    cache[currentLocation].weekly;
 
 if (!data || !data.daily)
     return;
@@ -241,7 +241,9 @@ const dayDate =
                 date.toLocaleDateString("sv-SE", {
                     weekday: "long"
                 });
-console.log(models[0].data);
+console.log("weekly:", data);
+console.log("model0:", models[0].data);
+console.log("location:", currentLocation);
 let maxTempSum = 0;
 let maxTempWeight = 0;
 
