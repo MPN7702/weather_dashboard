@@ -198,8 +198,39 @@ Tid: 00:00
 <div id="countdown">
 Nästa timme om 5 sek
 </div>
+<div style="text-align:center;margin-bottom:20px;">
 
-<div class="container">
+    <button id="toggleModels"
+            style="
+                background:#2563eb;
+                color:white;
+                border:none;
+                border-radius:8px;
+                padding:10px 20px;
+                font-size:16px;
+                cursor:pointer;">
+
+        Visa prognosmodeller
+
+    </button>
+
+</div>
+
+<div style="text-align:center;margin-bottom:20px;">
+    <button id="toggleModels"
+            style="
+                padding:10px 20px;
+                font-size:16px;
+                border:none;
+                border-radius:8px;
+                cursor:pointer;
+                background:#2563eb;
+                color:white;">
+        Visa modelldata (1-6)
+    </button>
+</div>
+
+<div class="container" id="modelsContainer" style="display:none;">
 
     <div class="weather-box" id="box1"></div>
     <div class="weather-box" id="box2"></div>
@@ -984,7 +1015,53 @@ function updateDate() {
         dateText.slice(1);
 
 }
+document.getElementById("toggleModels")
+.addEventListener("click", function() {
 
+    const container =
+        document.getElementById("modelsContainer");
+
+    if (container.style.display === "none") {
+
+        container.style.display = "grid";
+
+        this.textContent =
+            "Dölj modelldata (1-6)";
+
+    } else {
+
+        container.style.display = "none";
+
+        this.textContent =
+            "Visa modelldata (1-6)";
+    }
+
+});
+    const toggleButton =
+    document.getElementById("toggleModels");
+
+const modelsContainer =
+    document.getElementById("modelsContainer");
+
+toggleButton.addEventListener("click", () => {
+
+    if (modelsContainer.style.display === "none") {
+
+        modelsContainer.style.display = "grid";
+
+        toggleButton.textContent =
+            "Dölj prognosmodeller";
+
+    } else {
+
+        modelsContainer.style.display = "none";
+
+        toggleButton.textContent =
+            "Visa prognosmodeller";
+
+    }
+
+});
 startDashboard();
 
 </script>
