@@ -450,7 +450,7 @@ const ortnamn =
 currentLocation = ortnamn;
 
 
-forecastIndex = new Date().getHours();
+forecastIndex = startIndex;
 
     await loadAllData();
     await updateWeeklyForecast();
@@ -972,7 +972,7 @@ setInterval(async()=>{
     forecastIndex++;
 
 if (forecastIndex >= startIndex + 24)
-forecastIndex = new Date().getHours();
+forecastIndex = startIndex;
 
 showHour(forecastIndex);
 
