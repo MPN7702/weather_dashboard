@@ -220,6 +220,9 @@ if(window.cachedWeather){
 
 const data =
     cache[currentLocation].weekly;
+        const hourlyData =
+    cache[currentLocation].best_match;
+
 
         if (!data || !data.daily)
             return;
@@ -250,6 +253,70 @@ const dayDate =
                 data.daily.precipitation_probability_max[i];
 const rainAmount =
     data.daily.precipitation_sum[i];
+let rainHours = [];
+
+const currentDay =
+    data.daily.time[i];
+
+for (let h = 0; h < hourlyData.hourly.time.length; h++) {
+
+    const hourlyTime =
+        hourlyData.hourly.time[h];
+
+    if (
+        hourlyTime.startsWith(currentDay) &&
+        (hourlyData.hourly.precipitation[h] ?? 0) > 0
+    ) {
+
+        rainHours.push(
+            hourlyTime.substring(11,16)
+        );
+
+    }
+}
+
+let rainPeriods = [];
+
+if (rainHours.length > 0) {
+
+    let start = rainHours[0];
+    let previous = rainHours[0];
+
+    for (let r = 1; r < rainHours.length; r++) {
+
+        const current =
+            rainHours[r];
+
+        const previousHour =
+            Number(previous.substring(0,2));
+
+        const currentHour =
+            Number(current.substring(0,2));
+
+        if (currentHour === previousHour + 1) {
+
+            previous = current;
+
+        } else {
+
+            rainPeriods.push(
+                `${start}-${previous}`
+            );
+
+            start = current;
+            previous = current;
+        }
+    }
+
+    rainPeriods.push(
+        `${start}-${previous}`
+    );
+}
+
+const rainTimes =
+    rainPeriods.length
+        ? rainPeriods.join("<br>")
+        : "Inget regn";
 
 const windSpeed =
     (data.daily.wind_speed_10m_mean[i] * WIND_FACTOR)
@@ -319,11 +386,12 @@ ${weekday} ${dayDate}
 💧 Regnmängd:
 <strong>${rainAmount} mm</strong><br>
 
+🌧️ Regntider:
+<strong>${rainTimes}</strong><br>
+
 ⚡ Åskrisk:
 <strong>${thunderRisk}%</strong><br>
-<br>
-📋 <strong>Bedömning:</strong><br>
-${assessment}
+
                 </div>
             `;
         }
@@ -531,6 +599,18 @@ function getWindArrow(degrees) {
         ? periods.join("<br>")
         : "Inget regn";
 }
+   function getConsensusRainPeriods() {
+
+const periods = [];
+
+for(let hour = 0; hour < 24; hour++){
+
+    periods.push(hour);
+
+}
+console.log(periods);
+return periods;
+} 
 function showHour(hour){
 
     if(!models[0]?.data?.hourly)
@@ -668,7 +748,7 @@ Regnmängd:
 });
 
  
-
+getConsensusRainPeriods();
 updateAIBox(hour);
 
 }
