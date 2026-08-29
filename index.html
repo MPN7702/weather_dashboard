@@ -778,28 +778,8 @@ h.surface_pressure?.[hour] ?? "-";
 const rainRisk =
 h.precipitation_probability?.[hour] ?? "-";
 
-let rainAmountSum = 0;
-let rainAmountWeight = 0;
-
-models.forEach(model => {
-
-    const weight =
-        weights[model.model] ?? 0;
-
-    const value =
-        model.data?.daily?.precipitation_sum?.[i];
-
-    if (value !== undefined) {
-
-        rainAmountSum += value * weight;
-        rainAmountWeight += weight;
-
-    }
-
-});
-
 const rainAmount =
-    (rainAmountSum / rainAmountWeight).toFixed(1);
+    h.precipitation?.[hour] ?? 0;
 
 const thunderRisk =
 Math.min(Math.round(rainRisk * 0.6),100);
