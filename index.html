@@ -884,6 +884,8 @@ if (avgThunderRisk >= 70)
 
 document.getElementById("box7").innerHTML = `
 
+document.getElementById("box7").innerHTML = `
+
 <h2>Samlad väderbild (6 källor)</h2>
 
 <div style="
@@ -896,14 +898,44 @@ document.getElementById("box7").innerHTML = `
     <br>
     Nästa timme om ${countdown} sek
 </div>
-    <span style="
-        color:#93c5fd;
-        font-size:inherit;
-        font-weight:bold;
-    ">
-        Klockan: ${displayTime} (24-timmarsprognos)
-    </span>
-</h2>
+
+Temperatur:
+<span class="${avgTempClass}">
+<b>${avgTemp} °C</b>
+</span>
+
+<br><br>
+
+Vind:
+<b>${avgWind} m/s ${getWindArrow(avgWindDirection)} ${getWindDirection(avgWindDirection)}</b>
+
+<br><br>
+
+Lufttryck:
+<b>${avgPressure} hPa</b>
+
+<br><br>
+
+Regnrisk:
+<span class="${avgRainClass}">
+<b>${avgRainRisk} %</b>
+</span>
+
+<br><br>
+
+Regnmängd:
+<span class="${avgRainAmountClass}">
+<b>${avgRainAmount} mm</b>
+</span>
+
+<br><br>
+
+Åskrisk:
+<span class="${avgThunderClass}">
+<b>${avgThunderRisk} %</b>
+</span>
+
+`;
 
 
 Temperatur:
