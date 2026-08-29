@@ -345,9 +345,23 @@ const rainRisk =
     Math.round(
         daily.precipitation_probability_max[i]
     );
+            let rainRiskClass = "";
+
+if(rainRisk >= 80)
+    rainRiskClass = "rain-mid";
 const rainAmount =
     (daily?.precipitation_sum?.[i] ?? 0)
     .toFixed(1);
+            let rainAmountClass = "";
+
+if(Number(rainAmount) > 0)
+    rainAmountClass = "rain-low";
+
+if(Number(rainAmount) >= 2)
+    rainAmountClass = "rain-mid";
+
+if(Number(rainAmount) > 10)
+    rainAmountClass = "rain-high";
 let rainHours = [];
 
 const currentDay =
@@ -636,10 +650,14 @@ ${weekday} ${dayDate}
 📈 Lufttryck:
 <strong>${pressure} hPa</strong><br>
 🌧️ Regnrisk:
-<strong>${rainRisk}%</strong><br>
+<span class="${rainRiskClass}">
+<strong>${rainRisk}%</strong>
+</span><br>
 
 💧 Regnmängd:
-<strong>${rainAmount} mm</strong><br>
+<span class="${rainAmountClass}">
+<strong>${rainAmount} mm</strong>
+</span><br>
 
 🌧️ Regntider:
 <strong>${rainTimes}</strong><br>
