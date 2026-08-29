@@ -250,7 +250,6 @@ const dayDate =
                 data.daily.precipitation_probability_max[i];
 const rainAmount =
     data.daily.precipitation_sum[i];
-            let rainText = "";
 
 if (rainAmount >= 10)
     rainText = "Regn väntas större delen av dagen.";
@@ -598,6 +597,13 @@ h.precipitation_probability?.[hour] ?? "-";
 
 const rainAmount =
 h.precipitation?.[hour] ?? 0;
+
+const rainPeriods =
+    getRainPeriods(h);
+
+const thunderRisk =
+Math.min(Math.round(rainRisk * 0.6),100);
+    
 const thunderRisk =
 Math.min(Math.round(rainRisk * 0.6),100);
 
