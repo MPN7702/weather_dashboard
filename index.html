@@ -207,9 +207,6 @@ h1{
 </div>
 
 
-
-<div id="currentDate"></div>
-
 <div id="currentHour" style="display:none;"></div>
 
 <div id="countdown" style="display:none;"></div>
@@ -788,7 +785,19 @@ const displayTime =
             hour: "2-digit",
             minute: "2-digit"
         });
+const forecastDate = new Date(forecastTime);
 
+const displayDate =
+    forecastDate.toLocaleDateString("sv-SE", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    });
+
+const capitalizedDate =
+    displayDate.charAt(0).toUpperCase() +
+    displayDate.slice(1);
 let tempSum = 0;
 let windSum = 0;
 let windDirectionSum = 0;
@@ -892,9 +901,17 @@ document.getElementById("box7").innerHTML = `
     font-size:18px;
     font-weight:bold;
 ">
+
+    ${capitalizedDate}
+
+    <br><br>
+
     Klockan: ${displayTime} (24-timmarsprognos)
+
     <br>
+
     Nästa timme om ${countdown} sek
+
 </div>
 
 Temperatur:
