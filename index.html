@@ -469,7 +469,18 @@ else if(Number(windSpeed) > 7){
     fishingReason = "För hård vind";
 
 }
+else if(Number(windGust) > 10){
 
+    fishingAllowed = false;
+    fishingReason = "För kraftiga kastvindar";
+
+}
+else if(Number(windGust) > 10){
+
+    fishingAllowed = false;
+    fishingReason = "För kraftiga kastvindar";
+
+}
 let pikeScore = 0;
 let perchScore = 0;
 let zanderScore = 0;
@@ -534,7 +545,11 @@ if(zanderScore > bestScore){
     bestScore = zanderScore;
 
 }
+if(bestScore < 6){
 
+    bestFish = "Ingen tydlig rekommendation";
+
+}
 let fishingText = "";
 
 if(!fishingAllowed){
