@@ -1030,14 +1030,15 @@ weightSum += weight;
 if(weightSum === 0) return;
 
 const avgTemp =
+const avgTemp =
     (tempSum / weightSum).toFixed(1);
 
-    let avgTempClass = "temp-mid";
+let avgTempClass = "";
 
-if (avgTemp <= 5)
+if(Number(avgTemp) <= -20)
     avgTempClass = "temp-cold";
 
-if (avgTemp >= 20)
+if(Number(avgTemp) >= 30)
     avgTempClass = "temp-hot";
 const avgWind =
     (windSum / weightSum).toFixed(1);
