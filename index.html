@@ -454,7 +454,107 @@ if (daily.precipitation_sum[i] >= 20)
 
 thunderRisk =
     Math.min(thunderRisk, 100);
+let fishingAllowed = true;
+let fishingReason = "";
 
+if(thunderRisk >= 50){
+
+    fishingAllowed = false;
+    fishingReason = "Hög åskrisk";
+
+}
+else if(Number(rainAmount) > 2){
+
+    fishingAllowed = false;
+    fishingReason = "För mycket regn";
+
+}
+else if(Number(windSpeed) > 7){
+
+    fishingAllowed = false;
+    fishingReason = "För hård vind";
+
+}
+
+let pikeScore = 0;
+let perchScore = 0;
+let zanderScore = 0;
+
+if(fishingAllowed){
+
+    /* Gädda */
+
+    if(Number(windSpeed) >= 2 && Number(windSpeed) <= 6)
+        pikeScore += 3;
+
+    if(rainRisk >= 30)
+        pikeScore += 3;
+
+    if(Number(pressure) >= 1000 && Number(pressure) <= 1015)
+        pikeScore += 4;
+
+
+    /* Abborre */
+
+    if(Number(maxTemp) >= 12)
+        perchScore += 3;
+
+    if(Number(pressure) >= 1010)
+        perchScore += 3;
+
+    if(Number(windSpeed) <= 5)
+        perchScore += 2;
+
+    if(rainRisk <= 40)
+        perchScore += 2;
+
+
+    /* Gös */
+
+    if(Number(windSpeed) >= 2 && Number(windSpeed) <= 7)
+        zanderScore += 3;
+
+    if(Number(pressure) >= 995 && Number(pressure) <= 1015)
+        zanderScore += 3;
+
+    if(rainRisk >= 20 && rainRisk <= 70)
+        zanderScore += 2;
+
+    if(Number(maxTemp) >= 10)
+        zanderScore += 2;
+
+}
+
+let bestFish = "Gädda";
+let bestScore = pikeScore;
+
+if(perchScore > bestScore){
+
+    bestFish = "Abborre";
+    bestScore = perchScore;
+
+}
+
+if(zanderScore > bestScore){
+
+    bestFish = "Gös";
+    bestScore = zanderScore;
+
+}
+
+let fishingText = "";
+
+if(!fishingAllowed){
+
+    fishingText =
+        `🎣 Fiske: ❌ ${fishingReason}`;
+
+}else{
+
+    fishingText =
+        `🎣 Fiske: 🏆 ${bestFish}`;
+
+}
             html += `
                 <div class="forecast-day">
 <strong style="color:#60a5fa;font-size:18px;">
