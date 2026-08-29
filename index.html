@@ -997,6 +997,12 @@ if(timerText){
         `Nästa timme om ${countdown} sek`;
 }
 
+/* extra uppdatering när ny prognostimme visas */
+
+if(countdown === 5){
+    updateAIBox(forecastIndex);
+}
+
 }, 1000);
 
 }
