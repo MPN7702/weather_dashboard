@@ -358,29 +358,11 @@ rainTimes =
         ? rainPeriods.join("<br>")
         : "Inget regn";
 }
-let windSpeedSum = 0;
-let windSpeedWeight = 0;
-
-models.forEach(model => {
-
-    const weight =
-        weights[model.model] ?? 0;
-
-    const value =
-        model.data?.daily?.wind_speed_10m_mean?.[i];
-
-    if (value !== undefined) {
-
-        windSpeedSum += value * weight;
-        windSpeedWeight += weight;
-
-    }
-
-});
-
 const windSpeed =
-    ((windSpeedSum / windSpeedWeight) * WIND_FACTOR)
-    .toFixed(1);
+    (
+        (daily?.wind_speed_10m_max?.[i] ?? 0)
+        * WIND_FACTOR
+    ).toFixed(1);
 
 let windGustSum = 0;
 let windGustWeight = 0;
