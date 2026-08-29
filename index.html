@@ -229,8 +229,10 @@ const data =
 
         for (let i = 0; i < 7; i++) {
 
-            const date =
-                new Date(data.daily.time[i]);
+           const date =
+    new Date(
+        models[5].data.daily.time[i]
+    );
 const dayDate =
     date.toLocaleDateString("sv-SE", {
         day: "numeric",
@@ -241,20 +243,80 @@ const dayDate =
                     weekday: "long"
                 });
 
-            const maxTemp =
-                data.daily.temperature_2m_max[i];
+let maxTempSum = 0;
+let maxTempWeight = 0;
 
-            const minTemp =
-                data.daily.temperature_2m_min[i];
+models.forEach(model => {
 
-            const rainRisk =
-                data.daily.precipitation_probability_max[i];
+    const weight =
+        weights[model.model] ?? 0;
+
+    const value =
+        model.data?.daily?.temperature_2m_max?.[i];
+
+    if (value !== undefined) {
+
+        maxTempSum += value * weight;
+        maxTempWeight += weight;
+
+    }
+
+});
+
+const maxTemp =
+    (maxTempSum / maxTempWeight).toFixed(1);
+
+let minTempSum = 0;
+let minTempWeight = 0;
+
+models.forEach(model => {
+
+    const weight =
+        weights[model.model] ?? 0;
+
+    const value =
+        model.data?.daily?.temperature_2m_min?.[i];
+
+    if (value !== undefined) {
+
+        minTempSum += value * weight;
+        minTempWeight += weight;
+
+    }
+
+});
+
+const minTemp =
+    (minTempSum / minTempWeight).toFixed(1);
+
+let rainRiskSum = 0;
+let rainRiskWeight = 0;
+
+models.forEach(model => {
+
+    const weight =
+        weights[model.model] ?? 0;
+
+    const value =
+        model.data?.daily?.precipitation_probability_max?.[i];
+
+    if (value !== undefined) {
+
+        rainRiskSum += value * weight;
+        rainRiskWeight += weight;
+
+    }
+
+});
+
+const rainRisk =
+    Math.round(rainRiskSum / rainRiskWeight);
 const rainAmount =
     data.daily.precipitation_sum[i];
 let rainHours = [];
 
 const currentDay =
-    data.daily.time[i];
+    models[5].data.daily.time[i];
 
 if (!models[0]?.data?.hourly)
     continue;
@@ -267,21 +329,21 @@ for (let h = 0; h < hourlyTimes.length; h++) {
     const hourlyTime =
         hourlyTimes[h];
 
-    let supporters = 0;
+    let supportWeight = 0;
 
     models.forEach(model => {
 
         const rain =
             model.data?.hourly?.precipitation?.[h] ?? 0;
 
-        if (rain >= 0.5)
-            supporters++;
+if (rain >= 0.5)
+    supportWeight += weights[model.model] ?? 0;
 
     });
 
     if (
         hourlyTime.startsWith(currentDay) &&
-        supporters >= 3
+        supportWeight >= 0.50
     ) {
 
         rainHours.push(
@@ -348,25 +410,114 @@ rainTimes =
         ? rainPeriods.join("<br>")
         : "Inget regn";
 }
+let windSpeedSum = 0;
+let windSpeedWeight = 0;
+
+models.forEach(model => {
+
+    const weight =
+        weights[model.model] ?? 0;
+
+    const value =
+        model.data?.daily?.wind_speed_10m_mean?.[i];
+
+    if (value !== undefined) {
+
+        windSpeedSum += value * weight;
+        windSpeedWeight += weight;
+
+    }
+
+});
+
 const windSpeed =
-    (data.daily.wind_speed_10m_mean[i] * WIND_FACTOR)
+    ((windSpeedSum / windSpeedWeight) * WIND_FACTOR)
     .toFixed(1);
+
+let windGustSum = 0;
+let windGustWeight = 0;
+
+models.forEach(model => {
+
+    const weight =
+        weights[model.model] ?? 0;
+
+    const value =
+        model.data?.daily?.wind_gusts_10m_mean?.[i];
+
+    if (value !== undefined) {
+
+        windGustSum += value * weight;
+        windGustWeight += weight;
+
+    }
+
+});
 
 const windGust =
-    (data.daily.wind_gusts_10m_mean[i] * WIND_FACTOR)
+    ((windGustSum / windGustWeight) * WIND_FACTOR)
     .toFixed(1);
-            const pressure =
-    data.daily.surface_pressure_mean[i];
-            let thunderRisk =
-    Math.min(Math.round(rainRisk * 0.6), 100);
+``
+let pressureSum = 0;
+let pressureWeight = 0;
 
-if (rainAmount >= 10)
-    thunderRisk += 15;
+models.forEach(model => {
 
-if (rainAmount >= 20)
-    thunderRisk += 15;
+    const weight =
+        weights[model.model] ?? 0;
 
-thunderRisk = Math.min(thunderRisk, 100);
+    const value =
+        model.data?.daily?.surface_pressure_mean?.[i];
+
+    if (value !== undefined) {
+
+        pressureSum += value * weight;
+        pressureWeight += weight;
+
+    }
+
+});
+
+const pressure =
+    (pressureSum / pressureWeight).toFixed(1);;
+let thunderRiskSum = 0;
+let thunderRiskWeight = 0;
+
+models.forEach(model => {
+
+    const weight =
+        weights[model.model] ?? 0;
+
+    const dailyRainRisk =
+        model.data?.daily?.precipitation_probability_max?.[i] ?? 0;
+
+    const dailyRainAmount =
+        model.data?.daily?.precipitation_sum?.[i] ?? 0;
+
+    let modelThunderRisk =
+        Math.min(Math.round(dailyRainRisk * 0.6), 100);
+
+    if (dailyRainAmount >= 10)
+        modelThunderRisk += 15;
+
+    if (dailyRainAmount >= 20)
+        modelThunderRisk += 15;
+
+    modelThunderRisk =
+        Math.min(modelThunderRisk, 100);
+
+    thunderRiskSum +=
+        modelThunderRisk * weight;
+
+    thunderRiskWeight +=
+        weight;
+
+});
+
+const thunderRisk =
+    Math.round(
+        thunderRiskSum / thunderRiskWeight
+    );
 
             html += `
                 <div class="forecast-day">
@@ -606,8 +757,28 @@ h.surface_pressure?.[hour] ?? "-";
 const rainRisk =
 h.precipitation_probability?.[hour] ?? "-";
 
+let rainAmountSum = 0;
+let rainAmountWeight = 0;
+
+models.forEach(model => {
+
+    const weight =
+        weights[model.model] ?? 0;
+
+    const value =
+        model.data?.daily?.precipitation_sum?.[i];
+
+    if (value !== undefined) {
+
+        rainAmountSum += value * weight;
+        rainAmountWeight += weight;
+
+    }
+
+});
+
 const rainAmount =
-h.precipitation?.[hour] ?? 0;
+    (rainAmountSum / rainAmountWeight).toFixed(1);
 
 const thunderRisk =
 Math.min(Math.round(rainRisk * 0.6),100);
