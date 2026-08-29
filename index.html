@@ -1065,12 +1065,15 @@ if (avgRainRisk >= 80)
     avgRainClass = "rain-mid";
 const avgRainAmount =
     (rainAmountSum / weightSum).toFixed(1);
-    let avgRainAmountClass = "rain-low";
+let avgRainAmountClass = "";
 
-if (avgRainAmount >= 2)
+if(Number(avgRainAmount) > 0)
+    avgRainAmountClass = "rain-low";
+
+if(Number(avgRainAmount) >= 2)
     avgRainAmountClass = "rain-mid";
 
-if (avgRainAmount >= 5)
+if(Number(avgRainAmount) > 10)
     avgRainAmountClass = "rain-high";
     const avgThunderRisk = Math.min(
         Math.round(avgRainRisk * 0.6),
