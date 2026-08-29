@@ -1059,13 +1059,10 @@ const avgPressure =
     (pressureSum / weightSum).toFixed(1);
 const avgRainRisk =
     Math.round(rainRiskSum / weightSum);
-    let avgRainClass = "rain-low";
+let avgRainClass = "";
 
-if (avgRainRisk >= 30)
+if (avgRainRisk >= 80)
     avgRainClass = "rain-mid";
-
-if (avgRainRisk >= 70)
-    avgRainClass = "rain-high";
 const avgRainAmount =
     (rainAmountSum / weightSum).toFixed(1);
     let avgRainAmountClass = "rain-low";
