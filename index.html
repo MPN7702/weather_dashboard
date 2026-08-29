@@ -221,10 +221,6 @@ if(window.cachedWeather){
 const data =
     cache[currentLocation].weekly;
         const daily = data.daily;
-        console.log("DAILY KEYS:", Object.keys(daily));
-        console.log(
-    "WEEKLY DAILY:",
-    daily
 );
 
 if (!data || !data.daily)
@@ -374,44 +370,22 @@ const windGust =
 const pressure =
     daily.surface_pressure_mean[i]
     .toFixed(1);
-let thunderRiskSum = 0;
-let thunderRiskWeight = 0;
-
-models.forEach(model => {
-
-    const weight =
-        weights[model.model] ?? 0;
-
-    const dailyRainRisk =
-        model.data?.daily?.precipitation_probability_max?.[i] ?? 0;
-
-    const dailyRainAmount =
-        model.data?.daily?.precipitation_sum?.[i] ?? 0;
-
-    let modelThunderRisk =
-        Math.min(Math.round(dailyRainRisk * 0.6), 100);
-
-    if (dailyRainAmount >= 10)
-        modelThunderRisk += 15;
-
-    if (dailyRainAmount >= 20)
-        modelThunderRisk += 15;
-
-    modelThunderRisk =
-        Math.min(modelThunderRisk, 100);
-
-    thunderRiskSum +=
-        modelThunderRisk * weight;
-
-    thunderRiskWeight +=
-        weight;
-
-});
-
-const thunderRisk =
-    Math.round(
-        thunderRiskSum / thunderRiskWeight
+let thunderRisk =
+    Math.min(
+        Math.round(
+            daily.precipitation_probability_max[i] * 0.6
+        ),
+        100
     );
+
+if (daily.precipitation_sum[i] >= 10)
+    thunderRisk += 15;
+
+if (daily.precipitation_sum[i] >= 20)
+    thunderRisk += 15;
+
+thunderRisk =
+    Math.min(thunderRisk, 100);
 
             html += `
                 <div class="forecast-day">
@@ -970,11 +944,6 @@ async function loadAllData(){
 
 await Promise.all(
 models.map(loadWeather)
-);
-
-console.log(
-    "HOURLY DATA:",
-    models[0].data.hourly
 );
 
 showHour(forecastIndex);
