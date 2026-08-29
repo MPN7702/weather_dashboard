@@ -260,7 +260,7 @@ if (!models[0]?.data?.hourly)
     continue;
 
 const hourlyTimes =
-    models[0].data.hourly.time;
+    models[5].data.hourly.time;
 
 for (let h = 0; h < hourlyTimes.length; h++) {
 
@@ -450,7 +450,7 @@ const ortnamn =
 currentLocation = ortnamn;
 
 
-forecastIndex = new Date().getHours();
+forecastIndex = startIndex;
 
     await loadAllData();
     await updateWeeklyForecast();
