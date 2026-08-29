@@ -276,6 +276,7 @@ for (let h = 0; h < hourlyData.hourly.time.length; h++) {
 }
 
 let rainPeriods = [];
+            let rainTimes = "Inget regn";
 
 if (rainHours.length > 0) {
 
@@ -326,7 +327,7 @@ if(start === previous){
     );
 }
 
-const rainTimes =
+rainTimes =
     rainPeriods.length
         ? rainPeriods.join("<br>")
         : "Inget regn";
@@ -618,6 +619,11 @@ const periods = [];
 
 for(let hour = 0; hour < 24; hour++){
 let rainSupport = 0;
+    models.forEach(model => {
+
+    if(!model.data) return;
+
+});
 
     periods.push(hour);
 
