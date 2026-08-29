@@ -257,7 +257,8 @@ const currentDay =
     data.daily.time[i];
 
 const hourlyTimes =
-    models[0].data.hourly.time;
+    if(!models[0]?.data?.hourly)
+    return;
 
 for (let h = 0; h < hourlyTimes.length; h++) {
 
@@ -580,6 +581,8 @@ function getWindArrow(degrees) {
 }
  {
 
+function getRainPeriods(h) {
+
     const periods = [];
 
     let start = null;
@@ -590,9 +593,7 @@ function getWindArrow(degrees) {
             h.precipitation?.[i] ?? 0;
 
         if (rain > 0 && start === null) {
-
             start = i;
-
         }
 
         if ((rain <= 0 || i === 23) && start !== null) {
