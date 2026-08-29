@@ -598,12 +598,6 @@ h.precipitation_probability?.[hour] ?? "-";
 const rainAmount =
 h.precipitation?.[hour] ?? 0;
 
-const rainPeriods =
-    getRainPeriods(h);
-
-const thunderRisk =
-Math.min(Math.round(rainRisk * 0.6),100);
-    
 const thunderRisk =
 Math.min(Math.round(rainRisk * 0.6),100);
 
@@ -674,11 +668,6 @@ Regnmängd:
 <span class="${rainAmountClass}">
 <b>${rainAmount} mm</b>
 </span>
-
-<br><br>
-
-🌧️ Regntider:<br>
-<b>${rainPeriods}</b>
 
 <br><br>
 
