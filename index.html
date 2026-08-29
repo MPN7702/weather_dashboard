@@ -219,11 +219,10 @@ if(window.cachedWeather){
 }
 
 const data =
-    cache[currentLocation].weekly;
+    models[0]?.data;
 
-
-        if (!data || !data.daily)
-            return;
+if (!data || !data.daily)
+    return;
 
         let html = "";
 
