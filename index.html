@@ -1041,7 +1041,13 @@ if (avgTemp >= 20)
     avgTempClass = "temp-hot";
 const avgWind =
     (windSum / weightSum).toFixed(1);
+let avgWindClass = "";
 
+if(Number(avgWind) >= 20)
+    avgWindClass = "wind-high";
+
+else if(Number(avgWind) >= 10)
+    avgWindClass = "wind-mid";
 
 const avgWindDirection =
     windDirectionSum / weightSum;
@@ -1121,7 +1127,9 @@ Temperatur:
 <br><br>
 
 Vind:
+<span class="${avgWindClass}">
 <b>${avgWind} m/s ${getWindArrow(avgWindDirection)} ${getWindDirection(avgWindDirection)}</b>
+</span>
 
 <br><br>
 
