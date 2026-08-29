@@ -502,6 +502,13 @@ if (daily.precipitation_sum[i] >= 20)
 
 thunderRisk =
     Math.min(thunderRisk, 100);
+         let thunderClass = "";
+
+if(thunderRisk >= 80)
+    thunderClass = "rain-high";
+
+else if(thunderRisk >= 50)
+    thunderClass = "rain-mid";   
 let fishingAllowed = true;
 let fishingReason = "";
 
@@ -680,7 +687,9 @@ ${weekday} ${dayDate}
 <strong>${rainTimes}</strong><br>
 
 ⚡ Åskrisk:
-<strong>${thunderRisk}%</strong><br><br>
+<span class="${thunderClass}">
+<strong>${thunderRisk}%</strong>
+</span><br><br>
 
 ${fishingText}
 
