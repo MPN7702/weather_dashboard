@@ -524,7 +524,46 @@ if(fishingAllowed){
         zanderScore += 2;
 
 }
+let bestFish = "Gädda";
+let bestScore = pikeScore;
 
+if(perchScore > bestScore){
+
+    bestFish = "Abborre";
+    bestScore = perchScore;
+
+}
+
+if(zanderScore > bestScore){
+
+    bestFish = "Gös";
+    bestScore = zanderScore;
+
+}
+
+let fishingText = "";
+
+if(!fishingAllowed){
+
+    fishingText = `
+        🎣 Fiske: ❌ Olämpligt
+        <br>
+        ⚠️ ${fishingReason}
+    `;
+
+}else{
+
+    fishingText = `
+        🎣 Fiske: 🏆 ${bestFish}
+        <br>
+        🐊 Gädda: ${pikeScore}/10
+        <br>
+        🐟 Abborre: ${perchScore}/10
+        <br>
+        🐟 Gös: ${zanderScore}/10
+    `;
+
+}
 let bestFish = "Gädda";
 let bestScore = pikeScore;
 
@@ -578,7 +617,9 @@ ${weekday} ${dayDate}
 <strong>${rainTimes}</strong><br>
 
 ⚡ Åskrisk:
-<strong>${thunderRisk}%</strong><br>
+<strong>${thunderRisk}%</strong><br><br>
+
+${fishingText}
 
                 </div>
             `;
