@@ -482,6 +482,8 @@ const windGust =
         daily.wind_gusts_10m_mean[i]
         * WIND_FACTOR
     ).toFixed(1);
+const windDirection =
+    daily.wind_direction_10m_dominant?.[i] ?? 0;
 
 const pressure =
     daily.surface_pressure_mean[i]
@@ -666,8 +668,13 @@ ${weekday} ${dayDate}
 </span><br>
 🌬️ Medelvind:
 <span class="${windClass}">
-<strong>${windSpeed} m/s</strong>
+<strong>
+${windSpeed} m/s
+${getWindArrow(windDirection)}
+${getWindDirection(windDirection)}
+</strong>
 </span>
+
 
 💨 Kastvind:
 <strong>${windGust} m/s</strong><br>
