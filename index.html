@@ -257,7 +257,7 @@ const currentDay =
     data.daily.time[i];
 
 if (!models[0]?.data?.hourly)
-    return;
+    continue;
 
 const hourlyTimes =
     models[0].data.hourly.time;
@@ -450,7 +450,7 @@ const ortnamn =
 currentLocation = ortnamn;
 
 
-    forecastIndex = startIndex;
+forecastIndex = new Date().getHours();
 
     await loadAllData();
     await updateWeeklyForecast();
@@ -972,7 +972,7 @@ setInterval(async()=>{
     forecastIndex++;
 
 if (forecastIndex >= startIndex + 24)
-forecastIndex = startIndex;
+forecastIndex = new Date().getHours();
 
 showHour(forecastIndex);
 
