@@ -258,14 +258,29 @@ let rainHours = [];
 const currentDay =
     data.daily.time[i];
 
-for (let h = 0; h < hourlyData.hourly.time.length; h++) {
+const hourlyTimes =
+    models[0].data.hourly.time;
+
+for (let h = 0; h < hourlyTimes.length; h++) {
 
     const hourlyTime =
-        hourlyData.hourly.time[h];
+        hourlyTimes[h];
+
+    let supporters = 0;
+
+    models.forEach(model => {
+
+        const rain =
+            model.data?.hourly?.precipitation?.[h] ?? 0;
+
+        if (rain >= 0.5)
+            supporters++;
+
+    });
 
     if (
         hourlyTime.startsWith(currentDay) &&
-        (hourlyData.hourly.precipitation[h] ?? 0) >= 0.3
+        supporters >= 3
     ) {
 
         rainHours.push(
@@ -613,7 +628,31 @@ function getWindArrow(degrees) {
         ? periods.join("<br>")
         : "Inget regn";
 }
+function getConsensusRainPeriods(hour) {
 
+    let rainSupport = 0;
+
+    models.forEach(model => {
+
+        if(!model.data) return;
+
+        const rain =
+            model.data.hourly.precipitation?.[hour] ?? 0;
+
+        const weight =
+            weights[model.model] ?? 0;
+
+        if(rain >= 0.5) {
+
+            rainSupport += weight;
+
+        }
+
+    });
+
+    return rainSupport;
+
+}
 function showHour(hour){
 
     if(!models[0]?.data?.hourly)
@@ -749,7 +788,10 @@ Regnmängd:
 `;
 
 });
-
+console.log(
+    "Regnstöd:",
+    getConsensusRainPeriods(hour)
+);
  
 updateAIBox(hour);
 
