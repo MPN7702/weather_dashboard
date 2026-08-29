@@ -331,7 +331,7 @@ rainTimes =
     rainPeriods.length
         ? rainPeriods.join("<br>")
         : "Inget regn";
-
+}
 const windSpeed =
     (data.daily.wind_speed_10m_mean[i] * WIND_FACTOR)
     .toFixed(1);
@@ -613,24 +613,7 @@ function getWindArrow(degrees) {
         ? periods.join("<br>")
         : "Inget regn";
 }
-   function getConsensusRainPeriods() {
 
-const periods = [];
-
-for(let hour = 0; hour < 24; hour++){
-let rainSupport = 0;
-    models.forEach(model => {
-
-    if(!model.data) return;
-
-});
-
-    periods.push(hour);
-
-}
-console.log(periods);
-return periods;
-} 
 function showHour(hour){
 
     if(!models[0]?.data?.hourly)
