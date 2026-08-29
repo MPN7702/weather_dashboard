@@ -229,9 +229,9 @@ const data =
 
         for (let i = 0; i < 7; i++) {
 
-           const date =
+const date =
     new Date(
-        models[5].data.daily.time[i]
+        data.daily.time[i]
     );
 const dayDate =
     date.toLocaleDateString("sv-SE", {
@@ -337,7 +337,7 @@ const rainAmount =
 let rainHours = [];
 
 const currentDay =
-    models[5].data.daily.time[i];
+    data.daily.time[i];
 
 if (!models[0]?.data?.hourly)
     continue;
