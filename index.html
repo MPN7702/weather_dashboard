@@ -540,14 +540,21 @@ if(zanderScore > bestScore){
     bestScore = zanderScore;
 
 }
-if(bestScore < 6){
+let fishingText = "";
+if(bestScore < 6 && fishingAllowed){
 
-    bestFish = "Ingen tydlig rekommendation";
+    fishingText = `
+        🎣 Fiske: ⚠️ Ingen tydlig rekommendation
+        <br>
+        🐊 Gädda: ${pikeScore}/10
+        <br>
+        🐟 Abborre: ${perchScore}/10
+        <br>
+        🐟 Gös: ${zanderScore}/10
+    `;
 
 }
-let fishingText = "";
-
-if(!fishingAllowed){
+else if(!fishingAllowed){
 
     fishingText = `
         🎣 Fiske: ❌ Olämpligt
@@ -555,7 +562,8 @@ if(!fishingAllowed){
         ⚠️ ${fishingReason}
     `;
 
-}else{
+}
+else{
 
     fishingText = `
         🎣 Fiske: 🏆 ${bestFish}
@@ -568,6 +576,7 @@ if(!fishingAllowed){
     `;
 
 }
+
             html += `
                 <div class="forecast-day">
 <strong style="color:#60a5fa;font-size:18px;">
