@@ -581,31 +581,7 @@ function getWindArrow(degrees) {
         Math.round(degrees / 45) % 8
     ];
 }
-function getConsensusRainPeriods(hour) {
 
-    let rainSupport = 0;
-
-    models.forEach(model => {
-
-        if(!model.data) return;
-
-        const rain =
-            model.data.hourly.precipitation?.[hour] ?? 0;
-
-        const weight =
-            weights[model.model] ?? 0;
-
-        if(rain >= 0.5) {
-
-            rainSupport += weight;
-
-        }
-
-    });
-
-    return rainSupport;
-
-}
 function showHour(hour){
 
     if(!models[0]?.data?.hourly)
