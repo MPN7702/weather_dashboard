@@ -998,8 +998,13 @@ countdown--;
 if (countdown < 0)
     countdown = 5;
 
-document.getElementById("countdown").innerHTML =
-    `Nästa timme om ${countdown} sek`;
+const timerText =
+    document.getElementById("box7-timer");
+
+if(timerText){
+    timerText.textContent =
+        `Nästa timme om ${countdown} sek`;
+}
 
 }, 1000);
 
