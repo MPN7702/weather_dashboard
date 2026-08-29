@@ -801,16 +801,16 @@ function getWindArrow(degrees) {
 }
 function getScoreClass(score){
 
-    if(score >= 9)
-        return "score-best";
+    if(score >= 8)
+        return "score-best";   // Grön
 
-    if(score >= 7)
-        return "score-good";
+    if(score >= 6)
+        return "score-good";   // Gul
 
     if(score >= 4)
-        return "score-mid";
+        return "score-mid";    // Orange
 
-    return "score-low";
+    return "score-low";        // Röd
 }
 function showHour(hour){
 
