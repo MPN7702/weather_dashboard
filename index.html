@@ -305,28 +305,8 @@ const value =
 
 const rainRisk =
     Math.round(rainRiskSum / rainRiskWeight);
-let rainAmountSum = 0;
-let rainAmountWeight = 0;
-
-models.forEach(model => {
-
-    const weight =
-        weights[model.model] ?? 0;
-
-    const value =
-        model.data?.daily?.precipitation_sum?.[i];
-
-    if (value !== undefined) {
-
-        rainAmountSum += value * weight;
-        rainAmountWeight += weight;
-
-    }
-
-});
-
 const rainAmount =
-    (rainAmountSum / rainAmountWeight)
+    (daily?.precipitation_sum?.[i] ?? 0)
     .toFixed(1);
 let rainHours = [];
 
