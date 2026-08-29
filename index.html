@@ -299,9 +299,23 @@ if (rainHours.length > 0) {
 
         } else {
 
-            rainPeriods.push(
-                `${start}-${previous}`
-            );
+if(start === previous){
+
+    rainPeriods.push(start);
+
+}else{
+
+if(start === previous){
+
+    rainPeriods.push(start);
+
+}else{
+
+    rainPeriods.push(
+        `${start}-${previous}`
+    );
+
+}
 
             start = current;
             previous = current;
