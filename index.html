@@ -253,27 +253,8 @@ console.log("model0 daily:", models[0].data?.daily);
     models[0].data?.daily?.temperature_2m_max?.[0]
 );
 console.log("location:", currentLocation);
-let maxTempSum = 0;
-let maxTempWeight = 0;
-
-models.forEach(model => {
-
-    const weight =
-        weights[model.model] ?? 0;
-
-const value =
-    daily?.temperature_2m_max?.[i];
-    if (value !== undefined) {
-
-        maxTempSum += value * weight;
-        maxTempWeight += weight;
-
-    }
-
-});
-
 const maxTemp =
-    (maxTempSum / maxTempWeight).toFixed(1);
+    data.daily.temperature_2m_max[i].toFixed(1);
 
 let minTempSum = 0;
 let minTempWeight = 0;
