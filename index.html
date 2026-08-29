@@ -361,56 +361,19 @@ rainTimes =
 }
 const windSpeed =
     (
-        (daily?.wind_speed_10m_max?.[i] ?? 0)
+        daily.wind_speed_10m_mean[i]
         * WIND_FACTOR
     ).toFixed(1);
 
-let windGustSum = 0;
-let windGustWeight = 0;
-
-models.forEach(model => {
-
-    const weight =
-        weights[model.model] ?? 0;
-
-    const value =
-        model.data?.daily?.wind_gusts_10m_mean?.[i];
-
-    if (value !== undefined) {
-
-        windGustSum += value * weight;
-        windGustWeight += weight;
-
-    }
-
-});
-
 const windGust =
-    ((windGustSum / windGustWeight) * WIND_FACTOR)
-    .toFixed(1);
-
-let pressureSum = 0;
-let pressureWeight = 0;
-
-models.forEach(model => {
-
-    const weight =
-        weights[model.model] ?? 0;
-
-    const value =
-        model.data?.daily?.surface_pressure_mean?.[i];
-
-    if (value !== undefined) {
-
-        pressureSum += value * weight;
-        pressureWeight += weight;
-
-    }
-
-});
+    (
+        daily.wind_gusts_10m_mean[i]
+        * WIND_FACTOR
+    ).toFixed(1);
 
 const pressure =
-    (pressureSum / pressureWeight).toFixed(1);
+    daily.surface_pressure_mean[i]
+    .toFixed(1);
 let thunderRiskSum = 0;
 let thunderRiskWeight = 0;
 
