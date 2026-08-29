@@ -511,17 +511,17 @@ if(fishingAllowed){
 
     /* Gös */
 
-    if(Number(windSpeed) >= 2 && Number(windSpeed) <= 7)
+    if(Number(windSpeed) >= 2 && Number(windSpeed) <= 5)
         zanderScore += 3;
 
-    if(Number(pressure) >= 995 && Number(pressure) <= 1015)
-        zanderScore += 3;
+    if(Number(pressure) >= 995 && Number(pressure) <= 1008)
+    zanderScore += 3;
 
-    if(rainRisk >= 20 && rainRisk <= 70)
+    if(rainRisk >= 20 && rainRisk <= 50)
         zanderScore += 2;
 
-    if(Number(maxTemp) >= 10)
-        zanderScore += 2;
+    if(Number(maxTemp) >= 15 && Number(maxTemp) <= 25)
+    zanderScore += 2;
 
 }
 let bestFish = "Gädda";
