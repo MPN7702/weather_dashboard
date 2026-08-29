@@ -331,9 +331,6 @@ ${weekday} ${dayDate}
 💧 Regnmängd:
 <strong>${rainAmount} mm</strong><br>
 
-🌧️ Regntider:
-<strong>${rainText}</strong><br>
-
 ⚡ Åskrisk:
 <strong>${thunderRisk}%</strong><br>
 <br>
@@ -601,8 +598,6 @@ h.precipitation_probability?.[hour] ?? "-";
 
 const rainAmount =
 h.precipitation?.[hour] ?? 0;
-const rainPeriods =
-    getRainPeriods(h);
 const thunderRisk =
 Math.min(Math.round(rainRisk * 0.6),100);
 
