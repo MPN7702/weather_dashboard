@@ -220,8 +220,6 @@ if(window.cachedWeather){
 
 const data =
     cache[currentLocation].weekly;
-        const hourlyData =
-    cache[currentLocation].best_match;
 
 
         if (!data || !data.daily)
@@ -580,7 +578,7 @@ function getWindArrow(degrees) {
         Math.round(degrees / 45) % 8
     ];
 }
-    function getRainPeriods(h) {
+ {
 
     const periods = [];
 
