@@ -482,7 +482,54 @@ function getWindArrow(degrees) {
         Math.round(degrees / 45) % 8
     ];
 }
-    
+    function getRainPeriods(h) {
+
+    const periods = [];
+
+    let start = null;
+
+    for (let i = 0; i < 24; i++) {
+
+        const rain =
+            h.precipitation?.[i] ?? 0;
+
+        if (rain > 0 && start === null) {
+
+            start = i;
+
+        }
+
+        if ((rain <= 0 || i === 23) && start !== null) {
+
+            const end =
+                rain <= 0 ? i - 1 : i;
+
+            const startTime =
+                new Date(h.time[start])
+                .toLocaleTimeString("sv-SE", {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+
+            const endTime =
+                new Date(h.time[end])
+                .toLocaleTimeString("sv-SE", {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+
+            periods.push(
+                `${startTime}-${endTime}`
+            );
+
+            start = null;
+        }
+    }
+
+    return periods.length
+        ? periods.join("<br>")
+        : "Inget regn";
+}
 function showHour(hour){
 
     if(!models[0]?.data?.hourly)
@@ -538,7 +585,8 @@ h.precipitation_probability?.[hour] ?? "-";
 
 const rainAmount =
 h.precipitation?.[hour] ?? 0;
-
+const rainPeriods =
+    getRainPeriods(h);
 const thunderRisk =
 Math.min(Math.round(rainRisk * 0.6),100);
 
@@ -609,6 +657,11 @@ Regnmängd:
 <span class="${rainAmountClass}">
 <b>${rainAmount} mm</b>
 </span>
+
+<br><br>
+
+🌧️ Regntider:<br>
+<b>${rainPeriods}</b>
 
 <br><br>
 
