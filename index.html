@@ -527,32 +527,17 @@ else if(weatherCode >= 85 && weatherCode <= 86)
 else if(weatherCode >= 95 && weatherCode <= 99)
     weatherText = "⚡ Åska";
 
-let thunderRisk =
-    Math.min(
-        Math.round(
-            daily.precipitation_probability_max[i] * 0.6
-        ),
-        100
-    );
-
-if(daily.precipitation_sum[i] >= 10)
-    thunderRisk += 15;
-
-if(daily.precipitation_sum[i] >= 20)
-    thunderRisk += 15;
+let thunderRisk = 0;
 
 if(weatherCode === 95)
-    thunderRisk = Math.max(thunderRisk, 70);
+    thunderRisk = 75;
 
 else if(weatherCode === 96)
-    thunderRisk = Math.max(thunderRisk, 90);
+    thunderRisk = 90;
 
 else if(weatherCode === 99)
     thunderRisk = 100;
-
-thunderRisk =
-    Math.min(thunderRisk, 100);
- let thunderClass = "rain-low";
+ let thunderClass = "";
 
 if(thunderRisk >= 80)
     thunderClass = "rain-high";
