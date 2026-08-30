@@ -575,18 +575,73 @@ let zanderScore = 0;
 
 if(fishingAllowed){
 
-    /* Gädda */
+/* Gädda */
 
-    if(Number(windSpeed) >= 2 && Number(windSpeed) <= 6)
-        pikeScore += 3;
+/* Temperatur */
 
-    if(rainRisk >= 20 && rainRisk <= 60)
-    pikeScore += 3;
+if(Number(maxTemp) >= 8 && Numb*r(maxTemp) <= 18)
+    pikeScore +=*3;
 
-    if(Number(pressure) >= 1000 && Number(pressure) <= 1015)
-        pikeScore += 4;
+else if*Number(maxTemp) >= 5 && Number(maxTemp) <= 22)
+    pikeScore += 2;
 
+/* Vind */
 
+if(Number(windSpeed) >= 2 && Nu*ber(windSpeed) <= 6)
+    pikeScore*+= 3;
+
+else if(Number*windSpeed) > 6 && Number(windSpeed) <= 9)
+    pikeScore += 2;
+
+/* Lufttryck */
+
+if(Number*pressure) >= 995 && Number(pressur*) <= 1015)
+    pikeScore += 2;
+
+/* Regnrisk */
+
+if(rainRisk >= 20 && rainRisk <= 80)
+    pikeScore += 2;
+
+/* Regnmängd */
+
+if(Number(rainAmount) >= 0.1 && Number(rainAmount) <= 5)
+    pikeScore += 2;
+
+/* Dimma */
+
+if(weatherCode === 45 || weatherCode === 48)
+    pikeScore += 1;
+
+/* Mulet */
+
+if(weatherCode === 3)
+    pikeScore += 2;
+
+/* Delvis molnigt */
+
+if(weatherCode === 2)
+    pikeScore += 1;
+
+/* Regn */
+
+if(weatherCode === 61 || weatherCode === 63)
+    pikeScore += 2;
+
+/* Regnskurar */
+
+if(weatherCode === 80 || weatherCode === 81)
+    pikeScore += 2;
+
+/* Kraftigt regn */
+
+if(weatherCode === 65 || weatherCode === 82)
+    pikeScore -= 1;
+
+/* Åska */
+
+if(weatherCode >= 95)
+    pikeScore -= 4;
     /* Abborre */
 
     if(Number(maxTemp) >= 12)
@@ -635,7 +690,7 @@ if(zanderScore > bestScore){
 }
 let fishingText = "";
   
-if(bestScore < 6 && fishingAllowed){
+if(bestScore < 8 && fishingAllowed)
 
     fishingText = `
         🎣 Fiske: ⚠️ Ingen tydlig rekommendation
@@ -900,16 +955,16 @@ function getWindArrow(degrees) {
 }
 function getScoreClass(score){
 
+    if(score >= 12)
+        return "score-best";
+
     if(score >= 8)
-        return "score-best";   // Grön
+        return "score-good";
 
-    if(score >= 6)
-        return "score-good";   // Gul
+    if(score >= 5)
+        return "score-mid";
 
-    if(score >= 4)
-        return "score-mid";    // Orange
-
-    return "score-low";        // Röd
+    return "score-low";
 }
 function showHour(hour){
 
