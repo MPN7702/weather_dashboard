@@ -527,23 +527,38 @@ else if(weatherCode >= 85 && weatherCode <= 86)
 else if(weatherCode >= 95 && weatherCode <= 99)
     weatherText = "⚡ Åska";
 
-let thunderRisk = 0;
+let thunderRisk =
+    Math.min(
+        Math.round(
+            daily.precipitation_probability_max[i] * 0.6
+        ),
+        100
+    );
+
+if(daily.precipitation_sum[i] >= 10)
+    thunderRisk += 15;
+
+if(daily.precipitation_sum[i] >= 20)
+    thunderRisk += 15;
 
 if(weatherCode === 95)
-    thunderRisk = 70;
+    thunderRisk = Math.max(thunderRisk, 70);
 
 else if(weatherCode === 96)
-    thunderRisk = 90;
+    thunderRisk = Math.max(thunderRisk, 90);
 
 else if(weatherCode === 99)
     thunderRisk = 100;
-         let thunderClass = "";
+
+thunderRisk =
+    Math.min(thunderRisk, 100);
+ let thunderClass = "rain-low";
 
 if(thunderRisk >= 80)
     thunderClass = "rain-high";
 
 else if(thunderRisk >= 50)
-    thunderClass = "rain-mid";   
+    thunderClass = "rain-mid";
 let fishingAllowed = true;
 let fishingReason = "";
 
