@@ -310,8 +310,11 @@ if(window.cachedWeather){
 }
 
 const data =
-    cache[currentLocation].weekly;
-        const daily = data.daily;
+const data =
+    cache?.[currentLocation]?.weekly;
+
+if(!data?.daily)
+    return;
 
 if (!data || !data.daily)
     return;
@@ -1182,7 +1185,6 @@ currentLocation = ortnamn;
 forecastIndex = startIndex;
 
     await loadAllData();
-    await updateWeeklyForecast();
 
 });
 const weights = {
