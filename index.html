@@ -310,8 +310,8 @@ if(window.cachedWeather){
 }
 
 const data =
-const data =
     cache?.[currentLocation]?.weekly;
+        const daily = data?.daily;
 
 if(!data?.daily)
     return;
