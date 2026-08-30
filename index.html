@@ -575,73 +575,136 @@ let zanderScore = 0;
 
 if(fishingAllowed){
 
-/* Gädda */
+/* =======================
+   GÄDDA
+======================= */
 
 /* Temperatur */
 
-if(Number(maxTemp) >= 8 && Numb*r(maxTemp) <= 18)
-    pikeScore +=*3;
+if(Number(maxTemp) >= 10 && Num*er(maxTemp) <= 16)
+    pikeScore +* 4;
 
-else if*Number(maxTemp) >= 5 && Number(maxTemp) <= 22)
+else if*Number(maxTemp) >= 7 && Number(max*emp) <= 20)
     pikeScore += 2;
+
+else if(Number(maxTemp) > 24)
+    pikeScore -= 2;
+
 
 /* Vind */
 
-if(Number(windSpeed) >= 2 && Nu*ber(windSpeed) <= 6)
-    pikeScore*+= 3;
+if(Number(windSpeed) >= 2*5 && Number(windSpeed) <= 5.5*
+    pikeScore += 4;
 
-else if(Number*windSpeed) > 6 && Number(windSpeed) <= 9)
+else if*Number(windSpeed) >= 1*5 && Number(windSpeed) <= 7)
+    p*keScore += 2;
+
+else if*Number(windSpeed) > 10*
+    pikeScore -= 2;
+
+
+/* Vindriktning */
+
+if(windDirection >=*180 && windDirection <= 270)
+    p*keScore += 3;
+
+else if*windDirection >= 135 && windDirect*on < 180)
     pikeScore += 2;
+
 
 /* Lufttryck */
 
-if(Number*pressure) >= 995 && Number(pressur*) <= 1015)
-    pikeScore += 2;
+if(Number(pressure) >= 995 && N*mber(pressure) <= 1015)
+    pikeSc*re += 2;
+
+if(Number(pressure) < 98*)
+    pikeScore -= 2;
+
 
 /* Regnrisk */
 
-if(rainRisk >= 20 && rainRisk <= 80)
+if(rainRisk >= 30 && rainRisk <= 80)
     pikeScore += 2;
+
 
 /* Regnmängd */
 
-if(Number(rainAmount) >= 0.1 && Number(rainAmount) <= 5)
-    pikeScore += 2;
+if(Number(rainAmount) >= 0.2 && Number(rainAmount) <= 4)
+    pikeScore += 3;
 
-/* Dimma */
+else if(Number(rainAmount) > 10)
+    pikeScore -= 2;
 
-if(weatherCode === 45 || weatherCode === 48)
-    pikeScore += 1;
 
 /* Mulet */
 
 if(weatherCode === 3)
-    pikeScore += 2;
+    pikeScore += 4;
+
 
 /* Delvis molnigt */
 
 if(weatherCode === 2)
-    pikeScore += 1;
+    pikeScore += 2;
+
+
+/* Dimma */
+
+if(weatherCode === 45 || weatherCode === 48)
+    pikeScore += 3;
+
+
+/* Duggregn */
+
+if(
+    weatherCode === 51 ||
+    weatherCode === 53 ||
+    weatherCode === 55
+)
+    pikeScore += 3;
+
 
 /* Regn */
 
-if(weatherCode === 61 || weatherCode === 63)
-    pikeScore += 2;
+if(
+    weatherCode === 61 ||
+    weatherCode === 63
+)
+    pikeScore += 3;
+
 
 /* Regnskurar */
 
-if(weatherCode === 80 || weatherCode === 81)
-    pikeScore += 2;
+if(
+    weatherCode === 80 ||
+    weatherCode === 81
+)
+    pikeScore += 3;
+
 
 /* Kraftigt regn */
 
-if(weatherCode === 65 || weatherCode === 82)
+if(
+    weatherCode === 65 ||
+    weatherCode === 82
+)
     pikeScore -= 1;
+
+
+/* Snö */
+
+if(
+    weatherCode === 71 ||
+    weatherCode === 73 ||
+    weatherCode === 75
+)
+    pikeScore -= 1;
+
 
 /* Åska */
 
 if(weatherCode >= 95)
-    pikeScore -= 4;
+    pikeScore -= 5;
     /* Abborre */
 
     if(Number(maxTemp) >= 12)
@@ -690,7 +753,7 @@ if(zanderScore > bestScore){
 }
 let fishingText = "";
   
-if(bestScore < 8 && fishingAllowed)
+if(bestScore < 10 && fishingAllowed)
 
     fishingText = `
         🎣 Fiske: ⚠️ Ingen tydlig rekommendation
@@ -955,13 +1018,13 @@ function getWindArrow(degrees) {
 }
 function getScoreClass(score){
 
-    if(score >= 12)
+    if(score >= 16)
         return "score-best";
 
-    if(score >= 8)
+    if(score >= 11)
         return "score-good";
 
-    if(score >= 5)
+    if(score >= 6)
         return "score-mid";
 
     return "score-low";
