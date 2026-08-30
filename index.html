@@ -1040,7 +1040,7 @@ if(zanderScore > bestScore){
 }
 let fishingText = "";
   
-if(bestScore < 10 && fishingAllowed)
+if(bestScore < 10 && fishingAllowed){
 
     fishingText = `
         🎣 Fiske: ⚠️ Ingen tydlig rekommendation
@@ -1065,6 +1065,7 @@ if(bestScore < 10 && fishingAllowed)
         <b>${zanderScore} p</b>
         </span>
     `;
+
 }
 else if(!fishingAllowed){
 
@@ -1080,20 +1081,25 @@ else{
     fishingText = `
         🎣 Fiske: 🏆 ${bestFish}
         <br>
+
         🐊 Gädda:
-<span class="${getScoreClass(pikeScore)}">
-<b>${pikeScore}/10</b>
-</span>
+        <span class="${getScoreClass(pikeScore)}">
+        <b>${pikeScore} p</b>
+        </span>
+
         <br>
+
         🐟 Abborre:
-<span class="${getScoreClass(perchScore)}">
-<b>${perchScore}/10</b>
-</span>
+        <span class="${getScoreClass(perchScore)}">
+        <b>${perchScore} p</b>
+        </span>
+
         <br>
+
         🐟 Gös:
-<span class="${getScoreClass(zanderScore)}">
-<b>${zanderScore}/10</b>
-</span>
+        <span class="${getScoreClass(zanderScore)}">
+        <b>${zanderScore} p</b>
+        </span>
     `;
 
 }
