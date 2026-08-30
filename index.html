@@ -550,22 +550,22 @@ else if(thunderRisk >= 50)
 let fishingAllowed = true;
 let fishingReason = "";
 
-if(Number(rainAmount) > 25){
+if(Number(rainAmount) > 15){
 
     fishingAllowed = false;
-    fishingReason = "Extrem nederbörd";
+    fishingReason = "Mycket kraftigt regn";
 
 }
-else if(Number(windSpeed) > 15){
+else if(Number(windSpeed) > 12){
 
     fishingAllowed = false;
-    fishingReason = "Stormig vind";
+    fishingReason = "Mycket hård vind";
 
 }
-else if(Number(windGust) > 20){
+else if(Number(windGust) > 16){
 
     fishingAllowed = false;
-    fishingReason = "Extrema kastvindar";
+    fishingReason = "Mycket kraftiga kastvindar";
 
 }
 
