@@ -598,18 +598,18 @@ if(Number(windSpeed) >= 2.5 && Number(windSpeed) <= 5.5)
     pikeScore += 4;
 
 else if(Number(windSpeed) >= 1.5 && Number(windSpeed) <= 7)
-    p*keScore += 2;
+    pikeScore += 2;
 
-else if*Number(windSpeed) > 10*
+else if(Number(windSpeed) > 10)
     pikeScore -= 2;
 
 
 /* Vindriktning */
 
-if(windDirection >=*180 && windDirection <= 270)
+if(windDirection >= 180 && windDirection <= 270)
     pikeScore += 3;
 
-else if*windDirection >= 135 && windDirect*on < 180)
+else if(windDirection >= 135 && windDirection < 180)
     pikeScore += 2;
 
 
@@ -891,7 +891,7 @@ else if(Number(windSpeed) <= 7)
     zanderScore += 2;
 
 else if(Number(windSpeed) > 9)
-   *zanderScore -= 2;
+   zanderScore -= 2;
 
 
 /* Vindriktning */
@@ -1048,21 +1048,21 @@ if(bestScore < 10 && fishingAllowed)
 
         🐊 Gädda:
         <span class="${getScoreClass(pikeScore)}">
-        <b>${pikeScore}/10</b>
+        <b>${pikeScore} p</b>
         </span>
 
         <br>
 
         🐟 Abborre:
         <span class="${getScoreClass(perchScore)}">
-        <b>${perchScore}/10</b>
+        <b>${perchScore} p</b>
         </span>
 
         <br>
 
         🐟 Gös:
         <span class="${getScoreClass(zanderScore)}">
-        <b>${zanderScore}/10</b>
+        <b>${zanderScore} p</b>
         </span>
     `;
 }
