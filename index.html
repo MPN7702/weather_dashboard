@@ -313,9 +313,6 @@ const data =
     cache?.[currentLocation]?.weekly;
         const daily = data?.daily;
 
-if(!data?.daily)
-    return;
-
 if (!data || !data.daily)
     return;
 
@@ -1563,17 +1560,26 @@ if(Number(avgRainAmount) >= 2)
 
 if(Number(avgRainAmount) > 10)
     avgRainAmountClass = "rain-high";
-    const avgThunderRisk = Math.min(
-        Math.round(avgRainRisk * 0.6),
-        100
-    );
-let avgThunderClass = "";
+let thunderFound = false;
 
-if (avgThunderRisk >= 80)
-    avgThunderClass = "rain-high";
+models.forEach(model => {
 
-else if (avgThunderRisk >= 50)
-    avgThunderClass = "rain-mid";
+    const code =
+        model.data?.hourly?.weather_code?.[hour];
+
+    if(
+        code === 95 ||
+        code === 96 ||
+        code === 99
+    ){
+        thunderFound = true;
+    }
+
+});
+
+const avgThunderText =
+    thunderFound ? "Ja" : "Nej";
+``
 
 document.getElementById("box7").innerHTML = `
 
@@ -1640,10 +1646,8 @@ Regnmängd:
 
 <br><br>
 
-Åskrisk:
-<span class="${avgThunderClass}">
-<b>${avgThunderRisk} %</b>
-</span>
+⚡ Åska:
+<b>${avgThunderText}</b>
 
 `;
 }
