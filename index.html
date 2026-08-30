@@ -581,10 +581,11 @@ if(fishingAllowed){
 
 /* Temperatur */
 
-if(Number(maxTemp) >= 10 && Num*er(maxTemp) <= 16)
-    pikeScore +* 4;
+if(Number(maxTemp) >= 10 && Number(maxTemp) <= 16)
 
-else if*Number(maxTemp) >= 7 && Number(max*emp) <= 20)
+    pikeScore += 4;
+
+else if(Number(maxTemp) >= 7 && Number(maxTemp) <= 20)
     pikeScore += 2;
 
 else if(Number(maxTemp) > 24)
@@ -593,10 +594,10 @@ else if(Number(maxTemp) > 24)
 
 /* Vind */
 
-if(Number(windSpeed) >= 2*5 && Number(windSpeed) <= 5.5*
+if(Number(windSpeed) >= 2.5 && Number(windSpeed) <= 5.5)
     pikeScore += 4;
 
-else if*Number(windSpeed) >= 1*5 && Number(windSpeed) <= 7)
+else if(Number(windSpeed) >= 1.5 && Number(windSpeed) <= 7)
     p*keScore += 2;
 
 else if*Number(windSpeed) > 10*
@@ -606,7 +607,7 @@ else if*Number(windSpeed) > 10*
 /* Vindriktning */
 
 if(windDirection >=*180 && windDirection <= 270)
-    p*keScore += 3;
+    pikeScore += 3;
 
 else if*windDirection >= 135 && windDirect*on < 180)
     pikeScore += 2;
@@ -614,10 +615,10 @@ else if*windDirection >= 135 && windDirect*on < 180)
 
 /* Lufttryck */
 
-if(Number(pressure) >= 995 && N*mber(pressure) <= 1015)
-    pikeSc*re += 2;
+if(Number(pressure) >= 995 && Number(pressure) <= 1015)
+    pikeScore += 2;
 
-if(Number(pressure) < 98*)
+if(Number(pressure) < 985)
     pikeScore -= 2;
 
 
@@ -874,8 +875,8 @@ else if(Number(maxTemp) < 12)
 
 /* Lufttryck */
 
-if(Number(pressure) >= 995 && N*mber(pressure) <= 1010)
-    zander*core += 3;
+if(Number(pressure) >= 995 && Number(pressure) <= 1010)
+    zanderScore += 3;
 
 else if(Number(pressure) < 990)
     zanderScore -= 2;
@@ -883,13 +884,13 @@ else if(Number(pressure) < 990)
 
 /* Vind */
 
-if(Number(windSpeed) >= 2*&& Number(windSpeed) <= 5)
-   *zanderScore += 4;
+if(Number(windSpeed) >= 2 && Number(windSpeed) <= 5)
+   zanderScore += 4;
 
-else if*Number(windSpeed) <= 7)
-    zander*core += 2;
+else if(Number(windSpeed) <= 7)
+    zanderScore += 2;
 
-else if*Number(w*ndSpeed) > 9)
+else if(Number(windSpeed) > 9)
    *zanderScore -= 2;
 
 
