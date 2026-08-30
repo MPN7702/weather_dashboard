@@ -489,7 +489,6 @@ const pressure =
     .toFixed(1);
             const weatherCode =
     daily.weathercode?.[i] ?? 0;
-console.log(weatherCode);
 let weatherText = "Okänt väder";
 
 if(weatherCode === 0)
@@ -504,13 +503,25 @@ else if(weatherCode === 2)
 else if(weatherCode === 3)
     weatherText = "☁️ Mulet";
 
-else if(weatherCode >= 51 && weatherCode <= 67)
+else if(weatherCode === 45 || weatherCode === 48)
+    weatherText = "🌫️ Dimma";
+
+else if(weatherCode >= 51 && weatherCode <= 57)
+    weatherText = "🌦️ Duggregn";
+
+else if(weatherCode >= 61 && weatherCode <= 67)
     weatherText = "🌧️ Regn";
 
 else if(weatherCode >= 71 && weatherCode <= 77)
     weatherText = "❄️ Snö";
 
-else if(weatherCode >= 95)
+else if(weatherCode >= 80 && weatherCode <= 82)
+    weatherText = "🌦️ Regnskurar";
+
+else if(weatherCode >= 85 && weatherCode <= 86)
+    weatherText = "🌨️ Snöbyar";
+
+else if(weatherCode >= 95 && weatherCode <= 99)
     weatherText = "⚡ Åska";
 
 let thunderRisk =
