@@ -705,36 +705,322 @@ if(
 
 if(weatherCode >= 95)
     pikeScore -= 5;
-    /* Abborre */
+/* =======================
+   ABBORRE
+======================= */
 
-    if(Number(maxTemp) >= 12)
-        perchScore += 3;
+/* Temperatur */
 
-    if(Number(pressure) >= 1010)
-        perchScore += 3;
+if(Number(maxTemp) >= 16 && Number(maxTemp) <= 22)
+    perchScore += 4;
 
-    if(Number(windSpeed) <= 5)
-        perchScore += 2;
+else if(Number(maxTemp) >= 12 && Number(maxTemp) <= 25)
+    perchScore += 2;
 
-    if(rainRisk <= 40)
-        perchScore += 2;
+else if(Number(maxTemp) < 8)
+    perchScore -= 2;
 
 
-    /* Gös */
+/* Lufttryck */
 
-    if(Number(windSpeed) >= 2 && Number(windSpeed) <= 5)
-        zanderScore += 3;
+if(Number(pressure) >= 1005 && Number(pressure) <= 1020)
+    perchScore += 3;
 
-    if(Number(pressure) >= 995 && Number(pressure) <= 1008)
-    zanderScore += 3;
+else if(Number(pressure) < 990)
+    perchScore -= 2;
 
-    if(rainRisk >= 20 && rainRisk <= 50)
-        zanderScore += 2;
 
-    if(Number(maxTemp) >= 15 && Number(maxTemp) <= 25)
+/* Vind */
+
+if(Number(windSpeed) >= 1 && Number(windSpeed) <= 4)
+    perchScore += 4;
+
+else if(Number(windSpeed) <= 6)
+    perchScore += 2;
+
+else if(Number(windSpeed) > 8)
+    perchScore -= 2;
+
+
+/* Vindriktning */
+
+if(windDirection >= 90 && windDirection <= 225)
+    perchScore += 2;
+
+
+/* Regnrisk */
+
+if(rainRisk <= 40)
+    perchScore += 3;
+
+else if(rainRisk >= 80)
+    perchScore -= 2;
+
+
+/* Regnmängd */
+
+if(Number(rainAmount) > 5)
+    perchScore -= 2;
+
+
+/* Klart väder */
+
+if(weatherCode === 0)
+    perchScore += 3;
+
+else if(weatherCode === 1)
+    perchScore += 2;
+
+
+/* Delvis molnigt */
+
+if(weatherCode === 2)
+    perchScore += 2;
+
+
+/* Mulet */
+
+if(weatherCode === 3)
+    perchScore += 1;
+
+
+/* Dimma */
+
+if(weatherCode === 45 ||
+   weatherCode === 48)
+{
+    perchScore -= 1;
+}
+
+
+/* Duggregn */
+
+if(
+    weatherCode === 51 ||
+    weatherCode === 53 ||
+    weatherCode === 55
+)
+{
+    perchScore += 1;
+}
+
+
+/* Regn */
+
+if(
+    weatherCode === 61 ||
+    weatherCode === 63
+)
+{
+    perchScore -= 1;
+}
+
+
+/* Regnskurar */
+
+if(
+    weatherCode === 80 ||
+    weatherCode === 81
+)
+{
+    perchScore -= 1;
+}
+
+
+/* Kraftigt regn */
+
+if(
+    weatherCode === 65 ||
+    weatherCode === 82
+)
+{
+    perchScore -= 3;
+}
+
+
+/* Snö */
+
+if(
+    weatherCode === 71 ||
+    weatherCode === 73 ||
+    weatherCode === 75
+)
+{
+    perchScore -= 2;
+}
+
+
+/* Åska */
+
+if(weatherCode >= 95)
+    perchScore -= 5;
+
+
+/* =======================
+   GÖS
+======================= */
+
+/* Temperatur */
+
+if(Number(maxTemp) >= 18 && Number(maxTemp) <= 24)
+    zanderScore += 4;
+
+else if(Number(maxTemp) >= 15 && Number(maxTemp) <= 27)
     zanderScore += 2;
 
+else if(Number(maxTemp) < 12)
+    zanderScore -= 3;
+
+
+/* Lufttryck */
+
+if(Number(pressure) >= 995 && N*mber(pressure) <= 1010)
+    zander*core += 3;
+
+else if(Number(pressure) < 990)
+    zanderScore -= 2;
+
+
+/* Vind */
+
+if(Number(windSpeed) >= 2*&& Number(windSpeed) <= 5)
+   *zanderScore += 4;
+
+else if*Number(windSpeed) <= 7)
+    zander*core += 2;
+
+else if*Number(w*ndSpeed) > 9)
+   *zanderScore -= 2;
+
+
+/* Vindriktning */
+
+if(windDirection >= 135 && windDirection <= 270)
+    zanderScore += 2;
+
+
+/* Regnrisk */
+
+if(rainRisk >= 20 && rainRisk <= 70)
+    zanderScore += 2;
+
+else if(rainRisk >= 90)
+    zanderScore -= 2;
+
+
+/* Regnmängd */
+
+if(Number(rainAmount) >= 0.1 && Number(rainAmount) <= 3)
+    zanderScore += 2;
+
+else if(Number(rainAmount) > 8)
+    zanderScore -= 2;
+
+
+/* Klart väder */
+
+if(weatherCode === 0)
+    zanderScore -= 3;
+
+else if(weatherCode === 1)
+    zanderScore -= 1;
+
+
+/* Delvis molnigt */
+
+if(weatherCode === 2)
+    zanderScore += 2;
+
+
+/* Mulet */
+
+if(weatherCode === 3)
+    zanderScore += 4;
+
+
+/* Dimma */
+
+if(
+    weatherCode === 45 ||
+    weatherCode === 48
+)
+{
+    zanderScore += 3;
 }
+
+
+/* Duggregn */
+
+if(
+    weatherCode === 51 ||
+    weatherCode === 53 ||
+    weatherCode === 55
+)
+{
+    zanderScore += 3;
+}
+
+
+/* Regn */
+
+if(
+    weatherCode === 61 ||
+    weatherCode === 63
+)
+{
+    zanderScore += 3;
+}
+
+
+/* Regnskurar */
+
+if(
+    weatherCode === 80 ||
+    weatherCode === 81
+)
+{
+    zanderScore += 4;
+}
+
+
+/* Kraftigt regn */
+
+if(
+    weatherCode === 65 ||
+    weatherCode === 82
+)
+{
+    zanderScore += 1;
+}
+
+
+/* Snö */
+
+if(
+    weatherCode === 71 ||
+    weatherCode === 73 ||
+    weatherCode === 75
+)
+{
+    zanderScore -= 3;
+}
+
+
+/* Snöbyar */
+
+if(
+    weatherCode === 85 ||
+    weatherCode === 86
+)
+{
+    zanderScore -= 3;
+}
+
+
+/* Åska */
+
+if(weatherCode >= 95)
+    zanderScore -= 5;
 let bestFish = "Gädda";
 let bestScore = pikeScore;
 
