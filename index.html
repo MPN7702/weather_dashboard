@@ -487,6 +487,32 @@ const windDirection =
 const pressure =
     daily.surface_pressure_mean[i]
     .toFixed(1);
+            const weatherCode =
+    daily.weathercode?.[i] ?? 0;
+
+let weatherText = "Okänt väder";
+
+if(weatherCode === 0)
+    weatherText = "☀️ Klart";
+
+else if(weatherCode === 1)
+    weatherText = "🌤️ Mest klart";
+
+else if(weatherCode === 2)
+    weatherText = "⛅ Delvis molnigt";
+
+else if(weatherCode === 3)
+    weatherText = "☁️ Mulet";
+
+else if(weatherCode >= 51 && weatherCode <= 67)
+    weatherText = "🌧️ Regn";
+
+else if(weatherCode >= 71 && weatherCode <= 77)
+    weatherText = "❄️ Snö";
+
+else if(weatherCode >= 95)
+    weatherText = "⚡ Åska";
+``
 let thunderRisk =
     Math.min(
         Math.round(
@@ -695,7 +721,11 @@ ${getWindDirection(windDirection)}
 ⚡ Åskrisk:
 <span class="${thunderClass}">
 <strong>${thunderRisk}%</strong>
-</span><br><br>
+</span><br>
+
+🌦️ Väder:
+<strong>${weatherText}</strong>
+<br><br>
 
 ${fishingText}
 
