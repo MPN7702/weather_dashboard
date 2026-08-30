@@ -395,10 +395,6 @@ if (rain >= 0.2)
     supportWeight += weights[model.model] ?? 0;
 
     });
-console.log(
-    hourlyTime,
-    supportWeight
-);
     if (
         hourlyTime.startsWith(currentDay) &&
         supportWeight >= 0.50
@@ -487,7 +483,6 @@ const windGust =
     ).toFixed(1);
 const windDirection =
     daily.wind_direction_10m_dominant?.[i] ?? 0;
-console.log("Veckovind:", windDirection);
 
 const pressure =
     daily.surface_pressure_mean[i]
