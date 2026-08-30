@@ -391,7 +391,7 @@ for (let h = 0; h < hourlyTimes.length; h++) {
         const rain =
             model.data?.hourly?.precipitation?.[h] ?? 0;
 
-if (rain >= 0.1)
+if (rain >= 0)
     supportWeight += weights[model.model] ?? 0;
 
     });
