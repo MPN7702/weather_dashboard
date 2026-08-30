@@ -527,23 +527,15 @@ else if(weatherCode >= 85 && weatherCode <= 86)
 else if(weatherCode >= 95 && weatherCode <= 99)
     weatherText = "⚡ Åska";
 
-let thunderRisk = 0;
+let thunderText = "Nej";
 
-if(weatherCode === 95)
-    thunderRisk = 75;
-
-else if(weatherCode === 96)
-    thunderRisk = 90;
-
-else if(weatherCode === 99)
-    thunderRisk = 100;
- let thunderClass = "";
-
-if(thunderRisk >= 80)
-    thunderClass = "rain-high";
-
-else if(thunderRisk >= 50)
-    thunderClass = "rain-mid";
+if(
+    weatherCode === 95 ||
+    weatherCode === 96 ||
+    weatherCode === 99
+){
+    thunderText = "Ja";
+}
 let fishingAllowed = true;
 let fishingReason = "";
 
@@ -1137,10 +1129,8 @@ ${getWindDirection(windDirection)}
 🌧️ Regntider:
 <strong>${rainTimes}</strong><br>
 
-⚡ Åskrisk:
-<span class="${thunderClass}">
-<strong>${thunderRisk}%</strong>
-</span><br>
+⚡ Åska:
+<strong>${thunderText}</strong><br>
 
 🌦️ Väder:
 <strong>${weatherText}</strong>
