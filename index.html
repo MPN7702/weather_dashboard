@@ -400,13 +400,7 @@ if(Number(rainAmount) >= 10)
 {
     rainAmountClass = "rain-high";
 }
-console.log(
-    currentDay,
-    "daily:",
-    daily?.precipitation_sum?.[i],
-    "hourly sum:",
-    hourlyRainSum.toFixed(1)
-);
+
 for (let h = 0; h < hourlyTimes.length; h++) {
 
     const hourlyTime =
