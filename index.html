@@ -958,7 +958,7 @@ else if(
 }
 
 
-/* Stabilt lufttryck */
+/* Lufttryck */
 
 if(Number(pressure) >= 995 && Number(pressure) <= 1015)
     pikeScore += 1;
@@ -1014,12 +1014,12 @@ else if(
 
 /* Bästa fisketider */
 
-/* Stabilt lufttryck */
+/* Lufttryck */
 
 if(Number(pressure) >= 1005 && Number(pressure) <= 1020)
     perchScore += 3;
 
-else if(Number(pressure) < 985)
+else if(Number(pressure) < 990)
     perchScore -= 2;
 
 /* Klart väder */
@@ -1074,12 +1074,12 @@ else if(
 {
     zanderScore -= 2;
 }
-/* Stabilt lufttryck */
+/* Lufttryck */
 
 if(Number(pressure) >= 995 && Number(pressure) <= 1010)
     zanderScore += 3;
 
-else if(Number(pressure) < 985)
+else if(Number(pressure) < 990)
     zanderScore -= 2;
 
 /* Klart väder */
