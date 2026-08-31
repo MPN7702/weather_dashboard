@@ -358,6 +358,7 @@ if(rainRisk >= 80)
 const rainAmount =
     (daily?.precipitation_sum?.[i] ?? 0)
     .toFixed(1);
+         console.log("Rain amount:", i, daily?.precipitation_sum?.[i]);   
             let rainAmountClass = "";
 
 if(Number(rainAmount) > 0)
