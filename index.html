@@ -447,21 +447,39 @@ let rainHours = [];
 if (!models[0]?.data?.hourly)
     continue;
 
-const hourlyTimes =
-    models[0].data.hourly.time;
-let hourlyRainSum = 0;
+let rainTotals = [];
 
-for (let h = 0; h < hourlyTimes.length; h++) {
+models.forEach(model => {
 
-    if(hourlyTimes[h].startsWith(currentDay)) {
+    const hourly =
+        model.data?.hourly;
 
-        hourlyRainSum +=
-            models[0].data.hourly.precipitation?.[h] ?? 0;
+    if (!hourly?.time ||
+        !hourly?.precipitation)
+        return;
+
+    let modelRainSum = 0;
+
+    for (let h = 0; h < hourly.time.length; h++) {
+
+        if (hourly.time[h].startsWith(currentDay)) {
+
+            modelRainSum +=
+                hourly.precipitation[h] ?? 0;
+        }
     }
-}
+
+    rainTotals.push(modelRainSum);
+
+});
 
 const rainAmount =
-    hourlyRainSum.toFixed(1);
+(
+    rainTotals.reduce(
+        (a,b) => a + b,
+        0
+    ) / rainTotals.length
+).toFixed(1);
 let rainAmountClass = "rain-low";
 
 if(Number(rainAmount) > 0 &&
