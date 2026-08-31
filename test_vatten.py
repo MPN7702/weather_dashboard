@@ -2,11 +2,18 @@ import requests
 
 url = "https://sv.seatemperature.net/sjoar/water-temp-in-mellanfryken"
 
-html = requests.get(
+response = requests.get(
     url,
-    headers={"User-Agent": "Mozilla/5.0"},
-    timeout=10
-).text
+    headers={
+        "User-Agent": "Mozilla/5.0"
+    },
+    timeout=20,
+    allow_redirects=True
+)
 
-print("HTML LÄNGD:", len(html))
-print(html[:1000])
+print("STATUS:", response.status_code)
+print("URL:", response.url)
+print("HTML LÄNGD:", len(response.text))
+
+print("\nFÖRSTA 1000 TECKNEN:\n")
+print(response.text[:1000])
