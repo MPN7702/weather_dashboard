@@ -361,13 +361,6 @@ if(rainRisk >= 80)
 const rainAmount =
     (daily?.precipitation_sum?.[i] ?? 0)
     .toFixed(1);
-console.log(
-    currentDay,
-    "daily:",
-    daily?.precipitation_sum?.[i],
-    "rainAmountFromHours:",
-    rainAmount
-);
 let rainAmountClass = "rain-low";
 
 if(Number(rainAmount) > 0 &&
@@ -397,7 +390,24 @@ if (!models[0]?.data?.hourly)
 
 const hourlyTimes =
     models[0].data.hourly.time;
+let hourlyRainSum = 0;
 
+for (let h = 0; h < hourlyTimes.length; h++) {
+
+    if(hourlyTimes[h].startsWith(currentDay)) {
+
+        hourlyRainSum +=
+            models[0].data.hourly.precipitation?.[h] ?? 0;
+    }
+
+console.log(
+    currentDay,
+    "daily:",
+    daily?.precipitation_sum?.[i],
+    "hourly sum:",
+    hourlyRainSum.toFixed(1)
+);
+``
 for (let h = 0; h < hourlyTimes.length; h++) {
 
     const hourlyTime =
