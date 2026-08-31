@@ -765,8 +765,10 @@ const sortedWeatherCodes =
         .sort((a,b) => b[1] - a[1])
         .slice(0,3)
         .map(x => Number(x[0]));
-            const weatherCode =
+
+const weatherCode =
     sortedWeatherCodes[0] ?? 0;
+
 let weatherText = "Okänt väder";
 
 if(weatherCode === 0)
