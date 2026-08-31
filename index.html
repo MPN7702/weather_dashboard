@@ -530,25 +530,100 @@ rainTimes =
         ? rainPeriods.join(", ")
         : "Inget regn";
 }
+let windSpeeds = [];
+let windGusts = [];
+let windX = 0;
+let windY = 0;
+let windWeight = 0;
+
+models.forEach(model => {
+
+    const hourly =
+        model.data?.hourly;
+
+    if (!hourly?.time)
+        return;
+
+    const dayWinds = [];
+    const dayGusts = [];
+
+    for (let h = 0; h < hourly.time.length; h++) {
+
+        if (hourly.time[h].startsWith(currentDay)) {
+
+            const wind =
+                hourly.wind_speed_10m?.[h];
+
+            const gust =
+                hourly.wind_gusts_10m?.[h];
+
+            const dir =
+                hourly.wind_direction_10m?.[h];
+
+            if (typeof wind === "number") {
+                dayWinds.push(wind);
+            }
+
+            if (typeof gust === "number") {
+                dayGusts.push(gust);
+            }
+
+            if (
+                typeof dir === "number" &&
+                typeof wind === "number"
+            ) {
+
+                const rad =
+                    dir * Math.PI / 180;
+
+                windX += Math.cos(rad) * wind;
+                windY += Math.sin(rad) * wind;
+                windWeight += wind;
+            }
+        }
+    }
+
+    if (dayWinds.length) {
+
+        windSpeeds.push(
+            dayWinds.reduce((a,b)=>a+b,0)
+            / dayWinds.length
+        );
+
+    }
+
+    if (dayGusts.length) {
+
+        windGusts.push(
+            Math.max(...dayGusts)
+        );
+
+    }
+
+});
+
 const windSpeed =
+(
     (
-        daily.wind_speed_10m_mean[i]
-        * WIND_FACTOR
-    ).toFixed(1);
-let windClass = "";
+        windSpeeds.reduce((a,b)=>a+b,0)
+        / windSpeeds.length
+    ) * WIND_FACTOR
+).toFixed(1);
 
-if(Number(windSpeed) >= 10)
-    windClass = "wind-high";
-
-else if(Number(windSpeed) >= 5)
-    windClass = "wind-mid";
 const windGust =
+(
     (
-        daily.wind_gusts_10m_mean[i]
-        * WIND_FACTOR
-    ).toFixed(1);
+        windGusts.reduce((a,b)=>a+b,0)
+        / windGusts.length
+    ) * WIND_FACTOR
+).toFixed(1);
+
 const windDirection =
-    daily.wind_direction_10m_dominant?.[i] ?? 0;
+(
+    Math.atan2(windY, windX)
+    * 180 / Math.PI
+    + 360
+) % 360;
 
 const pressure =
     daily.surface_pressure_mean[i]
