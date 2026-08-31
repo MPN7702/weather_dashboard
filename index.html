@@ -1402,7 +1402,21 @@ if(
 
 if(weatherCode >= 95)
     zanderScore -= 5;
-    }
+
+/* Fredningstid gös i Fryken 15 maj till 15 juni */
+
+const dayOfMonth =
+    new Date(currentDay).getDate();
+
+if(
+    (forecastMonth === 5 && dayOfMonth >= 15) ||
+    (forecastMonth === 6 && dayOfMonth <= 15)
+)
+{
+    zanderScore = -999;
+}
+
+}
 let bestFish = "Gädda";
 let bestScore = pikeScore;
 
@@ -1450,9 +1464,17 @@ ${waterTempText}
         <br>
 
         🐟 Gös:
-        <span class="${getScoreClass(zanderScore)}">
-        <b>${zanderScore} p</b>
-        </span>
+<span class="${
+    zanderScore === -999
+        ? "score-low"
+        : getScoreClass(zanderScore)
+}">
+<b>${
+    zanderScore === -999
+        ? "FREDAD"
+        : zanderScore + " p"
+}</b>
+</span>
     `;
 
 }
@@ -1488,9 +1510,17 @@ else{
         <br>
 
         🐟 Gös:
-        <span class="${getScoreClass(zanderScore)}">
-        <b>${zanderScore} p</b>
-        </span>
+<span class="${
+    zanderScore === -999
+        ? "score-low"
+        : getScoreClass(zanderScore)
+}">
+<b>${
+    zanderScore === -999
+        ? "FREDAD"
+        : zanderScore + " p"
+}</b>
+</span>
     `;
 
 }
