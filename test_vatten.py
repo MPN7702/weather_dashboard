@@ -1,6 +1,7 @@
 import requests
 import re
 import json
+from datetime import datetime
 
 url = "https://fangstrapport.se/sjö/övre-fryken/vattentemperatur"
 
@@ -16,12 +17,14 @@ if match:
     temperatur = float(match.group(1).replace(",", "."))
 
     data = {
-        "ovre_fryken": temperatur
+        "ovre_fryken": temperatur,
+        "updated": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     }
 
     with open("water_temp.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
     print(f"Övre Fryken: {temperatur}°C")
+
 else:
-    print("Ingen temperatur hittades")
+    raise Exception("Ingen temperatur hittades")
