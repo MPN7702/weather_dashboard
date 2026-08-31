@@ -18,7 +18,7 @@ if match:
 
     data = {
         "ovre_fryken": temperatur,
-        "updated": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        "updated": datetime.utcnow().strftime("%Y-%m-%d")
     }
 
     with open("water_temp.json", "w", encoding="utf-8") as f:
