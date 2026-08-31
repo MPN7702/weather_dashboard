@@ -1013,14 +1013,21 @@ else if(wt < 10)
 
 /* Årstid Abborre */
 
-if(forecastMonth >= 8 && forecastMonth <= 10)
+if(
+    forecastMonth >= 6 &&
+    forecastMonth <= 11
+)
+{
     perchScore += 3;
+}
 
-else if(forecastMonth >= 6 && forecastMonth <= 7)
-    perchScore += 2;
-
-else if(forecastMonth >= 11 || forecastMonth <= 3)
-    perchScore -= 1;
+else if(
+    forecastMonth <= 3 ||
+    forecastMonth === 12
+)
+{
+    perchScore -= 2;
+}
 
 /* Bästa fisketider */
 
