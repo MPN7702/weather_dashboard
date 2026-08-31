@@ -1,5 +1,6 @@
 import requests
 import re
+import json
 
 url = "https://fangstrapport.se/sjö/övre-fryken/vattentemperatur"
 
@@ -13,6 +14,14 @@ match = re.search(r'(\d+,\d+)', html)
 
 if match:
     temperatur = float(match.group(1).replace(",", "."))
-    print("Övre Fryken:", temperatur)
+
+    data = {
+        "ovre_fryken": temperatur
+    }
+
+    with open("water_temp.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    print(f"Övre Fryken: {temperatur}°C")
 else:
     print("Ingen temperatur hittades")
