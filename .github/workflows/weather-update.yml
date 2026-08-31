@@ -102,11 +102,82 @@ jobs:
             "temp/$name/weekly.json"
 
             sleep 2
-
           done
 
       - name: Skapa weather.json
         run: |
           echo '{' > weather.json
 
-          echo '"updated":"'"$(date -u +%Y-%m-%dT
+          echo '"updated":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'",' >> weather.json
+
+          locations=(
+            "Torsby"
+            "Sysslebäck"
+            "Stöllet"
+            "Likenäs"
+            "Östmark"
+            "Höljes"
+            "Ambjörby"
+            "Värnäs"
+            "Vitsand"
+            "Branäs"
+          )
+
+          total=${#locations[@]}
+
+          for ((i=0; i<total; i++))
+          do
+            ort="${locations[$i]}"
+
+            echo "\"$ort\":{" >> weather.json
+
+            echo '"icon_global":' >> weather.json
+            cat "temp/$ort/icon_global.json" >> weather.json
+            echo ',' >> weather.json
+
+            echo '"gfs_global":' >> weather.json
+            cat "temp/$ort/gfs_global.json" >> weather.json
+            echo ',' >> weather.json
+
+            echo '"gem_global":' >> weather.json
+            cat "temp/$ort/gem_global.json" >> weather.json
+            echo ',' >> weather.json
+
+            echo '"icon_eu":' >> weather.json
+            cat "temp/$ort/icon_eu.json" >> weather.json
+            echo ',' >> weather.json
+
+            echo '"dmi_seamless":' >> weather.json
+            cat "temp/$ort/dmi_seamless.json" >> weather.json
+            echo ',' >> weather.json
+
+            echo '"best_match":' >> weather.json
+            cat "temp/$ort/best_match.json" >> weather.json
+            echo ',' >> weather.json
+
+            echo '"weekly":' >> weather.json
+            cat "temp/$ort/weekly.json" >> weather.json
+
+            if [ $i -lt $((total - 1)) ]; then
+              echo '},' >> weather.json
+            else
+              echo '}' >> weather.json
+            fi
+          done
+
+          echo '}' >> weather.json
+
+      - name: Kontrollera JSON
+        run: |
+          python3 -m json.tool weather.json > /dev/null
+
+      - name: Commit weather.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add weather.json
+
+          git commit -m "Update weather cache" || true
+
+          git push
