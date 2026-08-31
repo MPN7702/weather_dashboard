@@ -1,19 +1,21 @@
 import requests
+import re
 
 url = "https://sv.seatemperature.net/sjoar/water-temp-in-mellanfryken"
 
-response = requests.get(
+html = requests.get(
     url,
-    headers={
-        "User-Agent": "Mozilla/5.0"
-    },
-    timeout=20,
-    allow_redirects=True
+    headers={"User-Agent": "Mozilla/5.0"},
+    timeout=10
+).text
+
+match = re.search(
+    r'Vattentemperatur i sjön Mellan-fryken är i dag ([0-9.]+)°C',
+    html
 )
 
-print("STATUS:", response.status_code)
-print("URL:", response.url)
-print("HTML LÄNGD:", len(response.text))
-
-print("\nFÖRSTA 1000 TECKNEN:\n")
-print(response.text[:1000])
+if match:
+    temp = float(match.group(1))
+    print("Temperatur:", temp)
+else:
+    print("Kunde inte hitta temperatur")
