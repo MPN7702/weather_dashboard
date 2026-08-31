@@ -1081,7 +1081,8 @@ else if(wt > 22 && wt <= 25)
 
 else if(wt < 10)
     perchScore -= 3;
-    /* Årstid Abborre */
+
+/* Årstid Abborre */
 
 if(forecastMonth >= 8 && forecastMonth <= 10)
     perchScore += 3;
@@ -1091,6 +1092,10 @@ else if(forecastMonth >= 6 && forecastMonth <= 7)
 
 else if(forecastMonth >= 11 || forecastMonth <= 3)
     perchScore -= 1;
+
+/* Bästa fisketider */
+
+perchScore += 2;
 
 /* Bästa fisketider */
 
