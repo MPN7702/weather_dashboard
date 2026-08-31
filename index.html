@@ -815,22 +815,74 @@ const totalVotes =
     Object.values(weatherVotes)
         .reduce((a,b) => a + b, 0);
 
+const weatherDescriptions = [];
+
+let lastText = "";
+let startHour = null;
+
+const dominantCode =
+    sortedWeatherCodes[0] ?? 0;
+
+for (let h = 0; h < hourlyTimes.length; h++) {
+
+    const hourlyTime = hourlyTimes[h];
+
+    if (!hourlyTime.startsWith(currentDay))
+        continue;
+
+    let votes = {};
+
+    models.forEach(model => {
+
+        const code =
+            model.data?.hourly?.weathercode?.[h];
+
+        if (code !== undefined) {
+
+            votes[code] =
+                (votes[code] ?? 0) + 1;
+
+        }
+
+    });
+
+    const winningCode =
+        Object.entries(votes)
+            .sort((a,b) => b[1] - a[1])[0]?.[0];
+
+    const weatherLabel =
+        weatherMap[winningCode] ?? "Okänt väder";
+
+    const hour =
+        Number(hourlyTime.substring(11,13));
+
+    if (weatherLabel !== lastText) {
+
+        if (lastText !== "") {
+
+            weatherDescriptions.push(
+                `${String(startHour).padStart(2,"0")}-${String(hour - 1).padStart(2,"0")} ${lastText}`
+            );
+
+        }
+
+        startHour = hour;
+        lastText = weatherLabel;
+
+    }
+
+}
+
+if (lastText !== "") {
+
+    weatherDescriptions.push(
+        `${String(startHour).padStart(2,"0")}-23 ${lastText}`
+    );
+
+}
+
 const weatherText =
-    sortedWeatherCodes
-        .map(code => {
-
-            const percent =
-                Math.round(
-                    (weatherVotes[code] / totalVotes) * 100
-                );
-
-            return `${
-                weatherMap[code] ?? "Okänt väder"
-            } (${percent}%)`;
-
-        })
-        .join(", ");
-``
+    weatherDescriptions.join("<br>");
 
 let thunderText = "Nej";
 if(
