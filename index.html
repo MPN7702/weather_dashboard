@@ -1373,11 +1373,20 @@ if(zanderScore > bestScore){
     bestScore = zanderScore;
 
 }
+            const waterTemp = window.waterTemp ?? "--";
+
+const waterTempText = `
+🌊 Vattentemperatur:
+<strong>${waterTemp} °C</strong>
+<br><br>
+`;
+
 let fishingText = "";
   
 if(bestScore < 10 && fishingAllowed){
 
     fishingText = `
+${waterTempText}
         🎣 Fiske: ⚠️ Ingen tydlig rekommendation
         <br>
 
@@ -1405,6 +1414,7 @@ if(bestScore < 10 && fishingAllowed){
 else if(!fishingAllowed){
 
     fishingText = `
+    ${waterTempText}
         🎣 Fiske: ❌ Olämpligt
         <br>
         ⚠️ ${fishingReason}
@@ -1414,6 +1424,7 @@ else if(!fishingAllowed){
 else{
 
     fishingText = `
+    ${waterTempText}
         🎣 Fiske: 🏆 ${bestFish}
         <br>
 
