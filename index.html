@@ -1099,7 +1099,22 @@ else if(wt > 24 && wt <= 27)
 
 else if(wt < 12)
     zanderScore -= 4;
+/* Årstid Gös */
 
+if(
+    forecastMonth >= 5 &&
+    forecastMonth <= 10
+)
+{
+    zanderScore += 3;
+}
+else if(
+    forecastMonth <= 3 ||
+    forecastMonth === 12
+)
+{
+    zanderScore -= 2;
+}
 /* Lufttryck */
 
 if(Number(pressure) >= 995 && Number(pressure) <= 1010)
