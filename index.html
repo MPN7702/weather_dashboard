@@ -841,7 +841,7 @@ for (let h = 0; h < hourlyTimes.length; h++) {
 
 const commonCodes =
     Object.entries(votes)
-        .filter(([code,count]) => count >= 2)
+        .filter(([code,count]) => count >= 4)
         .map(([code]) =>
             weatherMap[Number(code)] ?? "Okänt väder"
         );
