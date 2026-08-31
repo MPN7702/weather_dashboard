@@ -441,12 +441,13 @@ const rainRisk =
 
 if(rainRisk >= 80)
     rainRiskClass = "rain-mid";
-const hourlyTimes =
-    models[0].data.hourly.time;
 let rainHours = [];
 
 if (!models[0]?.data?.hourly)
     continue;
+
+const hourlyTimes =
+    models[0].data.hourly.time;
 
 let rainTotals = [];
 
@@ -819,8 +820,6 @@ const weatherText =
     .join(", ");
 
 let thunderText = "Nej";
-
-if(
 if(
     sortedWeatherCodes.includes(95) ||
     sortedWeatherCodes.includes(96) ||
