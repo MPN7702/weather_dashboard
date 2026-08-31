@@ -175,9 +175,9 @@ jobs:
         run: |
           pip install requests
 
-      - name: Kör nano test_vatten.py
+      - name: Kör test_vatten.py
         run: |
-          python3 nano test_vatten.py
+          python3 test_vatten.py
 
       - name: Commit weather.json
         run: |
