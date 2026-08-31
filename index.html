@@ -116,10 +116,6 @@ h1{
     color:#ffffff;
 }
 
-.rain-green{
-    color:#22c55e;
-}
-
 .rain-mid{
     color:#ff9800;
 }
@@ -363,13 +359,7 @@ const rainAmount =
     .toFixed(1); 
 let rainAmountClass = "rain-low";
 
-if(Number(rainAmount) > 0 &&
-   Number(rainAmount) < 2)
-{
-    rainAmountClass = "rain-green";
-}
-
-if(Number(rainAmount) >= 2 &&
+if(Number(rainAmount) >= 0.1 &&
    Number(rainAmount) < 10)
 {
     rainAmountClass = "rain-mid";
@@ -1579,13 +1569,7 @@ const avgRainAmount =
     (rainAmountSum / weightSum).toFixed(1);
 let avgRainAmountClass = "rain-low";
 
-if(Number(avgRainAmount) > 0 &&
-   Number(avgRainAmount) < 2)
-{
-    avgRainAmountClass = "rain-green";
-}
-
-if(Number(avgRainAmount) >= 2 &&
+if(Number(avgRainAmount) >= 0.1 &&
    Number(avgRainAmount) < 10)
 {
     avgRainAmountClass = "rain-mid";
