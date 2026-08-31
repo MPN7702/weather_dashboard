@@ -2039,44 +2039,60 @@ await updateWeeklyForecast();
 
 async function startDashboard(){
 
+    try {
+
+        const response =
+            await fetch("water_temp.json");
+
+        const data =
+            await response.json();
+
+        window.waterTemp =
+            data.ovre_fryken;
+
+    } catch (error) {
+
+        console.error("Kunde inte läsa water_temp.json");
+
+        window.waterTemp = "--";
+
+    }
+
     await loadAllData();
 
+    setInterval(async()=>{
 
-setInterval(async()=>{
+        forecastIndex++;
 
-    forecastIndex++;
+        if (forecastIndex >= startIndex + 24)
+            forecastIndex = startIndex;
 
-if (forecastIndex >= startIndex + 24)
-forecastIndex = startIndex;
+        showHour(forecastIndex);
 
-showHour(forecastIndex);
+        countdown = 5;
 
-countdown = 5;
+    },5000);
 
-},5000);
+    setInterval(()=>{
 
-setInterval(()=>{
+        countdown--;
 
-countdown--;
+        if (countdown < 0)
+            countdown = 5;
 
-if (countdown < 0)
-    countdown = 5;
+        const timerText =
+            document.getElementById("box7-timer");
 
-const timerText =
-    document.getElementById("box7-timer");
+        if(timerText){
+            timerText.textContent =
+                `Nästa timme om ${countdown} sek`;
+        }
 
-if(timerText){
-    timerText.textContent =
-        `Nästa timme om ${countdown} sek`;
-}
+        if(countdown === 5){
+            updateAIBox(forecastIndex);
+        }
 
-/* extra uppdatering när ny prognostimme visas */
-
-if(countdown === 5){
-    updateAIBox(forecastIndex);
-}
-
-}, 1000);
+    },1000);
 
 }
 
