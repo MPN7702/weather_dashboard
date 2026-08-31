@@ -590,7 +590,6 @@ let windSpeeds = [];
 let windGusts = [];
 let windX = 0;
 let windY = 0;
-let windWeight = 0;
 
 models.forEach(model => {
 
@@ -634,7 +633,6 @@ models.forEach(model => {
 
                 windX += Math.cos(rad) * wind;
                 windY += Math.sin(rad) * wind;
-                windWeight += wind;
             }
         }
     }
@@ -840,11 +838,13 @@ for (let h = 0; h < hourlyTimes.length; h++) {
     });
 
 const commonCodes =
-    Object.entries(votes)
-        .filter(([code,count]) => count >= 3)
-        .map(([code]) =>
-            weatherMap[Number(code)] ?? "Okänt väder"
-        );
+    [...new Set(
+        Object.entries(votes)
+            .filter(([code,count]) => count >= 3)
+            .map(([code]) =>
+                weatherMap[Number(code)] ?? "Okänt väder"
+            )
+    )];
 
 const weatherLabel =
     commonCodes.length
