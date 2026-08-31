@@ -359,25 +359,6 @@ const rainRisk =
 if(rainRisk >= 80)
     rainRiskClass = "rain-mid";
 
-let rainAmountClass = "rain-low";
-
-if(Number(rainAmount) > 0 &&
-   Number(rainAmount) < 2)
-{
-    rainAmountClass = "rain-green";
-}
-
-if(Number(rainAmount) >= 2 &&
-   Number(rainAmount) < 10)
-{
-    rainAmountClass = "rain-mid";
-}
-
-if(Number(rainAmount) >= 10)
-{
-    rainAmountClass = "rain-high";
-}
-
 let rainHours = [];
 
 const currentDay =
@@ -401,7 +382,24 @@ for (let h = 0; h < hourlyTimes.length; h++) {
 
 const rainAmount =
     hourlyRainSum.toFixed(1);
+let rainAmountClass = "rain-low";
 
+if(Number(rainAmount) > 0 &&
+   Number(rainAmount) < 2)
+{
+    rainAmountClass = "rain-green";
+}
+
+if(Number(rainAmount) >= 2 &&
+   Number(rainAmount) < 10)
+{
+    rainAmountClass = "rain-mid";
+}
+
+if(Number(rainAmount) >= 10)
+{
+    rainAmountClass = "rain-high";
+}
 console.log(
     currentDay,
     "daily:",
