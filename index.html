@@ -887,14 +887,6 @@ if (lastText !== "") {
 const weatherText =
     weatherDescriptions.join("<br>");
 
-let thunderText = "Nej";
-if(
-    sortedWeatherCodes.includes(95) ||
-    sortedWeatherCodes.includes(96) ||
-    sortedWeatherCodes.includes(99)
-){
-    thunderText = "Ja";
-}
 let fishingAllowed = true;
 let fishingReason = "";
 
