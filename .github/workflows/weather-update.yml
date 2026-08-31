@@ -190,13 +190,3 @@ jobs:
 
           git push
 
-      - name: Commit weather.json
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-
-          git add weather.json
-
-          git commit -m "Update weather cache" || true
-
-          git push
