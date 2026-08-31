@@ -609,7 +609,13 @@ const windSpeed =
         / windSpeeds.length
     ) * WIND_FACTOR
 ).toFixed(1);
+let windClass = "";
 
+if(Number(windSpeed) >= 10)
+    windClass = "wind-high";
+
+else if(Number(windSpeed) >= 5)
+    windClass = "wind-mid";
 const windGust =
 (
     (
