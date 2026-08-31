@@ -848,16 +848,11 @@ const commonCodes =
 
 const weatherLabel =
     commonCodes.length
-        ? [...new Set(commonCodes)].join(" + ")
-        : (
-            weatherMap[
-                Object.entries(votes)
-                    .sort((a,b) => b[1] - a[1])[0]?.[0]
-            ] ?? "Okänt väder"
-        );
+        ? commonCodes.join(" + ")
+        : "Ingen tydlig enighet";
 
-    const hour =
-        Number(hourlyTime.substring(11,13));
+const hour =
+    Number(hourlyTime.substring(11,13));
 
     if (weatherLabel !== lastText) {
 
