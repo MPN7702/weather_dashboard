@@ -397,9 +397,45 @@ if(Number(maxTemp) <= -20)
 
 if(Number(maxTemp) >= 30)
     tempClass = "temp-hot";
+let rainRisks = [];
+
+models.forEach(model => {
+
+    const hourly =
+        model.data?.hourly;
+
+    if (!hourly?.time ||
+        !hourly?.precipitation_probability)
+        return;
+
+    let dayMaxRainRisk = 0;
+
+    for (let h = 0; h < hourly.time.length; h++) {
+
+        if (hourly.time[h].startsWith(currentDay)) {
+
+            const risk =
+                hourly.precipitation_probability[h];
+
+            if (
+                typeof risk === "number" &&
+                risk > dayMaxRainRisk
+            ) {
+                dayMaxRainRisk = risk;
+            }
+        }
+    }
+
+    rainRisks.push(dayMaxRainRisk);
+
+});
+
 const rainRisk =
     Math.round(
-        daily.precipitation_probability_max[i]
+        rainRisks.reduce(
+            (a,b) => a + b,
+            0
+        ) / rainRisks.length
     );
             let rainRiskClass = "";
 
