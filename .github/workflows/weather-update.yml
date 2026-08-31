@@ -166,13 +166,15 @@ jobs:
           done
 
           echo '}' >> weather.json
-
+          
       - name: Kontrollera JSON
         run: |
           python3 -m json.tool weather.json > /dev/null
-- name: Visa filer
-run: |
-find . -name "*.py"
+
+      - name: Visa filer
+        run: |
+          find . -name "*.py"
+
       - name: Installera requests
         run: |
           pip install requests
@@ -191,4 +193,4 @@ find . -name "*.py"
           git commit -m "Update weather cache" || true
 
           git push
-
+      
