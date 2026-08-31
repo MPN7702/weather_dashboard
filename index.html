@@ -943,7 +943,31 @@ else if(Number(windSpeed) >= 1.5 && Number(windSpeed) <= 7)
 
 else if(Number(windSpeed) > 10)
     pikeScore -= 2;
+/* Årstid Gädda */
 
+if(
+    forecastMonth === 4 ||
+    forecastMonth === 5
+)
+{
+    pikeScore += 3;
+}
+
+else if(
+    forecastMonth >= 9 &&
+    forecastMonth <= 11
+)
+{
+    pikeScore += 4;
+}
+
+else if(
+    forecastMonth >= 12 ||
+    forecastMonth <= 2
+)
+{
+    pikeScore -= 2;
+}
 
 /* Vindriktning */
 
