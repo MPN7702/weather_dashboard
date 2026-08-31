@@ -932,17 +932,6 @@ else if(wt < 5)
 
 else if(wt > 21)
     pikeScore -= 5;
-
-/* Vind */
-
-if(Number(windSpeed) >= 2.5 && Number(windSpeed) <= 5.5)
-    pikeScore += 4;
-
-else if(Number(windSpeed) >= 1.5 && Number(windSpeed) <= 7)
-    pikeScore += 2;
-
-else if(Number(windSpeed) > 10)
-    pikeScore -= 2;
 /* Årstid Gädda */
 
 if(
@@ -967,7 +956,17 @@ else if(
 )
 {
     pikeScore -= 2;
-}
+
+/* Vind */
+
+if(Number(windSpeed) >= 2.5 && Number(windSpeed) <= 5.5)
+    pikeScore += 4;
+
+else if(Number(windSpeed) >= 1.5 && Number(windSpeed) <= 7)
+    pikeScore += 2;
+
+else if(Number(windSpeed) > 10)
+    pikeScore -= 2;
 
 /* Vindriktning */
 
