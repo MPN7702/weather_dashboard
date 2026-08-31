@@ -170,9 +170,25 @@ jobs:
       - name: Kontrollera JSON
         run: |
           python3 -m json.tool weather.json > /dev/null
-- name: Kör test_vatten.py
-  run: |
-    python3 test_vatten.py
+
+      - name: Installera requests
+        run: |
+          pip install requests
+
+      - name: Kör test_vatten.py
+        run: |
+          python3 test_vatten.py
+
+      - name: Commit weather.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add weather.json
+
+          git commit -m "Update weather cache" || true
+
+          git push
 
       - name: Commit weather.json
         run: |
