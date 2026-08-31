@@ -116,6 +116,10 @@ h1{
     color:#ffffff;
 }
 
+.rain-green{
+    color:#22c55e;
+}
+
 .rain-mid{
     color:#ff9800;
 }
@@ -359,7 +363,13 @@ const rainAmount =
     .toFixed(1); 
 let rainAmountClass = "rain-low";
 
-if(Number(rainAmount) >= 0.1 &&
+if(Number(rainAmount) > 0 &&
+   Number(rainAmount) < 2)
+{
+    rainAmountClass = "rain-green";
+}
+
+if(Number(rainAmount) >= 2 &&
    Number(rainAmount) < 10)
 {
     rainAmountClass = "rain-mid";
