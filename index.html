@@ -760,19 +760,13 @@ models.forEach(model => {
 
 });
 
-let weatherCode = 0;
-let highestVotes = 0;
-
-Object.entries(weatherVotes).forEach(([code,votes]) => {
-
-    if (votes > highestVotes) {
-
-        highestVotes = votes;
-        weatherCode = Number(code);
-
-    }
-
-});
+const sortedWeatherCodes =
+    Object.entries(weatherVotes)
+        .sort((a,b) => b[1] - a[1])
+        .slice(0,3)
+        .map(x => Number(x[0]));
+            const weatherCode =
+    sortedWeatherCodes[0] ?? 0;
 let weatherText = "Okänt väder";
 
 if(weatherCode === 0)
