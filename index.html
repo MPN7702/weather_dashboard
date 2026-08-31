@@ -358,9 +358,7 @@ const rainRisk =
 
 if(rainRisk >= 80)
     rainRiskClass = "rain-mid";
-const rainAmount =
-    (daily?.precipitation_sum?.[i] ?? 0)
-    .toFixed(1);
+
 let rainAmountClass = "rain-low";
 
 if(Number(rainAmount) > 0 &&
@@ -400,6 +398,9 @@ for (let h = 0; h < hourlyTimes.length; h++) {
             models[0].data.hourly.precipitation?.[h] ?? 0;
     }
 }
+
+const rainAmount =
+    hourlyRainSum.toFixed(1);
 
 console.log(
     currentDay,
