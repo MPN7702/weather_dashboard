@@ -452,24 +452,6 @@ if (!models[0]?.data?.hourly)
 const hourlyTimes =
     models[0].data.hourly.time;
 
-let perchPrimeHours = 0;
-
-for (let h = 0; h < hourlyTimes.length; h++) {
-
-    if (!hourlyTimes[h].startsWith(currentDay))
-        continue;
-
-    const hour =
-        Number(hourlyTimes[h].substring(11,13));
-
-    if (
-        (hour >= 4 && hour <= 8) ||
-        (hour >= 18 && hour <= 22)
-    ) {
-        perchPrimeHours++;
-    }
-}
-
 let rainTotals = [];
 
 models.forEach(model => {
@@ -1098,9 +1080,6 @@ else if(forecastMonth >= 11 || forecastMonth <= 3)
 perchScore += 2;
 
 /* Bästa fisketider */
-
-if(perchPrimeHours >= 5)
-    perchScore += 2;
 
 /* Lufttryck */
 
