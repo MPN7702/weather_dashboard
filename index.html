@@ -961,10 +961,10 @@ else if(
 /* Lufttryck */
 
 if(Number(pressure) >= 995 && Number(pressure) <= 1015)
-    pikeScore += 2;
+    pikeScore += 1;
 
 if(Number(pressure) < 985)
-    pikeScore -= 2;
+    pikeScore -= 1;
 
 /* Mulet */
 
@@ -1020,7 +1020,7 @@ if(Number(pressure) >= 1005 && Number(pressure) <= 1020)
     perchScore += 3;
 
 else if(Number(pressure) < 990)
-    perchScore -= 2;
+    perchScore -= 3;
 
 /* Klart väder */
 
@@ -1080,7 +1080,7 @@ if(Number(pressure) >= 995 && Number(pressure) <= 1010)
     zanderScore += 3;
 
 else if(Number(pressure) < 990)
-    zanderScore -= 2;
+    zanderScore -= 3;
 
 /* Klart väder */
 
