@@ -8,6 +8,7 @@ html = requests.get(
     timeout=10
 ).text
 
-for line in html.splitlines():
-    if "temp-value" in line:
-        print(line)
+print("temp-value =", html.find("temp-value"))
+print("Aktuell vattentemperatur =", html.find("Aktuell vattentemperatur"))
+print("Vattentemperatur i sjön =", html.find("Vattentemperatur i sjön"))
+print("18.5 =", html.find("18.5"))
