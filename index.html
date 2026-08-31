@@ -811,13 +811,26 @@ const weatherMap = {
 
 };
 
+const totalVotes =
+    Object.values(weatherVotes)
+        .reduce((a,b) => a + b, 0);
+
 const weatherText =
-    [...new Set(
-        sortedWeatherCodes.map(
-            code => weatherMap[code] ?? "Okänt väder"
-        )
-    )]
-    .join(", ");
+    sortedWeatherCodes
+        .map(code => {
+
+            const percent =
+                Math.round(
+                    (weatherVotes[code] / totalVotes) * 100
+                );
+
+            return `${
+                weatherMap[code] ?? "Okänt väder"
+            } (${percent}%)`;
+
+        })
+        .join(", ");
+``
 
 let thunderText = "Nej";
 if(
