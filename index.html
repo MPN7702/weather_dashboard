@@ -1936,25 +1936,6 @@ if(Number(avgRainAmount) >= 10)
 {
     avgRainAmountClass = "rain-high";
 }
-let thunderFound = false;
-
-models.forEach(model => {
-
-const code =
-    model.data?.hourly?.weathercode?.[hour];
-
-    if(
-        code === 95 ||
-        code === 96 ||
-        code === 99
-    ){
-        thunderFound = true;
-    }
-
-});
-
-const avgThunderText =
-    thunderFound ? "Ja" : "Nej";
 
 document.getElementById("box7").innerHTML = `
 
@@ -2018,11 +1999,6 @@ Regnmängd:
 <span class="${avgRainAmountClass}">
 <b>${avgRainAmount} mm</b>
 </span>
-
-<br><br>
-
-⚡ Åska:
-<b>${avgThunderText}</b>
 
 `;
 }
