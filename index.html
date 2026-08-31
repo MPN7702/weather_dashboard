@@ -631,9 +631,57 @@ const windDirection =
     + 360
 ) % 360;
 
+let pressures = [];
+
+models.forEach(model => {
+
+    const hourly =
+        model.data?.hourly;
+
+    if (!hourly?.time || !hourly?.surface_pressure)
+        return;
+
+    const dayPressures = [];
+
+    for (let h = 0; h < hourly.time.length; h++) {
+
+        if (hourly.time[h].startsWith(currentDay)) {
+
+            const pressure =
+                hourly.surface_pressure[h];
+
+            if (typeof pressure === "number") {
+
+                dayPressures.push(
+                    pressure
+                );
+
+            }
+        }
+    }
+
+    if (dayPressures.length) {
+
+        pressures.push(
+
+            dayPressures.reduce(
+                (a,b) => a + b,
+                0
+            ) / dayPressures.length
+
+        );
+
+    }
+
+});
+
 const pressure =
-    daily.surface_pressure_mean[i]
-    .toFixed(1);
+    (
+        pressures.reduce(
+            (a,b) => a + b,
+            0
+        ) / pressures.length
+    ).toFixed(1);
             const weatherCode =
     daily.weathercode?.[i] ?? 0;
 let weatherText = "Okänt väder";
