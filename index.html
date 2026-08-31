@@ -918,19 +918,19 @@ const wt = Number(window.waterTemp);
 /* Vattentemperatur Gädda */
 
 if(wt >= 14 && wt <= 18)
-    pikeScore += 5;
+    pikeScore += 7;
 
 else if(wt >= 10 && wt < 14)
-    pikeScore += 3;
+    pikeScore += 4;
 
 else if(wt > 18 && wt <= 20)
     pikeScore += 2;
 
 else if(wt < 5)
-    pikeScore -= 2;
+    pikeScore -= 3;
 
 else if(wt > 21)
-    pikeScore -= 5;
+    pikeScore -= 6;
 /* Årstid Gädda */
 
 if(
@@ -938,7 +938,7 @@ if(
     forecastMonth === 5
 )
 {
-    pikeScore += 3;
+    pikeScore += 4;
 }
 
 else if(
@@ -946,7 +946,7 @@ else if(
     forecastMonth <= 11
 )
 {
-    pikeScore += 4;
+    pikeScore += 5;
 }
 
 else if(
@@ -954,7 +954,7 @@ else if(
     forecastMonth <= 2
 )
 {
-    pikeScore -= 2;
+    pikeScore -= 3;
 }
 
 
@@ -983,16 +983,16 @@ if(weatherCode === 2)
 /* Vattentemperatur Abborre */
 
 if(wt >= 15 && wt <= 22)
-    perchScore += 5;
+    perchScore += 7;
 
 else if(wt >= 12 && wt < 15)
-    perchScore += 3;
+    perchScore += 4;
 
 else if(wt > 22 && wt <= 25)
-    perchScore += 3;
+    perchScore += 4;
 
 else if(wt < 10)
-    perchScore -= 3;
+    perchScore -= 4;
 
 /* Årstid Abborre */
 
@@ -1001,7 +1001,7 @@ if(
     forecastMonth <= 11
 )
 {
-    perchScore += 3;
+    perchScore += 4;
 }
 
 else if(
@@ -1009,7 +1009,7 @@ else if(
     forecastMonth === 12
 )
 {
-    perchScore -= 2;
+    perchScore -= 3;
 }
 
 /* Bästa fisketider */
@@ -1048,13 +1048,13 @@ if(weatherCode === 3)
 /* Vattentemperatur Gös */
 
 if(wt >= 18 && wt <= 24)
-    zanderScore += 6;
+    zanderScore += 7;
 
 else if(wt >= 15 && wt < 18)
-    zanderScore += 3;
+    zanderScore += 4;
 
 else if(wt > 24 && wt <= 27)
-    zanderScore += 3;
+    zanderScore += 4;
 
 else if(wt < 12)
     zanderScore -= 4;
@@ -1065,14 +1065,14 @@ if(
     forecastMonth <= 10
 )
 {
-    zanderScore += 3;
+    zanderScore += 4;
 }
 else if(
     forecastMonth <= 3 ||
     forecastMonth === 12
 )
 {
-    zanderScore -= 2;
+    zanderScore -= 3;
 }
 /* Lufttryck */
 
