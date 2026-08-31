@@ -811,17 +811,10 @@ const weatherMap = {
 
 };
 
-const totalVotes =
-    Object.values(weatherVotes)
-        .reduce((a,b) => a + b, 0);
-
 const weatherDescriptions = [];
 
 let lastText = "";
 let startHour = null;
-
-const dominantCode =
-    sortedWeatherCodes[0] ?? 0;
 
 for (let h = 0; h < hourlyTimes.length; h++) {
 
