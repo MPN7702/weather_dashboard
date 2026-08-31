@@ -909,11 +909,26 @@ let perchScore = 0;
 let zanderScore = 0;
 
 if(fishingAllowed){
-
+const wt = Number(window.waterTemp);
 /* =======================
    GÄDDA
 ======================= */
+/* Vattentemperatur Gädda */
 
+if(wt >= 14 && wt <= 18)
+    pikeScore += 5;
+
+else if(wt >= 10 && wt < 14)
+    pikeScore += 3;
+
+else if(wt > 18 && wt <= 20)
+    pikeScore += 2;
+
+else if(wt < 5)
+    pikeScore -= 2;
+
+else if(wt > 21)
+    pikeScore -= 5;
 /* Temperatur */
 
 if(Number(maxTemp) >= 10 && Number(maxTemp) <= 16)
@@ -1044,7 +1059,19 @@ if(weatherCode >= 95)
 /* =======================
    ABBORRE
 ======================= */
+/* Vattentemperatur Abborre */
 
+if(wt >= 15 && wt <= 22)
+    perchScore += 5;
+
+else if(wt >= 12 && wt < 15)
+    perchScore += 3;
+
+else if(wt > 22 && wt <= 25)
+    perchScore += 3;
+
+else if(wt < 10)
+    perchScore -= 3;
 /* Temperatur */
 
 if(Number(maxTemp) >= 16 && Number(maxTemp) <= 22)
@@ -1194,7 +1221,19 @@ if(weatherCode >= 95)
 /* =======================
    GÖS
 ======================= */
+/* Vattentemperatur Gös */
 
+if(wt >= 18 && wt <= 24)
+    zanderScore += 6;
+
+else if(wt >= 15 && wt < 18)
+    zanderScore += 3;
+
+else if(wt > 24 && wt <= 27)
+    zanderScore += 3;
+
+else if(wt < 12)
+    zanderScore -= 4;
 /* Temperatur */
 
 if(Number(maxTemp) >= 18 && Number(maxTemp) <= 24)
