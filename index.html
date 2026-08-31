@@ -968,15 +968,6 @@ else if(Number(windSpeed) >= 1.5 && Number(windSpeed) <= 7)
 else if(Number(windSpeed) > 10)
     pikeScore -= 2;
 
-/* Vindriktning */
-
-if(windDirection >= 180 && windDirection <= 270)
-    pikeScore += 3;
-
-else if(windDirection >= 135 && windDirection < 180)
-    pikeScore += 2;
-
-
 /* Lufttryck */
 
 if(Number(pressure) >= 995 && Number(pressure) <= 1015)
@@ -984,22 +975,6 @@ if(Number(pressure) >= 995 && Number(pressure) <= 1015)
 
 if(Number(pressure) < 985)
     pikeScore -= 2;
-
-
-/* Regnrisk */
-
-if(rainRisk >= 30 && rainRisk <= 80)
-    pikeScore += 2;
-
-
-/* Regnmängd */
-
-if(Number(rainAmount) >= 0.2 && Number(rainAmount) <= 4)
-    pikeScore += 3;
-
-else if(Number(rainAmount) > 10)
-    pikeScore -= 2;
-
 
 /* Mulet */
 
@@ -1019,57 +994,6 @@ if(weatherCode === 45 || weatherCode === 48)
     pikeScore += 3;
 
 
-/* Duggregn */
-
-if(
-    weatherCode === 51 ||
-    weatherCode === 53 ||
-    weatherCode === 55
-)
-    pikeScore += 3;
-
-
-/* Regn */
-
-if(
-    weatherCode === 61 ||
-    weatherCode === 63
-)
-    pikeScore += 3;
-
-
-/* Regnskurar */
-
-if(
-    weatherCode === 80 ||
-    weatherCode === 81
-)
-    pikeScore += 3;
-
-
-/* Kraftigt regn */
-
-if(
-    weatherCode === 65 ||
-    weatherCode === 82
-)
-    pikeScore -= 1;
-
-
-/* Snö */
-
-if(
-    weatherCode === 71 ||
-    weatherCode === 73 ||
-    weatherCode === 75
-)
-    pikeScore -= 1;
-
-
-/* Åska */
-
-if(weatherCode >= 95)
-    pikeScore -= 5;
 /* =======================
    ABBORRE
 ======================= */
