@@ -10,12 +10,11 @@ html = requests.get(
 ).text
 
 match = re.search(
-    r'Vattentemperatur i sjön Mellan-fryken är i dag ([0-9.]+)°C',
+    r'<div class="temp-value">([0-9.]+)<span>°C</span>',
     html
 )
 
 if match:
-    temp = float(match.group(1))
-    print("Temperatur:", temp)
+    print("Temperatur:", match.group(1))
 else:
     print("Kunde inte hitta temperatur")
