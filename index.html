@@ -336,13 +336,60 @@ const dayDate =
                 date.toLocaleDateString("sv-SE", {
                     weekday: "long"
                 });
+const currentDay =
+    data.daily.time[i];
+
+let maxTemps = [];
+let minTemps = [];
+
+models.forEach(model => {
+
+    const hourly =
+        model.data?.hourly;
+
+    if (!hourly?.time || !hourly?.temperature_2m)
+        return;
+
+    const dayTemps = [];
+
+    for (let h = 0; h < hourly.time.length; h++) {
+
+        if (hourly.time[h].startsWith(currentDay)) {
+
+            const temp =
+                hourly.temperature_2m[h];
+
+            if (typeof temp === "number") {
+                dayTemps.push(temp);
+            }
+        }
+    }
+
+    if (dayTemps.length) {
+
+        maxTemps.push(
+            Math.max(...dayTemps)
+        );
+
+        minTemps.push(
+            Math.min(...dayTemps)
+        );
+    }
+
+});
+
 const maxTemp =
-    data.daily.temperature_2m_max[i].toFixed(1);
+    (
+        maxTemps.reduce((a,b)=>a+b,0)
+        / maxTemps.length
+    ).toFixed(1);
 
 const minTemp =
-    Number(
-        daily.temperature_2m_min[i]
+    (
+        minTemps.reduce((a,b)=>a+b,0)
+        / minTemps.length
     ).toFixed(1);
+
 let tempClass = "";
 
 if(Number(maxTemp) <= -20)
@@ -360,9 +407,6 @@ if(rainRisk >= 80)
     rainRiskClass = "rain-mid";
 
 let rainHours = [];
-
-const currentDay =
-    data.daily.time[i];
 
 if (!models[0]?.data?.hourly)
     continue;
