@@ -339,6 +339,9 @@ const dayDate =
 const currentDay =
     data.daily.time[i];
 
+const forecastMonth =
+    new Date(currentDay).getMonth() + 1;
+
 let maxTemps = [];
 let minTemps = [];
 
