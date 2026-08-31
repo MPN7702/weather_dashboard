@@ -958,13 +958,13 @@ else if(
 }
 
 
-/* Lufttryck */
+/* Stabilt lufttryck */
 
-if(Number(pressure) >= 995 && Number(pressure) <= 1015)
-    pikeScore += 2;
+if(Number(pressure) >= 1000 && Number(pressure) <= 1020)
+    pikeScore += 1;
 
 if(Number(pressure) < 985)
-    pikeScore -= 2;
+    pikeScore -= 1;
 
 /* Mulet */
 
