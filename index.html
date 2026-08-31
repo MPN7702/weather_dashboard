@@ -357,7 +357,7 @@ if(rainRisk >= 80)
 const rainAmount =
     (daily?.precipitation_sum?.[i] ?? 0)
     .toFixed(1); 
-let rainAmountClass = "";
+let rainAmountClass = "rain-low";
 
 if(Number(rainAmount) >= 0.1 &&
    Number(rainAmount) < 10)
