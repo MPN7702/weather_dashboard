@@ -112,6 +112,10 @@ h1{
     color:#1565c0;
 }
 
+    .rain-green{
+color:#22c55e;
+
+}
 .rain-low{
     color:#ffffff;
 }
@@ -357,17 +361,23 @@ if(rainRisk >= 80)
 const rainAmount =
     (daily?.precipitation_sum?.[i] ?? 0)
     .toFixed(1); 
-let rainAmountClass = "rain-low";
+let avgRainAmountClass = "rain-low";
 
-if(Number(rainAmount) >= 0.1 &&
-   Number(rainAmount) < 10)
+if(Number(avgRainAmount) > 0 &&
+   Number(avgRainAmount) < 2)
 {
-    rainAmountClass = "rain-mid";
+    avgRainAmountClass = "rain-green";
 }
 
-if(Number(rainAmount) >= 10)
+if(Number(avgRainAmount) >= 2 &&
+   Number(avgRainAmount) < 10)
 {
-    rainAmountClass = "rain-high";
+    avgRainAmountClass = "rain-mid";
+}
+
+if(Number(avgRainAmount) >= 10)
+{
+    avgRainAmountClass = "rain-high";
 }
 let rainHours = [];
 
@@ -392,7 +402,7 @@ for (let h = 0; h < hourlyTimes.length; h++) {
         const rain =
             model.data?.hourly?.precipitation?.[h] ?? 0;
 
-if (rain >= 0.2)
+if (rain >= 0.05)
     supportWeight += weights[model.model] ?? 0;
 
     });
