@@ -1,19 +1,36 @@
-name: Test Vatten
+name: Water Temperature
 
 on:
+  schedule:
+    - cron: "0 5 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  test:
+  water:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Installera requests
+      - name: Install requests
         run: |
           pip install requests
 
-      - name: Kör test_vatten.py
+      - name: Run test_vatten.py
         run: |
           python3 test_vatten.py
+
+      - name: Commit water_temp.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add water_temp.json
+
+          git commit -m "Update water temperature" || true
+
+          git push
