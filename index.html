@@ -849,12 +849,12 @@ const commonCodes =
 const weatherLabel =
     commonCodes.length
         ? commonCodes.join(" + ")
-        : "Ingen tydlig enighet";
+        : "";
 
 const hour =
     Number(hourlyTime.substring(11,13));
 
-    if (weatherLabel !== lastText) {
+    if (weatherLabel && weatherLabel !== lastText) {
 
         if (lastText !== "") {
 
