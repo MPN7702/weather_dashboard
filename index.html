@@ -113,7 +113,7 @@ h1{
 }
 
 .rain-low{
-    color:#00c853;
+    color:#ffffff;
 }
 
 .rain-mid{
@@ -122,6 +122,7 @@ h1{
 
 .rain-high{
     color:#d50000;
+}
 }
     .wind-mid{
     color:#ff9800;
@@ -357,16 +358,19 @@ if(rainRisk >= 80)
 const rainAmount =
     (daily?.precipitation_sum?.[i] ?? 0)
     .toFixed(1); 
-            let rainAmountClass = "";
+let rainAmountClass = "";
 
-if(Number(rainAmount) > 0)
-    rainAmountClass = "rain-low";
-
-if(Number(rainAmount) >= 2)
+if(Number(rainAmount) >= 0.1 &&
+   Number(rainAmount) < 10)
+{
     rainAmountClass = "rain-mid";
+}
 
-if(Number(rainAmount) > 10)
+if(Number(rainAmount) >= 10)
+{
     rainAmountClass = "rain-high";
+}
+}
 let rainHours = [];
 
 const currentDay =
