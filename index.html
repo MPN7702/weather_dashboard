@@ -1475,7 +1475,8 @@ const capitalizedDate =
     displayDate.slice(1);
 let tempSum = 0;
 let windSum = 0;
-let windDirectionSum = 0;
+let windX = 0;
+let windY = 0;
 let pressureSum = 0;
 let rainRiskSum = 0;
 let rainAmountSum = 0;
@@ -1496,8 +1497,17 @@ tempSum +=
 windSum +=
     ((h.wind_speed_10m?.[hour] ?? 0) * WIND_FACTOR) * weight;
 
-windDirectionSum +=
-    (h.wind_direction_10m?.[hour] ?? 0) * weight;
+const dir =
+    h.wind_direction_10m?.[hour] ?? 0;
+
+const rad =
+    dir * Math.PI / 180;
+
+windX +=
+    Math.cos(rad) * weight;
+
+windY +=
+    Math.sin(rad) * weight;
 
 pressureSum +=
     (h.surface_pressure?.[hour] ?? 0) * weight;
@@ -1535,7 +1545,11 @@ else if(Number(avgWind) >= 5)
     avgWindClass = "wind-mid";
 
 const avgWindDirection =
-    windDirectionSum / weightSum;
+(
+    Math.atan2(windY, windX)
+    * 180 / Math.PI
+    + 360
+) % 360;
 
 if (isNaN(avgWindDirection))
     return;
