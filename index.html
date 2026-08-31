@@ -957,16 +957,6 @@ else if(
     pikeScore -= 2;
 }
 
-/* Vind */
-
-if(Number(windSpeed) >= 2.5 && Number(windSpeed) <= 5.5)
-    pikeScore += 4;
-
-else if(Number(windSpeed) >= 1.5 && Number(windSpeed) <= 7)
-    pikeScore += 2;
-
-else if(Number(windSpeed) > 10)
-    pikeScore -= 2;
 
 /* Lufttryck */
 
@@ -986,13 +976,6 @@ if(weatherCode === 3)
 
 if(weatherCode === 2)
     pikeScore += 2;
-
-
-/* Dimma */
-
-if(weatherCode === 45 || weatherCode === 48)
-    pikeScore += 3;
-
 
 /* =======================
    ABBORRE
@@ -1041,18 +1024,6 @@ if(Number(pressure) >= 1005 && Number(pressure) <= 1020)
 else if(Number(pressure) < 990)
     perchScore -= 2;
 
-
-/* Vind */
-
-if(Number(windSpeed) >= 1 && Number(windSpeed) <= 4)
-    perchScore += 4;
-
-else if(Number(windSpeed) <= 6)
-    perchScore += 2;
-
-else if(Number(windSpeed) > 8)
-    perchScore -= 2;
-
 /* Klart väder */
 
 if(weatherCode === 0)
@@ -1072,16 +1043,6 @@ if(weatherCode === 2)
 
 if(weatherCode === 3)
     perchScore += 1;
-
-
-/* Dimma */
-
-if(weatherCode === 45 ||
-   weatherCode === 48)
-{
-    perchScore -= 1;
-}
-
 
 /* =======================
    GÖS
@@ -1123,18 +1084,6 @@ if(Number(pressure) >= 995 && Number(pressure) <= 1010)
 else if(Number(pressure) < 990)
     zanderScore -= 2;
 
-
-/* Vind */
-
-if(Number(windSpeed) >= 2 && Number(windSpeed) <= 5)
-   zanderScore += 4;
-
-else if(Number(windSpeed) <= 7)
-    zanderScore += 2;
-
-else if(Number(windSpeed) > 9)
-   zanderScore -= 2;
-
 /* Klart väder */
 
 if(weatherCode === 0)
@@ -1154,17 +1103,6 @@ if(weatherCode === 2)
 
 if(weatherCode === 3)
     zanderScore += 4;
-
-
-/* Dimma */
-
-if(
-    weatherCode === 45 ||
-    weatherCode === 48
-)
-{
-    zanderScore += 3;
-}
 
 /* Fredningstid gös i Fryken 15 maj till 15 juni */
 
