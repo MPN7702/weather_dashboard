@@ -769,40 +769,53 @@ const sortedWeatherCodes =
 const weatherCode =
     sortedWeatherCodes[0] ?? 0;
 
-let weatherText = "Okänt väder";
+const weatherMap = {
 
-if(weatherCode === 0)
-    weatherText = "☀️ Klart";
+    0: "☀️ Klart",
+    1: "🌤️ Mest klart",
+    2: "⛅ Delvis molnigt",
+    3: "☁️ Mulet",
 
-else if(weatherCode === 1)
-    weatherText = "🌤️ Mest klart";
+    45: "🌫️ Dimma",
+    48: "🌫️ Dimma",
 
-else if(weatherCode === 2)
-    weatherText = "⛅ Delvis molnigt";
+    51: "🌦️ Duggregn",
+    53: "🌦️ Duggregn",
+    55: "🌦️ Duggregn",
+    56: "🌦️ Duggregn",
+    57: "🌦️ Duggregn",
 
-else if(weatherCode === 3)
-    weatherText = "☁️ Mulet";
+    61: "🌧️ Regn",
+    63: "🌧️ Regn",
+    65: "🌧️ Regn",
+    66: "🌧️ Regn",
+    67: "🌧️ Regn",
 
-else if(weatherCode === 45 || weatherCode === 48)
-    weatherText = "🌫️ Dimma";
+    71: "❄️ Snö",
+    73: "❄️ Snö",
+    75: "❄️ Snö",
+    77: "❄️ Snö",
 
-else if(weatherCode >= 51 && weatherCode <= 57)
-    weatherText = "🌦️ Duggregn";
+    80: "🌦️ Regnskurar",
+    81: "🌦️ Regnskurar",
+    82: "🌦️ Regnskurar",
 
-else if(weatherCode >= 61 && weatherCode <= 67)
-    weatherText = "🌧️ Regn";
+    85: "🌨️ Snöbyar",
+    86: "🌨️ Snöbyar",
 
-else if(weatherCode >= 71 && weatherCode <= 77)
-    weatherText = "❄️ Snö";
+    95: "⚡ Åska",
+    96: "⚡ Åska",
+    99: "⚡ Åska"
 
-else if(weatherCode >= 80 && weatherCode <= 82)
-    weatherText = "🌦️ Regnskurar";
+};
 
-else if(weatherCode >= 85 && weatherCode <= 86)
-    weatherText = "🌨️ Snöbyar";
-
-else if(weatherCode >= 95 && weatherCode <= 99)
-    weatherText = "⚡ Åska";
+const weatherText =
+    [...new Set(
+        sortedWeatherCodes.map(
+            code => weatherMap[code] ?? "Okänt väder"
+        )
+    )]
+    .join(", ");
 
 let thunderText = "Nej";
 
