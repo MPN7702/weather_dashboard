@@ -360,25 +360,25 @@ if(rainRisk >= 80)
     rainRiskClass = "rain-mid";
 const rainAmount =
     (daily?.precipitation_sum?.[i] ?? 0)
-    .toFixed(1); 
-let avgRainAmountClass = "rain-low";
+    .toFixed(1);
 
-if(Number(avgRainAmount) > 0 &&
-   Number(avgRainAmount) < 2)
+let rainAmountClass = "rain-low";
+
+if(Number(rainAmount) > 0 &&
+   Number(rainAmount) < 2)
 {
-    avgRainAmountClass = "rain-green";
+    rainAmountClass = "rain-green";
 }
 
-if(Number(avgRainAmount) >= 2 &&
-   Number(avgRainAmount) < 10)
+if(Number(rainAmount) >= 2 &&
+   Number(rainAmount) < 10)
 {
-    avgRainAmountClass = "rain-mid";
+    rainAmountClass = "rain-mid";
 }
 
-if(Number(avgRainAmount) >= 10)
+if(Number(rainAmount) >= 10)
 {
-    avgRainAmountClass = "rain-high";
-}
+    rainAmountClass
 let rainHours = [];
 
 const currentDay =
@@ -1579,7 +1579,13 @@ const avgRainAmount =
     (rainAmountSum / weightSum).toFixed(1);
 let avgRainAmountClass = "rain-low";
 
-if(Number(avgRainAmount) >= 0.1 &&
+if(Number(avgRainAmount) > 0 &&
+   Number(avgRainAmount) < 2)
+{
+    avgRainAmountClass = "rain-green";
+}
+
+if(Number(avgRainAmount) >= 2 &&
    Number(avgRainAmount) < 10)
 {
     avgRainAmountClass = "rain-mid";
