@@ -846,26 +846,22 @@ for (let h = 0; h < hourlyTimes.length; h++) {
 
     });
 
-const winningCode =
+const commonCodes =
     Object.entries(votes)
-        .sort((a,b) => b[1] - a[1])[0]?.[0];
+        .filter(([code,count]) => count >= 2)
+        .map(([code]) =>
+            weatherMap[Number(code)] ?? "Okänt väder"
+        );
 
-const codes =
-    Object.keys(votes).map(Number);
-
-let weatherLabel;
-
-if (
-    codes.includes(95) ||
-    codes.includes(96) ||
-    codes.includes(99)
-){
-    weatherLabel = "⚡ Åska";
-}
-else{
-    weatherLabel =
-        weatherMap[winningCode] ?? "Okänt väder";
-}
+const weatherLabel =
+    commonCodes.length
+        ? [...new Set(commonCodes)].join(" + ")
+        : (
+            weatherMap[
+                Object.entries(votes)
+                    .sort((a,b) => b[1] - a[1])[0]?.[0]
+            ] ?? "Okänt väder"
+        );
 
     const hour =
         Number(hourlyTime.substring(11,13));
