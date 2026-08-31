@@ -1735,8 +1735,8 @@ let thunderFound = false;
 
 models.forEach(model => {
 
-    const code =
-        model.data?.hourly?.weather_code?.[hour];
+const code =
+    model.data?.hourly?.weathercode?.[hour];
 
     if(
         code === 95 ||
