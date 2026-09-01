@@ -1015,9 +1015,10 @@ const weatherText =
     weatherDescriptions.join("<br>");
 
 const weatherTextColored =
-    weatherText.includes("Åska")
-        ? `<span style="color:#ef4444;">${weatherText}</span>`
-        : weatherText;
+    weatherText.replaceAll(
+        "⚡ Åska",
+        '<span style="color:#ef4444;">⚡ Åska</span>'
+    );
 
 let fishingAllowed = true;
 let fishingReason = "";
