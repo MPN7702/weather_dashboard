@@ -1283,13 +1283,17 @@ if(zanderScore > bestScore){
             const waterTemp = window.waterTemp ?? "--";
 
 const waterTempText = `
-🌤️ Stabilt väder:
-<strong class="${stableWeather ? "stable-yes" : ""}">
-${stableWeather ? "Ja" : "Nej"}
-</strong>
+<div>
+    🌤️ Stabilt väder:
+    <strong style="color:${stableWeather ? '#22c55e' : 'inherit'};">
+        ${stableWeather ? "Ja" : "Nej"}
+    </strong>
+</div>
 
-🌊 Vattentemperatur Fryken:
-<strong>${waterTemp} °C</strong><br>
+<div>
+    🌊 Vattentemperatur Fryken:
+    <strong>${waterTemp} °C</strong>
+</div>
 `;
 
 let fishingText = "";
