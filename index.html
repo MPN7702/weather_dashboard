@@ -1300,24 +1300,24 @@ if(bestScore < 10 && fishingAllowed){
 
     fishingText = `
 ${waterTempText}
-        🎣 Fiske: ⚠️ Ingen tydlig rekommendation
-        <br>
+🎣 Fiske: ⚠️ Ingen tydlig rekommendation
+<br>
 
-        🐊 Gädda:
-        <span class="${getScoreClass(pikeScore)}">
-        <b>${pikeScore} p</b>
-        </span>
+🐊 Gädda:
+<span class="${getScoreClass(pikeScore)}">
+<b>${pikeScore} p</b>
+</span>
 
-        <br>
+<br>
 
-        🐟 Abborre:
-        <span class="${getScoreClass(perchScore)}">
-        <b>${perchScore} p</b>
-        </span>
+🐟 Abborre:
+<span class="${getScoreClass(perchScore)}">
+<b>${perchScore} p</b>
+</span>
 
-        <br>
+<br>
 
-        🐟 Gös:
+🐟 Gös:
 <span class="${
     zanderScore === -999
         ? "score-low"
@@ -1330,7 +1330,7 @@ ${waterTempText}
 }</b>
 </span>
 
-    <br>
+<br><br>
 
 <small style="color:#94a3b8;">
 Poäng baseras på:
@@ -1340,6 +1340,7 @@ Poäng baseras på:
 ☁️ Molnighet,
 🌤️ Stabilt väder
 </small>
+`;
 
 }
 else if(!fishingAllowed){
