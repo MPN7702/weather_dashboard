@@ -152,6 +152,10 @@ color:#22c55e;
 .score-best{
     color:#22c55e;
 }
+    .stable-yes{
+    color:#22c55e;
+}
+
 .value{
     font-weight:bold;
 }
@@ -229,7 +233,6 @@ color:#22c55e;
 
     top:605px;
     right:50px;
-    left:calc(50% + 20% + 20px);
 
     width:280px;
 
@@ -1281,7 +1284,7 @@ if(zanderScore > bestScore){
 
 const waterTempText = `
 🌤️ Stabilt väder:
-<strong class="${stableWeather ? "stable-yes" : "stable-no"}">
+<strong class="${stableWeather ? "stable-yes" : ""}">
 ${stableWeather ? "Ja" : "Nej"}
 </strong>
 
