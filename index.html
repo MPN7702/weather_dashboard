@@ -210,6 +210,44 @@ color:#22c55e;
     }
 
 }
+    #fishingInfo{
+    position:fixed;
+    right:20px;
+    top:120px;
+
+    width:220px;
+
+    background:#1e293b;
+    color:#e2e8f0;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.4);
+
+    font-size:14px;
+    line-height:1.7;
+
+    z-index:1000;
+}
+
+#fishingInfo h3{
+    margin-top:0;
+    margin-bottom:10px;
+    color:#60a5fa;
+    text-align:center;
+}
+
+@media (max-width: 1200px){
+
+    #fishingInfo{
+        position:static;
+        width:95%;
+        margin:20px auto;
+    }
+
+}
 </style>
 
 </head>
@@ -291,6 +329,21 @@ color:#22c55e;
      alt="Besöksräknare"
      style="border:0;transform:scale(0.5);">
 </div>
+   <div id="fishingInfo">
+
+<h3>📊 Fiskpoäng</h3>
+
+🌡️ Vattentemperatur<br>
+📅 Årstid<br>
+📈 Lufttryck<br>
+☁️ Molnighet<br>
+🌤️ Stabilt väder<br>
+🌧️ Regn<br>
+🌬️ Vind<br>
+💨 Kastvindar<br>
+🔒 Fredning (gös)
+
+</div> 
 <script>
 async function updateWeeklyForecast() {
 
