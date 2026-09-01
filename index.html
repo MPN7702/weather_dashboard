@@ -394,6 +394,9 @@ const minTemp =
         minTemps.reduce((a,b)=>a+b,0)
         / minTemps.length
     ).toFixed(1);
+            tempHistory.push(
+    (Number(maxTemp) + Number(minTemp)) / 2
+);
 
 let tempClass = "";
 
