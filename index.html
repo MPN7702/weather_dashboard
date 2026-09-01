@@ -1011,6 +1011,11 @@ if (lastText !== "") {
 const weatherText =
     weatherDescriptions.join("<br>");
 
+const weatherTextColored =
+    weatherText.includes("Åska")
+        ? `<span style="color:#ef4444;">${weatherText}</span>`
+        : weatherText;
+
 let fishingAllowed = true;
 let fishingReason = "";
 
@@ -1407,7 +1412,7 @@ ${getWindDirection(windDirection)}
 
 🌦️ Väder:
 <br>
-<strong>${weatherText}</strong>
+<strong>${weatherTextColored}</strong>
 <br><br>
 
 ${fishingText}
