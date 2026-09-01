@@ -319,6 +319,7 @@ if (!data || !data.daily)
     return;
 
         let html = "";
+        let pressureHistory = [];
 
         for (let i = 0; i < 7; i++) {
 
@@ -738,6 +739,9 @@ const pressure =
             0
         ) / pressures.length
     ).toFixed(1);
+            pressureHistory.push(
+    Number(pressure)
+);
 let weatherVotes = {};
 
 models.forEach(model => {
