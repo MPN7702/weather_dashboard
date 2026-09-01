@@ -91,7 +91,7 @@ h1{
 }
 #box7,
 #weeklyForecast{
-    width:50%;
+    width:40%;
     box-sizing:border-box;
 }
 .weather-box h2{
@@ -218,14 +218,19 @@ color:#22c55e;
 
 }
 .forecast-wrapper{
+    position:relative;
+    width:100%;
     display:flex;
     justify-content:center;
-    align-items:flex-start;
-    gap:20px;
-    width:100%;
 }
 
-    #fishingInfo{
+#fishingInfo{
+    position:absolute;
+
+    left:calc(50% + 20% + 20px);
+
+    top:0;
+
     width:280px;
 
     background:#1e293b;
