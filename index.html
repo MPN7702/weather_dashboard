@@ -1019,7 +1019,7 @@ else if(
 /* Lufttryck */
 
 if(Number(pressure) >= 995 && Number(pressure) <= 1015)
-    pikeScore += 1;
+    pikeScore += 2;
 
 if(Number(pressure) < 985)
     pikeScore -= 2;
@@ -1115,7 +1115,7 @@ else if(wt > 24 && wt <= 27)
     zanderScore += 4;
 
 else if(wt < 12)
-    zanderScore -= 4;
+    zanderScore -= 6;
 /* Årstid Gös */
 
 if(
@@ -1143,7 +1143,7 @@ else if(Number(pressure) < 990)
 /* Klart väder */
 
 if(weatherCode === 0)
-    zanderScore -= 3;
+    zanderScore -= 2;
 
 else if(weatherCode === 1)
     zanderScore -= 1;
@@ -1158,7 +1158,7 @@ if(weatherCode === 2)
 /* Mulet */
 
 if(weatherCode === 3)
-    zanderScore += 4;
+    zanderScore += 3;
 
 /* Fredningstid gös i Fryken 15 maj till 15 juni */
 
