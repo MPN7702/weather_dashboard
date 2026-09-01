@@ -490,6 +490,9 @@ const rainAmount =
         0
     ) / rainTotals.length
 ).toFixed(1);
+            windHistory.push(
+    Number(windSpeed)
+);
 let rainAmountClass = "rain-low";
 
 if(Number(rainAmount) > 0 &&
@@ -671,6 +674,8 @@ const windSpeed =
         / windSpeeds.length
     ) * WIND_FACTOR
 ).toFixed(1);
+     windHistory.push(...)
+rainHistory.push(...)       
 let windClass = "";
 
 if(Number(windSpeed) >= 10)
@@ -747,6 +752,9 @@ const pressure =
             pressureHistory.push(
     Number(pressure)
 );
+      rainHistory.push(
+    Number(rainAmount)
+);      
 let weatherVotes = {};
 
 models.forEach(model => {
