@@ -218,19 +218,14 @@ color:#22c55e;
 
 }
 .forecast-wrapper{
-    position:relative;
-    width:100%;
     display:flex;
     justify-content:center;
+    align-items:flex-start;
+    gap:20px;
+    width:100%;
 }
 
 #fishingInfo{
-    position:absolute;
-
-    left:calc(50% + 20% + 20px);
-
-    top:0;
-
     width:280px;
 
     background:#1e293b;
@@ -245,8 +240,9 @@ color:#22c55e;
     font-size:14px;
     line-height:1.7;
 
-    z-index:1000;
+    flex-shrink:0;
 }
+``
 
 #fishingInfo h3{
     margin-top:0;
