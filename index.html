@@ -761,7 +761,8 @@ let confidenceText = "Hög";
 let confidenceClass = "conf-high";
 
 let confidenceSource = "";
-
+let windDisplayClass = windClass;
+let rainDisplayClass = rainAmountClass;
 const largestDifference =
 Math.max(
     windDifferencePercent,
@@ -790,17 +791,17 @@ else if(largestDifference >= 10){
     confidenceClass = "conf-medium";
 
 }
-            if(confidenceText !== "Hög"){
+if(confidenceText !== "Hög"){
 
     if(confidenceSource === "wind"){
 
-        windClass = confidenceClass;
+        windDisplayClass = confidenceClass;
 
     }
 
     if(confidenceSource === "rain"){
 
-        rainAmountClass = confidenceClass;
+        rainDisplayClass = confidenceClass;
 
     }
 
