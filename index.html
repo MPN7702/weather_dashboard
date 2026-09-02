@@ -151,7 +151,17 @@ h1{
 .score-best{
     color:#22c55e;
 }
+.conf-high{
+    color:#22c55e;
+}
 
+.conf-medium{
+    color:#f59e0b;
+}
+
+.conf-low{
+    color:#ef4444;
+}
 .value{
     font-weight:bold;
 }
@@ -465,7 +475,50 @@ const rainAmount =
         0
     ) / rainTotals.length
 ).toFixed(1);
+const iconEU =
+    models.find(m => m.model === "icon_eu");
 
+const dmi =
+    models.find(m => m.model === "dmi_seamless");
+
+let iconWinds = [];
+let dmiWinds = [];
+
+for(let h = 0; h < iconEU.data.hourly.time.length; h++){
+
+    if(iconEU.data.hourly.time[h].startsWith(currentDay)){
+
+        iconWinds.push(
+            iconEU.data.hourly.wind_speed_10m[h]
+        );
+
+    }
+
+}
+
+for(let h = 0; h < dmi.data.hourly.time.length; h++){
+
+    if(dmi.data.hourly.time[h].startsWith(currentDay)){
+
+        dmiWinds.push(
+            dmi.data.hourly.wind_speed_10m[h]
+        );
+
+    }
+
+}
+
+const iconWind =
+(
+    iconWinds.reduce((a,b)=>a+b,0)
+    / iconWinds.length
+) * WIND_FACTOR;
+
+const dmiWind =
+(
+    dmiWinds.reduce((a,b)=>a+b,0)
+    / dmiWinds.length
+) * WIND_FACTOR;
 let rainAmountClass = "rain-low";
 
 if(Number(rainAmount) > 0 &&
@@ -673,7 +726,35 @@ const windDirection =
     * 180 / Math.PI
     + 360
 ) % 360;
+const avgModelWind =
+(
+    iconWind + dmiWind
+) / 2;
 
+const windDifferencePercent =
+Math.max(
+    Math.abs(iconWind - Number(windSpeed)),
+    Math.abs(dmiWind - Number(windSpeed))
+)
+/
+Math.max(Number(windSpeed),1)
+* 100;
+
+let confidenceText = "Hög";
+let confidenceClass = "conf-high";
+
+if(windDifferencePercent >= 25){
+
+    confidenceText = "Låg";
+    confidenceClass = "conf-low";
+
+}
+else if(windDifferencePercent >= 10){
+
+    confidenceText = "Medel";
+    confidenceClass = "conf-medium";
+
+}
 let pressures = [];
 
 models.forEach(model => {
@@ -1317,8 +1398,15 @@ ${getWindDirection(windDirection)}
 <strong>${rainAmount} mm</strong>
 </span><br>
 
+🎯 Prognossäkerhet:
+<span class="${confidenceClass}">
+<strong>${confidenceText}</strong>
+</span>
+<br><br>
+
 🌧️ Regntider:
-<strong>${rainTimes}</strong><br><br>
+<strong>${rainTimes}</strong>
+<br><br>
 
 🌦️ Väder:
 <br>
