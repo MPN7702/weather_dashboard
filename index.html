@@ -413,50 +413,7 @@ if(Number(maxTemp) <= -20)
 
 if(Number(maxTemp) >= 30)
     tempClass = "temp-hot";
-let rainRisks = [];
 
-models.forEach(model => {
-
-    const hourly =
-        model.data?.hourly;
-
-    if (!hourly?.time ||
-        !hourly?.precipitation_probability)
-        return;
-
-    let dayMaxRainRisk = 0;
-
-    for (let h = 0; h < hourly.time.length; h++) {
-
-        if (hourly.time[h].startsWith(currentDay)) {
-
-            const risk =
-                hourly.precipitation_probability[h];
-
-            if (
-                typeof risk === "number" &&
-                risk > dayMaxRainRisk
-            ) {
-                dayMaxRainRisk = risk;
-            }
-        }
-    }
-
-    rainRisks.push(dayMaxRainRisk);
-
-});
-
-const rainRisk =
-    Math.round(
-        rainRisks.reduce(
-            (a,b) => a + b,
-            0
-        ) / rainRisks.length
-    );
-            let rainRiskClass = "";
-
-if(rainRisk >= 80)
-    rainRiskClass = "rain-mid";
 let rainHours = [];
 
 if (!models[0]?.data?.hourly)
@@ -1618,9 +1575,6 @@ h.wind_direction_10m?.[hour] ?? 0;
 const pressure =
 h.surface_pressure?.[hour] ?? "-";
 
-const rainRisk =
-h.precipitation_probability?.[hour] ?? "-";
-
 const rainAmount =
     h.precipitation?.[hour] ?? 0;
 
@@ -1642,14 +1596,6 @@ if(temperature <= -20)
 
 if(temperature >= 30)
     tempClass = "temp-hot";
-
-let rainClass = "rain-low";
-
-if(rainRisk >= 30)
-rainClass = "rain-mid";
-
-if(rainRisk >= 70)
-rainClass = "rain-high";
 
 const box =
 document.getElementById(model.id);
