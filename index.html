@@ -118,17 +118,6 @@ h1{
 color:#22c55e;
 
 }
-.rain-low{
-    color:#ffffff;
-}
-
-.rain-mid{
-    color:#ff9800;
-}
-
-.rain-high{
-    color:#d50000;
-}
     .wind-mid{
     color:#ff9800;
 }
@@ -1372,10 +1361,6 @@ ${getWindDirection(windDirection)}
 <strong>${windGust} m/s</strong><br>
 📈 Lufttryck:
 <strong>${pressure} hPa</strong><br>
-🌧️ Regnrisk:
-<span class="${rainRiskClass}">
-<strong>${rainRisk}%</strong>
-</span><br>
 
 💧 Regnmängd:
 <span class="${rainAmountClass}">
@@ -1692,13 +1677,6 @@ Lufttryck:
 
 <br><br>
 
-Regnrisk:
-<span class="${rainClass}">
-<b>${rainRisk} %</b>
-</span>
-
-<br><br>
-
 Regnmängd:
 <span class="${rainAmountClass}">
 <b>${rainAmount} mm</b>
@@ -1751,7 +1729,6 @@ let windSum = 0;
 let windX = 0;
 let windY = 0;
 let pressureSum = 0;
-let rainRiskSum = 0;
 let rainAmountSum = 0;
 
 let weightSum = 0;
@@ -1784,9 +1761,6 @@ windY +=
 
 pressureSum +=
     (h.surface_pressure?.[hour] ?? 0) * weight;
-
-rainRiskSum +=
-    (h.precipitation_probability?.[hour] ?? 0) * weight;
 
 rainAmountSum +=
     (h.precipitation?.[hour] ?? 0) * weight;
@@ -1829,15 +1803,6 @@ if (isNaN(avgWindDirection))
 
 const avgPressure =
     (pressureSum / weightSum).toFixed(1);
-const avgRainRisk =
-    Math.round(rainRiskSum / weightSum);
-let avgRainClass = "rain-low";
-
-if(avgRainRisk >= 30)
-    avgRainClass = "rain-mid";
-
-if(avgRainRisk >= 80)
-    avgRainClass = "rain-high";
 const avgRainAmount =
     (rainAmountSum / weightSum).toFixed(1);
 let avgRainAmountClass = "rain-low";
