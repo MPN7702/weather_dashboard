@@ -735,19 +735,30 @@ Math.max(
 /
 Math.max(Number(windSpeed),1)
 * 100;
-const iconRain =
-    rainTotals[
-        models.findIndex(
-            m => m.model === "icon_eu"
-        )
-    ];
+let iconRain = 0;
+let dmiRain = 0;
 
-const dmiRain =
-    rainTotals[
-        models.findIndex(
-            m => m.model === "dmi_seamless"
-        )
-    ];
+models.forEach(model => {
+
+    if(model.model === "icon_eu"){
+
+        iconRain =
+            rainTotals[
+                models.indexOf(model)
+            ] ?? 0;
+
+    }
+
+    if(model.model === "dmi_seamless"){
+
+        dmiRain =
+            rainTotals[
+                models.indexOf(model)
+            ] ?? 0;
+
+    }
+
+});
 
 const rainDifferencePercent =
 Math.max(
@@ -761,8 +772,11 @@ let confidenceText = "Hög";
 let confidenceClass = "conf-high";
 
 let confidenceSource = "";
-let windDisplayClass = windClass;
-let rainDisplayClass = rainAmountClass;
+let windDisplayClass =
+    windClass;
+
+let rainDisplayClass =
+    rainAmountClass;
 const largestDifference =
 Math.max(
     windDifferencePercent,
