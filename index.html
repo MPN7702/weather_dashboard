@@ -893,9 +893,9 @@ const hour =
 
         if (lastText !== "") {
 
-            weatherDescriptions.push(
-                `${String(startHour).padStart(2,"0")}-${String(hour - 1).padStart(2,"0")} ${lastText}`
-            );
+weatherDescriptions.push(
+    `${getTimeEmoji(startHour)} ${String(startHour).padStart(2,"0")}-${String(hour - 1).padStart(2,"0")}: ${lastText}`
+);
 
         }
 
@@ -908,9 +908,9 @@ const hour =
 
 if (lastText !== "") {
 
-    weatherDescriptions.push(
-        `${String(startHour).padStart(2,"0")}-23 ${lastText}`
-    );
+weatherDescriptions.push(
+    `${getTimeEmoji(startHour)} ${String(startHour).padStart(2,"0")}-23: ${lastText}`
+);
 
 }
 
@@ -1516,6 +1516,16 @@ function getWindArrow(degrees) {
     return arrows[
         Math.round(degrees / 45) % 8
     ];
+}
+    function getTimeEmoji(hour){
+
+    if(hour >= 0 && hour < 6)
+        return "🌙";
+
+    if(hour >= 6 && hour < 16)
+        return "☀️";
+
+    return "🌆";
 }
 function getScoreClass(score){
 
