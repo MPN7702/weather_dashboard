@@ -846,73 +846,56 @@ const weatherMap = {
 
 const weatherDescriptions = [];
 
-let lastText = "";
-let startHour = null;
-
-for (let h = 0; h < hourlyTimes.length; h++) {
-
-    const hourlyTime = hourlyTimes[h];
-
-    if (!hourlyTime.startsWith(currentDay))
-        continue;
+function getPeriodWeather(startHour,endHour,emoji,label){
 
     let votes = {};
 
-    models.forEach(model => {
+    for(let h = 0; h < hourlyTimes.length; h++){
 
-        const code =
-            model.data?.hourly?.weathercode?.[h];
+        const hourlyTime = hourlyTimes[h];
 
-        if (code !== undefined) {
+        if(!hourlyTime.startsWith(currentDay))
+            continue;
 
-            votes[code] =
-                (votes[code] ?? 0) + 1;
+        const hour =
+            Number(hourlyTime.substring(11,13));
 
-        }
+        if(hour < startHour || hour >= endHour)
+            continue;
 
-    });
+        models.forEach(model => {
 
-const commonCodes =
-    [...new Set(
+            const code =
+                model.data?.hourly?.weathercode?.[h];
+
+            if(code !== undefined){
+
+                votes[code] =
+                    (votes[code] ?? 0) + 1;
+
+            }
+
+        });
+
+    }
+
+    const topCode =
         Object.entries(votes)
-            .filter(([code,count]) => count >= 3)
-            .map(([code]) =>
-                weatherMap[Number(code)] ?? "Okänt väder"
-            )
-    )];
+            .sort((a,b)=>b[1]-a[1])[0]?.[0];
 
-const weatherLabel =
-    commonCodes.length
-        ? commonCodes.join(" + ")
-        : "";
+    if(topCode !== undefined){
 
-const hour =
-    Number(hourlyTime.substring(11,13));
-
-    if (weatherLabel && weatherLabel !== lastText) {
-
-        if (lastText !== "") {
-
-weatherDescriptions.push(
-    `${getTimeEmoji(startHour)} ${String(startHour).padStart(2,"0")}-${String(hour - 1).padStart(2,"0")}: ${lastText}`
-);
-
-        }
-
-        startHour = hour;
-        lastText = weatherLabel;
+        weatherDescriptions.push(
+            `${emoji} ${label}: ${weatherMap[Number(topCode)]}`
+        );
 
     }
 
 }
 
-if (lastText !== "") {
-
-weatherDescriptions.push(
-    `${getTimeEmoji(startHour)} ${String(startHour).padStart(2,"0")}-23: ${lastText}`
-);
-
-}
+getPeriodWeather(0,6,"🌙","00-06");
+getPeriodWeather(6,16,"☀️","06-16");
+getPeriodWeather(16,24,"🌆","16-00");
 
 const weatherText =
     weatherDescriptions.join("<br>");
