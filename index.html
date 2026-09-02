@@ -151,17 +151,6 @@ h1{
 .score-best{
     color:#22c55e;
 }
-.conf-high{
-    color:#22c55e;
-}
-
-.conf-medium{
-    color:#f59e0b;
-}
-
-.conf-low{
-    color:#ef4444;
-}
     .conf-high{
     color:#22c55e;
 }
@@ -1440,7 +1429,7 @@ ${weekday} ${dayDate}
 <strong>${minTemp}°C till ${maxTemp}°C</strong>
 </span><br>
 🌬️ Medelvind:
-<span class="${windClass}">
+<span class="${windDisplayClass}">
 <strong>
 ${windSpeed} m/s
 ${getWindArrow(windDirection)}
@@ -1455,7 +1444,7 @@ ${getWindDirection(windDirection)}
 <strong>${pressure} hPa</strong><br>
 
 💧 Regnmängd:
-<span class="${rainAmountClass}">
+<span class="${rainDisplayClass}">
 <strong>${rainAmount} mm</strong>
 </span><br>
 
