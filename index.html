@@ -1242,6 +1242,8 @@ const waterTempText = `
     🌊 Vattentemperatur Fryken:
     <strong>${waterTemp} °C</strong>
 </div>
+
+<br>
 `;
 
 let fishingText = "";
@@ -1250,8 +1252,6 @@ if(bestScore < 10 && fishingAllowed){
 
     fishingText = `
 ${waterTempText}
-🎣 Fiske: ⚠️ Ingen tydlig rekommendation
-<br>
 
 🐊 Gädda:
 <span class="${getScoreClass(pikeScore)}">
@@ -1307,8 +1307,6 @@ else{
 
     fishingText = `
     ${waterTempText}
-        🎣 Fiske: 🏆 ${bestFish}
-        <br>
 
         🐊 Gädda:
         <span class="${getScoreClass(pikeScore)}">
