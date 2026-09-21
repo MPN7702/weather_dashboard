@@ -3,16 +3,49 @@ import requests
 from datetime import datetime
 
 LOCATIONS = [
-    ("Torsby", 60.136, 13.006),
+
+    # Norra Värmland
     ("Sysslebäck", 60.729, 13.006),
-    ("Stöllet", 60.416, 13.256),
-    ("Likenäs", 60.640, 13.220),
-    ("Östmark", 60.314, 12.996),
     ("Höljes", 60.815, 12.790),
-    ("Ambjörby", 60.480, 13.115),
-    ("Värnäs", 60.285, 13.173),
-    ("Vitsand", 60.542, 13.017),
+    ("Likenäs", 60.640, 13.220),
     ("Branäs", 60.689, 13.189),
+    ("Stöllet", 60.416, 13.256),
+    ("Ambjörby", 60.480, 13.115),
+    ("Vitsand", 60.542, 13.017),
+
+    # Västra Värmland
+    ("Torsby", 60.136, 13.006),
+    ("Östmark", 60.314, 12.996),
+    ("Värnäs", 60.285, 13.173),
+    ("Lekvattnet", 59.802, 12.508),
+    ("Bograngen", 60.337, 12.541),
+
+    # Centrala Värmland
+    ("Sunne", 59.837, 13.143),
+    ("Munkfors", 59.833, 13.543),
+    ("Hagfors", 60.024, 13.695),
+    ("Ekshärad", 60.172, 13.497),
+    ("Råda", 60.005, 13.602),
+    ("Forshaga", 59.526, 13.481),
+    ("Kil", 59.503, 13.314),
+
+    # Östra Värmland
+    ("Filipstad", 59.712, 14.168),
+    ("Storfors", 59.531, 14.272),
+    ("Kristinehamn", 59.309, 14.108),
+    ("Lesjöfors", 59.985, 14.183),
+    ("Nykroppa", 59.622, 14.308),
+
+    # Södra Värmland
+    ("Karlstad", 59.379, 13.503),
+    ("Grums", 59.352, 13.111),
+    ("Säffle", 59.132, 12.928),
+    ("Arvika", 59.654, 12.591),
+    ("Charlottenberg", 59.884, 12.303),
+    ("Åmotfors", 59.762, 12.363),
+    ("Edane", 59.627, 12.824),
+    ("Vålberg", 59.391, 13.187)
+
 ]
 
 OPENMETEO_MODELS = [
