@@ -2490,8 +2490,13 @@ const btn = document.getElementById("installBtn");
 
 if(btn){
 
-    if(isiPhone || deferredPrompt){
+    if(
+        (isiPhone || deferredPrompt)
+        && window.innerWidth > 768
+    ){
         btn.style.display = "inline-block";
+    }else{
+        btn.style.display = "none";
     }
 
 }
