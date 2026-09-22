@@ -348,6 +348,7 @@ def fetch_yesterday(lat, lon):
             1
         )
     }
+    
 def fetch_weekly(lat, lon):
     url = (
         "https://api.open-meteo.com/v1/forecast"
@@ -371,7 +372,55 @@ def fetch_weekly(lat, lon):
 
     return fetch_json(url)
 
+def save_forecast_snapshot(weather):
+    try:
+        with open(
+            "forecast_history.json",
+            "r",
+            encoding="utf-8"
+        ) as f:
+            history = json.load(f)
 
+    except:
+        history = {}
+
+    snapshot_date = (
+        datetime.utcnow() + timedelta(days=1)
+    ).strftime("%Y-%m-%d")
+
+    if snapshot_date in history:
+        return
+
+    history[snapshot_date] = {}
+
+    for place_name, place_data in weather.items():
+
+        if place_name == "updated":
+            continue
+
+        daily = place_data["weekly"]["daily"]
+
+        history[snapshot_date][place_name] = {
+            "max_temp": daily["temperature_2m_max"][0],
+            "min_temp": daily["temperature_2m_min"][0],
+            "rain": daily["precipitation_sum"][0],
+            "wind": round(
+                daily["wind_speed_10m_mean"][0] / 3.6,
+                1
+            )
+        }
+
+    with open(
+        "forecast_history.json",
+        "w",
+        encoding="utf-8"
+    ) as f:
+        json.dump(
+            history,
+            f,
+            ensure_ascii=False,
+            separators=(",", ":")
+        )
 weather = {
     "updated": datetime.utcnow().strftime(
         "%Y-%m-%dT%H:%M:%SZ"
@@ -403,9 +452,9 @@ for name, lat, lon in LOCATIONS:
 
     place["weekly"] = fetch_weekly(lat, lon)
     place["yesterday"] = fetch_yesterday(
-    lat,
-    lon
-)
+        lat,
+        lon
+    )
 
     weather[name] = place
 
@@ -417,4 +466,7 @@ with open("weather.json", "w", encoding="utf-8") as f:
         separators=(",", ":")
     )
 
+save_forecast_snapshot(weather)
+
 print("weather.json skapad")
+print("forecast_history.json uppdaterad")
