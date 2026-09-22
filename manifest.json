@@ -1,6 +1,6 @@
 {
-  "name": "Vädercenter Torsby",
-  "short_name": "Vädercenter",
+  "name": "Vädercenter Värmland",
+  "short_name": "Värmland",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
