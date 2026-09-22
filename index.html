@@ -440,8 +440,12 @@ margin-bottom:15px;
 
 <br><br>
 
-<button class="dashboard-button">
+<button
+    id="sendFeedbackBtn"
+    class="dashboard-button">
+
     Skicka bedömning
+
 </button>
 
 </div>
@@ -2620,6 +2624,80 @@ document.addEventListener("click", function(e){
         "☆".repeat(5 - score);
 
 });
+    document.addEventListener(
+    "click",
+    async function(e){
+
+        if(
+            e.target.id !==
+            "sendFeedbackBtn"
+        ){
+            return;
+        }
+
+        const payload = {
+
+            location:
+                currentLocation,
+
+            date:
+                new Date()
+                .toISOString()
+                .substring(0,10),
+
+            max:
+                ratings.max ?? 0,
+
+            min:
+                ratings.min ?? 0,
+
+            rain:
+                ratings.rain ?? 0,
+
+            wind:
+                ratings.wind ?? 0
+
+        };
+
+        try {
+
+const response =
+    await fetch(
+        "https://weather-feedback.mr-magoo21.workers.dev/",
+        {
+            method:"POST",
+
+            headers:{
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify(payload)
+        }
+    );
+
+            const result =
+                await response.json();
+
+            alert(
+                "Bedömning skickad ✅"
+            );
+
+            console.log(result);
+
+        } catch(err) {
+
+            console.error(err);
+
+            alert(
+                "Kunde inte skicka bedömning ❌"
+            );
+
+        }
+
+    }
+);
 startDashboard();
 updateFeedbackBox();
 
