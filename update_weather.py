@@ -471,7 +471,12 @@ for name, lat, lon in LOCATIONS:
         place["weekly"] = fetch_weekly(lat, lon)
 
     except Exception as e:
-        print(f"Weekly misslyckades för {name}: {e}")
+
+    print(
+        f"Weekly misslyckades för {name}: {e}"
+    )
+
+    raise
 
         place["weekly"] = {
             "daily": {
