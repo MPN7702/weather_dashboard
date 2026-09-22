@@ -405,28 +405,36 @@ margin-bottom:15px;
 <div style="color:#93c5fd;line-height:1.8;">
 
 🌡️ Max: <span id="fbMax">xx.x°C</span>
-<span style="color:#facc15;font-size:24px;cursor:pointer;">
+<span class="rating"
+      data-type="max"
+      style="color:#facc15;font-size:24px;cursor:pointer;">
 ★★★★★
 </span>
 
 <br><br>
 
 🌡️ Min: <span id="fbMin">xx.x°C</span>
-<span style="color:#facc15;font-size:24px;cursor:pointer;">
+<span class="rating"
+      data-type="min"
+      style="color:#facc15;font-size:24px;cursor:pointer;">
 ★★★★★
 </span>
 
 <br><br>
 
 💧 Regn: <span id="fbRain">x.x mm</span>
-<span style="color:#facc15;font-size:24px;cursor:pointer;">
+<span class="rating"
+      data-type="rain"
+      style="color:#facc15;font-size:24px;cursor:pointer;">
 ★★★★★
 </span>
 
 <br><br>
 
 🌬️ Vind: <span id="fbWind">x.x m/s</span>
-<span style="color:#facc15;font-size:24px;cursor:pointer;">
+<span class="rating"
+      data-type="wind"
+      style="color:#facc15;font-size:24px;cursor:pointer;">
 ★★★★★
 </span>
 
@@ -2577,6 +2585,41 @@ async function updateFeedbackBox() {
     }
 
 }
+    const ratings = {};
+
+document.addEventListener("click", function(e){
+
+    if(!e.target.classList.contains("rating"))
+        return;
+
+    const stars = e.target;
+
+    const rect =
+        stars.getBoundingClientRect();
+
+    const x =
+        e.clientX - rect.left;
+
+    const score =
+        Math.max(
+            1,
+            Math.min(
+                5,
+                Math.ceil(
+                    x / (rect.width / 5)
+                )
+            )
+        );
+
+    ratings[
+        stars.dataset.type
+    ] = score;
+
+    stars.textContent =
+        "★".repeat(score) +
+        "☆".repeat(5 - score);
+
+});
 startDashboard();
 updateFeedbackBox();
 
