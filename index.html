@@ -1492,16 +1492,6 @@ margin:12px 0;
 
 `;
 
-const btn = document.getElementById("installBtn");
-
-if(btn){
-
-    if(isiPhone || deferredPrompt){
-        btn.style.display = "inline-block";
-    }
-
-}
-
 }
 
         document.getElementById("forecastContent").innerHTML =
@@ -2396,6 +2386,16 @@ ${eveningWeather.split(" ")[0]}
 </div>
 
 `;
+
+const btn = document.getElementById("installBtn");
+
+if(btn){
+
+    if(isiPhone || deferredPrompt){
+        btn.style.display = "inline-block";
+    }
+
+}
 
 }
 
