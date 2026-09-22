@@ -404,28 +404,28 @@ margin-bottom:15px;
 
 <div style="color:#93c5fd;line-height:1.8;">
 
-🌡️ Max: xx.x°C
+🌡️ Max: <span id="fbMax">xx.x°C</span>
 <span style="color:#facc15;font-size:24px;cursor:pointer;">
 ★★★★★
 </span>
 
 <br><br>
 
-🌡️ Min: xx.x°C
+🌡️ Min: <span id="fbMin">xx.x°C</span>
 <span style="color:#facc15;font-size:24px;cursor:pointer;">
 ★★★★★
 </span>
 
 <br><br>
 
-💧 Regn: x.x mm
+💧 Regn: <span id="fbRain">x.x mm</span>
 <span style="color:#facc15;font-size:24px;cursor:pointer;">
 ★★★★★
 </span>
 
 <br><br>
 
-🌬️ Vind: x.x m/s
+🌬️ Vind: <span id="fbWind">x.x m/s</span>
 <span style="color:#facc15;font-size:24px;cursor:pointer;">
 ★★★★★
 </span>
@@ -1566,6 +1566,7 @@ document.getElementById("locationSelect")
     forecastIndex = startIndex;
 
     await loadAllData();
+    await updateFeedbackBox();
 
 });
 const weights = {
@@ -2529,8 +2530,55 @@ if(savedLocation){
     ).value = "Karlstad";
 
 }
+async function updateFeedbackBox() {
 
+    try {
+
+        const response =
+            await fetch("forecast_history.json");
+
+        const history =
+            await response.json();
+
+        const dates =
+            Object.keys(history).sort();
+
+        if(!dates.length)
+            return;
+
+        const latestDate =
+            dates[dates.length - 1];
+
+        const data =
+            history?.[latestDate]?.[currentLocation];
+
+        if(!data)
+            return;
+
+        document.getElementById("fbMax").textContent =
+            `${data.max_temp.toFixed(1)}°C`;
+
+        document.getElementById("fbMin").textContent =
+            `${data.min_temp.toFixed(1)}°C`;
+
+        document.getElementById("fbRain").textContent =
+            `${data.rain.toFixed(1)} mm`;
+
+        document.getElementById("fbWind").textContent =
+            `${data.wind.toFixed(1)} m/s`;
+
+    } catch(error) {
+
+        console.error(
+            "Kunde inte läsa forecast_history.json",
+            error
+        );
+
+    }
+
+}
 startDashboard();
+updateFeedbackBox();
 
 </script>
 <script>
