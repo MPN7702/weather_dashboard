@@ -373,6 +373,8 @@ def fetch_weekly(lat, lon):
     return fetch_json(url)
 
 def save_forecast_snapshot(weather):
+    print("save_forecast_snapshot körs")
+
     try:
         with open(
             "forecast_history.json",
@@ -410,6 +412,8 @@ def save_forecast_snapshot(weather):
             )
         }
 
+    print("Antal orter:", len(history[snapshot_date]))
+
     with open(
         "forecast_history.json",
         "w",
@@ -421,6 +425,8 @@ def save_forecast_snapshot(weather):
             ensure_ascii=False,
             separators=(",", ":")
         )
+
+    print("forecast_history.json sparad")
 weather = {
     "updated": datetime.utcnow().strftime(
         "%Y-%m-%dT%H:%M:%SZ"
