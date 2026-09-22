@@ -2450,8 +2450,12 @@ if ("serviceWorker" in navigator) {
 }
 
 let deferredPrompt;
+
 const isiPhone =
     /iPhone|iPad|iPod/.test(navigator.userAgent);
+
+window.isiPhone = isiPhone;
+window.deferredPrompt = deferredPrompt;
 
 if (isiPhone) {
     const btn = document.getElementById("installBtn");
@@ -2462,6 +2466,7 @@ window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
 
     deferredPrompt = e;
+window.deferredPrompt = e;
 
     const btn = document.getElementById("installBtn");
 if(btn){
