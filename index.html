@@ -93,11 +93,6 @@ h1{
     justify-items:center;
 }
 
-#installBtn{
-    width:60%;
-    text-align:right;
-}
-
 .weather-box{
     background:#1e293b;
     color:#e2e8f0;
@@ -249,9 +244,6 @@ h1{
     #box7{
         width:95%;
     }
-#installBtn{
-    width:95%;
-}
     .forecast-wrapper{
         display:block;
     }
@@ -2471,7 +2463,11 @@ window.addEventListener("beforeinstallprompt", (e) => {
 
     deferredPrompt = e;
 
-    document.getElementById("installBtn").style.display = "inline-block";
+    const btn = document.getElementById("installBtn");
+if(btn){
+    btn.style.display = "inline-block";
+}
+
 });
 
 async function installPWA() {
