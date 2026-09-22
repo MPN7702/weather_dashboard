@@ -348,43 +348,52 @@ gap:25px;
 margin-bottom:15px;
 ">
 
-<select id="locationSelect"
-        style="font-size:18px;padding:6px 12px;border-radius:8px;">
+<input
+    id="locationSearch"
+    list="locationList"
+    value="Karlstad"
+    placeholder="Skriv ort..."
+    style="
+        font-size:18px;
+        padding:6px 12px;
+        border-radius:8px;
+        width:250px;
+    ">
 
-    <option value="Ambjörby">Ambjörby</option>
-    <option value="Arvika">Arvika</option>
-    <option value="Bograngen">Bograngen</option>
-    <option value="Branäs">Branäs</option>
-    <option value="Charlottenberg">Charlottenberg</option>
-    <option value="Edane">Edane</option>
-    <option value="Ekshärad">Ekshärad</option>
-    <option value="Filipstad">Filipstad</option>
-    <option value="Forshaga">Forshaga</option>
-    <option value="Grums">Grums</option>
-    <option value="Hagfors">Hagfors</option>
-    <option value="Höljes">Höljes</option>
-    <option value="Karlstad" selected>Karlstad</option>
-    <option value="Kil">Kil</option>
-    <option value="Kristinehamn">Kristinehamn</option>
-    <option value="Lekvattnet">Lekvattnet</option>
-    <option value="Lesjöfors">Lesjöfors</option>
-    <option value="Likenäs">Likenäs</option>
-    <option value="Munkfors">Munkfors</option>
-    <option value="Nykroppa">Nykroppa</option>
-    <option value="Råda">Råda</option>
-    <option value="Storfors">Storfors</option>
-    <option value="Stöllet">Stöllet</option>
-    <option value="Sunne">Sunne</option>
-    <option value="Sysslebäck">Sysslebäck</option>
-    <option value="Säffle">Säffle</option>
-    <option value="Torsby">Torsby</option>
-    <option value="Vitsand">Vitsand</option>
-    <option value="Vålberg">Vålberg</option>
-    <option value="Värnäs">Värnäs</option>
-    <option value="Åmotfors">Åmotfors</option>
-    <option value="Östmark">Östmark</option>
-
-</select>
+<datalist id="locationList">
+    <option value="Ambjörby">
+    <option value="Arvika">
+    <option value="Bograngen">
+    <option value="Branäs">
+    <option value="Charlottenberg">
+    <option value="Edane">
+    <option value="Ekshärad">
+    <option value="Filipstad">
+    <option value="Forshaga">
+    <option value="Grums">
+    <option value="Hagfors">
+    <option value="Höljes">
+    <option value="Karlstad">
+    <option value="Kil">
+    <option value="Kristinehamn">
+    <option value="Lekvattnet">
+    <option value="Lesjöfors">
+    <option value="Likenäs">
+    <option value="Munkfors">
+    <option value="Nykroppa">
+    <option value="Råda">
+    <option value="Storfors">
+    <option value="Stöllet">
+    <option value="Sunne">
+    <option value="Sysslebäck">
+    <option value="Säffle">
+    <option value="Torsby">
+    <option value="Vitsand">
+    <option value="Vålberg">
+    <option value="Värnäs">
+    <option value="Åmotfors">
+    <option value="Östmark">
+</datalist>
 
 
 </div>
@@ -1537,16 +1546,12 @@ margin:12px 0;
 let LAT = 60.136;
 let LON = 13.006;
     let currentLocation = "Karlstad";
-document.getElementById("locationSelect")
+document.getElementById("locationSearch")
 .addEventListener("change", async function() {
 
-const ortnamn =
-    this.options[this.selectedIndex].text;
+    currentLocation = this.value;
 
-currentLocation = ortnamn;
-
-
-forecastIndex = startIndex;
+    forecastIndex = startIndex;
 
     await loadAllData();
 
@@ -2430,7 +2435,7 @@ async function startDashboard(){
     },1000);
 
 }
-document.getElementById("locationSelect").value = "Karlstad";
+document.getElementById("locationSearch").value = "Karlstad";
     
 startDashboard();
 
