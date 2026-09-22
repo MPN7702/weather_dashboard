@@ -1514,6 +1514,11 @@ document.getElementById("locationSelect")
 
     currentLocation = this.value;
 
+    localStorage.setItem(
+        "selectedLocation",
+        currentLocation
+    );
+
     forecastIndex = startIndex;
 
     await loadAllData();
@@ -2458,8 +2463,29 @@ async function startDashboard(){
     },1000);
 
 }
-document.getElementById("locationSelect").value = "Karlstad";
-    
+const savedLocation =
+    localStorage.getItem(
+        "selectedLocation"
+    );
+
+if(savedLocation){
+
+    currentLocation = savedLocation;
+
+    document.getElementById(
+        "locationSelect"
+    ).value = savedLocation;
+
+}else{
+
+    currentLocation = "Karlstad";
+
+    document.getElementById(
+        "locationSelect"
+    ).value = "Karlstad";
+
+}
+
 startDashboard();
 
 </script>
