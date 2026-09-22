@@ -59,7 +59,7 @@ def fetch_json(url):
 
     for _ in range(3):
         try:
-            r = requests.get(url, timeout=20)
+            r = requests.get(url, timeout=30)
             r.raise_for_status()
             return r.json()
         except Exception as e:
@@ -456,11 +456,37 @@ for name, lat, lon in LOCATIONS:
     place["smhi"] = convert_smhi(smhi_raw)
     place["yr"] = convert_yr(yr_raw)
 
-    place["weekly"] = fetch_weekly(lat, lon)
-    place["yesterday"] = fetch_yesterday(
-        lat,
-        lon
-    )
+    try:
+        place["weekly"] = fetch_weekly(lat, lon)
+
+    except Exception as e:
+        print(f"Weekly misslyckades för {name}: {e}")
+
+        place["weekly"] = {
+            "daily": {
+                "temperature_2m_max": [0],
+                "temperature_2m_min": [0],
+                "precipitation_sum": [0],
+                "wind_speed_10m_mean": [0]
+            }
+        }
+
+    try:
+        place["yesterday"] = fetch_yesterday(
+            lat,
+            lon
+        )
+
+    except Exception as e:
+        print(f"Yesterday misslyckades för {name}: {e}")
+
+        place["yesterday"] = {
+            "date": "",
+            "max_temp": 0,
+            "min_temp": 0,
+            "rain": 0,
+            "wind": 0
+        }
 
     weather[name] = place
 
