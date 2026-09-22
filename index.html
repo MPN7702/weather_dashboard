@@ -2773,7 +2773,7 @@ window.addEventListener("beforeinstallprompt", (e) => {
 window.deferredPrompt = e;
 
     const btn = document.getElementById("installBtn");
-if(btn){
+if(btn && window.innerWidth > 768){
     btn.style.display = "inline-block";
 }
 
