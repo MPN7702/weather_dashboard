@@ -402,7 +402,7 @@ for name, lat, lon in LOCATIONS:
     place["yr"] = convert_yr(yr_raw)
 
     place["weekly"] = fetch_weekly(lat, lon)
-place["yesterday"] = fetch_yesterday(
+    place["yesterday"] = fetch_yesterday(
     lat,
     lon
 )
