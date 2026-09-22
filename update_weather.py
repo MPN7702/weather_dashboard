@@ -1,6 +1,6 @@
 import json
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 
 LOCATIONS = [
 
@@ -317,7 +317,37 @@ def fetch_openmeteo(lat, lon, model):
 
     return data
 
+def fetch_yesterday(lat, lon):
+    yesterday = (
+        datetime.utcnow() - timedelta(days=1)
+    ).strftime("%Y-%m-%d")
 
+    url = (
+        "https://archive-api.open-meteo.com/v1/archive"
+        f"?latitude={lat}"
+        f"&longitude={lon}"
+        f"&start_date={yesterday}"
+        f"&end_date={yesterday}"
+        "&daily="
+        "temperature_2m_max,"
+        "temperature_2m_min,"
+        "precipitation_sum,"
+        "wind_speed_10m_mean"
+        "&timezone=auto"
+    )
+
+    data = fetch_json(url)
+
+    return {
+        "date": yesterday,
+        "max_temp": data["daily"]["temperature_2m_max"][0],
+        "min_temp": data["daily"]["temperature_2m_min"][0],
+        "rain": data["daily"]["precipitation_sum"][0],
+        "wind": round(
+            data["daily"]["wind_speed_10m_mean"][0] / 3.6,
+            1
+        )
+    }
 def fetch_weekly(lat, lon):
     url = (
         "https://api.open-meteo.com/v1/forecast"
@@ -372,6 +402,10 @@ for name, lat, lon in LOCATIONS:
     place["yr"] = convert_yr(yr_raw)
 
     place["weekly"] = fetch_weekly(lat, lon)
+place["yesterday"] = fetch_yesterday(
+    lat,
+    lon
+)
 
     weather[name] = place
 
