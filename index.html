@@ -1488,10 +1488,21 @@ margin:12px 0;
 
 </div>
 
+</div>
 
-                </div>
-            `;
-        }
+`;
+
+const btn = document.getElementById("installBtn");
+
+if(btn){
+
+    if(isiPhone || deferredPrompt){
+        btn.style.display = "inline-block";
+    }
+
+}
+
+}
 
         document.getElementById("forecastContent").innerHTML =
             html;
