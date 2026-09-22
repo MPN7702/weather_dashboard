@@ -348,17 +348,6 @@ gap:25px;
 margin-bottom:15px;
 ">
 
-<input
-    id="locationSearch"
-    list="locationList"
-    value="Karlstad"
-    placeholder="Skriv ort..."
-    style="
-        font-size:18px;
-        padding:6px 12px;
-        border-radius:8px;
-        width:250px;
-    ">
 
 <select id="locationSelect"
         style="font-size:18px;padding:6px 12px;border-radius:8px;">
@@ -2438,7 +2427,7 @@ async function startDashboard(){
     },1000);
 
 }
-document.getElementById("locationSearch").value = "Karlstad";
+document.getElementById("locationSelect").value = "Karlstad";
     
 startDashboard();
 
