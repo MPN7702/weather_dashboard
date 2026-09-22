@@ -439,11 +439,22 @@ for name, lat, lon in LOCATIONS:
     place = {}
 
     for model in OPENMETEO_MODELS:
-        place[model] = fetch_openmeteo(
-            lat,
-            lon,
-            model
-        )
+
+        try:
+            place[model] = fetch_openmeteo(
+                lat,
+                lon,
+                model
+            )
+
+        except Exception as e:
+            print(
+                f"{model} misslyckades för {name}: {e}"
+            )
+
+            place[model] = {
+                "hourly": {}
+            }
 
     smhi_raw = fetch_json(
         f"https://smhi-proxy.mr-magoo21.workers.dev/?lat={lat}&lon={lon}"
