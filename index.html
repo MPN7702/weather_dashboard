@@ -2749,9 +2749,9 @@ const isiPhone =
 window.isiPhone = isiPhone;
 window.deferredPrompt = deferredPrompt;
 
-if (isiPhone) {
+if (isiPhone && window.innerWidth > 768) {
     const btn = document.getElementById("installBtn");
-if(btn) btn.style.display = "inline-block";
+    if(btn) btn.style.display = "inline-block";
 }
     if(window.innerWidth <= 768){
 
