@@ -2722,17 +2722,13 @@ const isiPhone =
 window.isiPhone = isiPhone;
 window.deferredPrompt = deferredPrompt;
 
-    if(window.innerWidth <= 768){
+const mobileBtn =
+    document.getElementById(
+        "mobileInstallContainer"
+    );
 
-    const mobileBtn =
-        document.getElementById(
-            "mobileInstallContainer"
-        );
-
-    if(mobileBtn){
-        mobileBtn.style.display = "block";
-    }
-
+if(mobileBtn){
+    mobileBtn.style.display = "block";
 }
 window.addEventListener("beforeinstallprompt", (e) => {
 
