@@ -59,7 +59,7 @@ def fetch_json(url):
 
     for _ in range(3):
         try:
-            r = requests.get(url, timeout=30)
+            r = requests.get(url, timeout=120)
             r.raise_for_status()
             return r.json()
         except Exception as e:
