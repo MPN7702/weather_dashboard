@@ -473,13 +473,20 @@ for name, lat, lon in LOCATIONS:
             lon
         )
 
-    except Exception as e:
+except Exception as e:
 
-        print(
-            f"Weekly misslyckades för {name}: {e}"
-        )
+    print(
+        f"Weekly misslyckades för {name}: {e}"
+    )
 
-        raise
+    place["weekly"] = {
+        "daily": {
+            "temperature_2m_max": [0],
+            "temperature_2m_min": [0],
+            "precipitation_sum": [0],
+            "wind_speed_10m_mean": [0]
+        }
+    }
 
     try:
         place["yesterday"] = fetch_yesterday(
