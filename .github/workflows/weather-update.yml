@@ -48,4 +48,6 @@ jobs:
 
           git commit -m "Update weather cache" || true
 
+          git pull --rebase origin main
+
           git push
