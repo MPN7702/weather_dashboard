@@ -2746,7 +2746,7 @@ const installIcon =
     document.getElementById("installBtnMobile");
 
 if(installIcon){
-    installIcon.style.display = "inline-block";
+    installIcon.style.display = "none";
 }
 
 window.addEventListener("beforeinstallprompt", (e) => {
@@ -2755,6 +2755,10 @@ window.addEventListener("beforeinstallprompt", (e) => {
 
     deferredPrompt = e;
 window.deferredPrompt = e;
+    
+    if(installIcon){
+    installIcon.style.display = "inline-block";
+}
 
 
 });
