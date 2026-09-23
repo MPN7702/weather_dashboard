@@ -2029,13 +2029,13 @@ function getPeriodWeatherText(startHour, endHour){
             const t = new Date(h.time[i]);
 const today =
     new Date()
-        .toISOString()
-        .substring(0,10);
+        .toLocaleDateString("sv-SE");
 
-if(
-    h.time[i].substring(0,10)
-    !== today
-){
+const rowDate =
+    new Date(h.time[i])
+        .toLocaleDateString("sv-SE");
+
+if(rowDate !== today){
     continue;
 }
             const hh = t.getHours();
