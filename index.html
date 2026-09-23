@@ -329,42 +329,29 @@ text-align:center;
 margin-bottom:10px;
 ">
 
-<h1 style="margin:0;">Vädercenter Värmland</h1>
-    <div id="mobileInstallContainer"
-     style="display:none;text-align:center;margin-top:8px;">
+<h1 style="
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:5px;
+">
 
-    <div id="installBtnMobile"
-         onclick="installPWA()"
-         style="cursor:pointer;display:inline-block;">
+    <span>Vädercenter Värmland</span>
 
-        <img
-            src="icon-192.png"
-            alt="Installera app"
-            style="
-                width:48px;
-                height:48px;
-                display:block;
-                margin:auto;
-            ">
-
-        <span style="
-            font-size:12px;
-            color:#ffffff;
-            display:block;
-            margin-top:2px;
+    <img
+        id="installBtnMobile"
+        onclick="installPWA()"
+        src="icon-192.png"
+        alt="Installera app"
+        style="
+            width:32px;
+            height:32px;
+            cursor:pointer;
+            display:none;
         ">
-            Installera
-        </span>
 
-    </div>
-
-</div>
-<div style="color:#94a3b8;font-size:14px;margin-top:4px;">
-&nbsp;
-</div>
-<div style="margin-top:8px;">
-
-</div>
+</h1>
 
 </div>
 
@@ -2754,14 +2741,14 @@ const isiPhone =
 window.isiPhone = isiPhone;
 window.deferredPrompt = deferredPrompt;
 
-const mobileBtn =
-    document.getElementById(
-        "mobileInstallContainer"
-    );
 
-if(mobileBtn){
-    mobileBtn.style.display = "block";
+const installIcon =
+    document.getElementById("installBtnMobile");
+
+if(installIcon){
+    installIcon.style.display = "inline-block";
 }
+
 window.addEventListener("beforeinstallprompt", (e) => {
 
     e.preventDefault();
@@ -2792,14 +2779,6 @@ async function installPWA() {
 
     deferredPrompt = null;
 
-const mobileBtn =
-    document.getElementById(
-        "mobileInstallContainer"
-    );
-
-if(mobileBtn){
-    mobileBtn.style.display = "none";
-}
 
 }
 
