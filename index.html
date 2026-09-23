@@ -1957,7 +1957,8 @@ for(let i = 0; i < h.time.length; i++){
 
 const targetDate =
     new Date()
-        .toLocaleDateString("sv-SE");
+        .toISOString()
+        .substring(0,10);
 
     if(
         h.time[i].substring(0,10)
@@ -2041,7 +2042,8 @@ for(let i=0;i<h.time.length;i++){
 
 const targetDate =
     new Date()
-        .toLocaleDateString("sv-SE");
+        .toISOString()
+        .substring(0,10);
 
     if(
         h.time[i].substring(0,10)
