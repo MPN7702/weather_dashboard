@@ -497,20 +497,6 @@ text-align:center;
     Väderdata: Open-Meteo, SMHI och MET Norway (YR).
     <br>
     Prognoserna är bearbetade och sammanvägda av Vädercenter Värmland.
-    <br><br>
-
-   <a href="#"
-   onclick="showPolicy(); return false;"
-   etspolicy
-</a>
-
-&nbsp;|&nbsp;
-
-<a href="#"
-   onclick="showAbout(); return
-    Om Vädercenter Värmland
-</a>
-
 </div>
 </div>
 <script type="module">
@@ -2789,111 +2775,9 @@ if(mobileBtn){
 }
 
 }
-    function showPolicy(){
 
-    document.getElementById("popupOverlay")
-        .style.display = "block";
-
-    document.getElementById("privacy")
-        .style.display = "block";
-
-}
-
-
-function showAbout(){
-
-    document.getElementById("popupOverlay")
-        .style.display = "block";
-
-    document.getElementById("about")
-        .style.display = "block";
-
-}
-
-function closePopups(){
-
-    document.getElementById("popupOverlay")
-        .style.display = "none";
-
-    document.getElementById("privacy")
-        .style.display = "none";
-
-    document.getElementById("about")
-        .style.display = "none";
-
-}
 </script>
-    <div id="popupOverlay"
-     onclick="closePopups()"
-     style="
-        display:none;
-        position:fixed;
-        inset:0;
-        background:rgba(0,0,0,0.65);
-        z-index:999;
-     ">
-</div>
-<div id="privacy"
-     class="weather-box"
-     style="
-        width:60%;
-        margin:20px auto;
-        display:none;
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-z-index:1000;
-max-width:700px;
-width:90%;
-     ">
 
-    <h2>Integritetspolicy</h2>
-<div id="popupOverlay"
-     onclick="closePopups()"
-     style="
-        display:none;
-        position:fixed;
-        inset:0;
-        background:rgba(0,0,0,0.65);
-        z-index:999;
-     ">
-</div>
-
-<div id="privacy"
-     class="weather-box"
-     style="
-        display:none;
-        position:fixed;
-        top:50%;
-        left:50%;
-        transform:translate(-50%,-50%);
-        z-index:1000;
-        max-width:700px;
-        width:90%;
-     ">
-
-    <h2>Integritetspolicy</h2>
-
-    <button
-        onclick="closePopups()"
-        class="dashboard-button">
-        Stäng
-    </button>
-
-    <br><br>
-
-    <p>
-        Vädercenter Värmland samlar inte in namn,
-        e-postadresser eller andra personuppgifter.
-    </p>
-
-    <p>
-        Prognosbedömningar används endast för att
-        analysera och förbättra prognosträffsäkerheten.
-    </p>
-
-</div>
 
 <div id="about"
      class="weather-box"
@@ -2908,26 +2792,7 @@ width:90%;
         width:90%;
      ">
 
-    <h2>Om Vädercenter Värmland</h2>
-
-    <button
-        onclick="closePopups()"
-        class="dashboard-button">
-        Stäng
-    </button>
-
     <br><br>
-
-    <p>
-        Vädercenter Värmland är en vädertjänst som
-        sammanväger prognoser från flera vädermodeller
-        för att ge en tydligare prognos för Värmland.
-    </p>
-
-    <p>
-        Tjänsten använder data från Open-Meteo,
-        SMHI och MET Norway (YR).
-    </p>
 
 </div>
 
