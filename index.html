@@ -2750,6 +2750,13 @@ if(installIcon){
 }
 
 window.addEventListener("beforeinstallprompt", (e) => {
+    window.addEventListener("appinstalled", () => {
+
+    if(installIcon){
+        installIcon.style.display = "none";
+    }
+
+});
 
     e.preventDefault();
 
@@ -2779,9 +2786,13 @@ async function installPWA() {
 
     deferredPrompt.prompt();
 
-    await deferredPrompt.userChoice;
+await deferredPrompt.userChoice;
 
-    deferredPrompt = null;
+if(installIcon){
+    installIcon.style.display = "none";
+}
+
+deferredPrompt = null;
 
 
 }
