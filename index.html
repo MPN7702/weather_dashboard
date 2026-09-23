@@ -2783,12 +2783,19 @@ if(mobileBtn){
 }
     function showPolicy(){
 
+    document.getElementById("popupOverlay")
+        .style.display = "block";
+
     document.getElementById("privacy")
         .style.display = "block";
 
 }
 
+
 function showAbout(){
+
+    document.getElementById("popupOverlay")
+        .style.display = "block";
 
     document.getElementById("about")
         .style.display = "block";
@@ -2796,6 +2803,9 @@ function showAbout(){
 }
 
 function closePopups(){
+
+    document.getElementById("popupOverlay")
+        .style.display = "none";
 
     document.getElementById("privacy")
         .style.display = "none";
@@ -2805,6 +2815,16 @@ function closePopups(){
 
 }
 </script>
+    <div id="popupOverlay"
+     onclick="closePopups()"
+     style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.65);
+        z-index:999;
+     ">
+</div>
 <div id="privacy"
      class="weather-box"
      style="
