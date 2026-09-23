@@ -1953,10 +1953,20 @@ function getPeriodWeatherText(startHour, endHour){
         if(!h?.time || !h?.weathercode)
             return;
 
-        for(let i = 0; i < h.time.length; i++){
+for(let i = 0; i < h.time.length; i++){
 
-            const hour =
-                new Date(h.time[i]).getHours();
+    const targetDate =
+        forecastTime.substring(0,10);
+
+    if(
+        h.time[i].substring(0,10)
+        !== targetDate
+    ){
+        continue;
+    }
+
+    const hour =
+        new Date(h.time[i]).getHours();
 
             if(hour < startHour || hour >= endHour)
                 continue;
