@@ -2749,8 +2749,7 @@ if(installIcon){
     installIcon.style.display = "none";
 }
 
-window.addEventListener("beforeinstallprompt", (e) => {
-    window.addEventListener("appinstalled", () => {
+window.addEventListener("appinstalled", () => {
 
     if(installIcon){
         installIcon.style.display = "none";
@@ -2758,15 +2757,16 @@ window.addEventListener("beforeinstallprompt", (e) => {
 
 });
 
+window.addEventListener("beforeinstallprompt", (e) => {
+
     e.preventDefault();
 
     deferredPrompt = e;
-window.deferredPrompt = e;
-    
-    if(installIcon){
-    installIcon.style.display = "inline-block";
-}
+    window.deferredPrompt = e;
 
+    if(installIcon){
+        installIcon.style.display = "inline-block";
+    }
 
 });
 
