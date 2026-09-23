@@ -2096,7 +2096,7 @@ const displayTime =
             hour: "2-digit",
             minute: "2-digit"
         });
-const forecastDate = new Date();
+const forecastDate = new Date(forecastTime);
 
 const displayDate =
     forecastDate.toLocaleDateString("sv-SE", {
