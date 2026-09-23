@@ -1955,8 +1955,9 @@ function getPeriodWeatherText(startHour, endHour){
 
 for(let i = 0; i < h.time.length; i++){
 
-    const targetDate =
-        forecastTime.substring(0,10);
+const targetDate =
+    new Date()
+        .toLocaleDateString("sv-SE");
 
     if(
         h.time[i].substring(0,10)
@@ -2038,8 +2039,9 @@ for(let i=0;i<h.time.length;i++){
 
     const t = new Date(h.time[i]);
 
-    const targetDate =
-        forecastTime.substring(0,10);
+const targetDate =
+    new Date()
+        .toLocaleDateString("sv-SE");
 
     if(
         h.time[i].substring(0,10)
@@ -2106,7 +2108,7 @@ const displayTime =
             hour: "2-digit",
             minute: "2-digit"
         });
-const forecastDate = new Date(forecastTime);
+const forecastDate = new Date();
 
 const displayDate =
     forecastDate.toLocaleDateString("sv-SE", {
