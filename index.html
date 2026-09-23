@@ -2024,11 +2024,21 @@ function getPeriodWeatherText(startHour, endHour){
 
         if(!h?.time) return;
 
-        for(let i=0;i<h.time.length;i++){
+for(let i=0;i<h.time.length;i++){
 
-            const t = new Date(h.time[i]);
-// inget datumfilter
-            const hh = t.getHours();
+    const t = new Date(h.time[i]);
+
+    const targetDate =
+        forecastTime.substring(0,10);
+
+    if(
+        h.time[i].substring(0,10)
+        !== targetDate
+    ){
+        continue;
+    }
+
+    const hh = t.getHours();
 
             if(hh < startHour || hh >= endHour)
                 continue;
