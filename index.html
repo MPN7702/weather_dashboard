@@ -1685,9 +1685,7 @@ ${getAuroraStars(auroraScore)}
 
 Plocka kantareller:
 <strong style="font-size:18px;">
-${getMushroomStars(
-    window.mushroomData?.[currentLocation]?.score ?? 0
-)}
+${getMushroomDisplay()}
 </strong>
 
 </div>
@@ -1897,6 +1895,22 @@ function getMushroomStars(score){
     return (
         "🍄".repeat(level) +
         "☆".repeat(5 - level)
+    );
+
+}
+    function getMushroomDisplay(){
+
+    const data =
+        window.mushroomData?.[currentLocation];
+
+    if(!data)
+        return "☆☆☆☆☆";
+
+    if(data.season_closed)
+        return "❄️ Säsong slut";
+
+    return getMushroomStars(
+        data.score ?? 0
     );
 
 }
