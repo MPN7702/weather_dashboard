@@ -1425,7 +1425,16 @@ function getPeriodWeather(startHour,endHour,emoji,label){
         if(hour < startHour || hour >= endHour)
             continue;
 
-        models.forEach(model => {
+        const weatherModels =
+    (i === 6)
+        ? models.filter(
+            m =>
+                m.model === "icon_eu" ||
+                m.model === "dmi_seamless"
+          )
+        : models;
+
+weatherModels.forEach(model => {
 
 const idx =
     getIndexForTime(
