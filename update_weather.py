@@ -1,7 +1,7 @@
 import json
 import requests
 from datetime import datetime, timedelta
-
+mushroom_index = {}
 LOCATIONS = [
 
     # Norra Värmland
@@ -371,7 +371,59 @@ def fetch_weekly(lat, lon):
     )
 
     return fetch_json(url)
+def calculate_mushroom_index(rain14, temp14, forecast_rain, month):
 
+    if rain14 < 10:
+        rain_score = 0
+    elif rain14 < 20:
+        rain_score = 20
+    elif rain14 < 40:
+        rain_score = 50
+    elif rain14 < 70:
+        rain_score = 80
+    else:
+        rain_score = 100
+
+    if temp14 < 5:
+        temp_score = 0
+    elif temp14 < 8:
+        temp_score = 25
+    elif temp14 < 12:
+        temp_score = 75
+    elif temp14 <= 18:
+        temp_score = 100
+    elif temp14 <= 22:
+        temp_score = 50
+    else:
+        temp_score = 0
+
+    season_scores = {
+        5: 0,
+        6: 20,
+        7: 60,
+        8: 100,
+        9: 100,
+        10: 40,
+        11: 0
+    }
+
+    season_score = season_scores.get(month, 0)
+
+    if forecast_rain < 5:
+        forecast_score = 0
+    elif forecast_rain < 20:
+        forecast_score = 100
+    else:
+        forecast_score = 60
+
+    score = (
+        rain_score * 0.50 +
+        temp_score * 0.25 +
+        season_score * 0.15 +
+        forecast_score * 0.10
+    )
+
+    return round(score)
 def save_forecast_snapshot(weather):
     print("save_forecast_snapshot körs")
 
@@ -507,7 +559,68 @@ for name, lat, lon in LOCATIONS:
             "rain": 0,
             "wind": 0
         }
+try:
 
+    start_date = (
+        datetime.utcnow() - timedelta(days=14)
+    ).strftime("%Y-%m-%d")
+
+    end_date = (
+        datetime.utcnow() - timedelta(days=1)
+    ).strftime("%Y-%m-%d")
+
+    history_url = (
+        "https://archive-api.open-meteo.com/v1/archive"
+        f"?latitude={lat}"
+        f"&longitude={lon}"
+        f"&start_date={start_date}"
+        f"&end_date={end_date}"
+        "&daily=temperature_2m_mean,precipitation_sum"
+        "&timezone=auto"
+    )
+
+    history = fetch_json(history_url)
+
+    rain14 = sum(
+        history["daily"]["precipitation_sum"]
+    )
+
+    temp14 = (
+        sum(
+            history["daily"]["temperature_2m_mean"]
+        )
+        /
+        len(
+            history["daily"]["temperature_2m_mean"]
+        )
+    )
+
+    forecast_rain = sum(
+        place["weekly"]["daily"]["precipitation_sum"][:7]
+    )
+
+    score = calculate_mushroom_index(
+        rain14,
+        temp14,
+        forecast_rain,
+        datetime.now().month
+    )
+
+    mushroom_index[name] = {
+        "score": score,
+        "rain14": round(rain14, 1),
+        "temp14": round(temp14, 1)
+    }
+
+except Exception as e:
+
+    print(
+        f"Kantarellindex misslyckades för {name}: {e}"
+    )
+
+    mushroom_index[name] = {
+        "score": 0
+    }
     weather[name] = place
 
 with open("weather.json", "w", encoding="utf-8") as f:
@@ -520,5 +633,19 @@ with open("weather.json", "w", encoding="utf-8") as f:
 
 save_forecast_snapshot(weather)
 
+with open(
+    "mushroom_index.json",
+    "w",
+    encoding="utf-8"
+) as f:
+
+    json.dump(
+        mushroom_index,
+        f,
+        ensure_ascii=False,
+        indent=2
+    )
+
 print("weather.json skapad")
 print("forecast_history.json uppdaterad")
+print("mushroom_index.json skapad")
