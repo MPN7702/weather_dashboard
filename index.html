@@ -1681,7 +1681,12 @@ Norrskenschans:
 <strong style="font-size:18px;">
 ${getAuroraStars(auroraScore)}
 </strong>
+<br>
 
+🍄 Kantarellindex:
+<strong style="font-size:18px;">
+🍄🍄🍄☆☆
+</strong>
 </div>
 
 <div style="
@@ -1870,7 +1875,7 @@ function getStars(score){
 }
 
 function getAuroraStars(score){
-
+    
     const level =
         Math.max(
             1,
@@ -1881,7 +1886,20 @@ function getAuroraStars(score){
            "☆".repeat(5 - level);
 
 }
-``
+    
+    function getMushroomStars(score){
+
+    const level =
+        Math.max(
+            1,
+            Math.ceil(score / 20)
+        );
+
+    return "🍄".repeat(level) +
+           "☆".repeat(5 - level);
+
+}
+
 function getWindArrow(degrees) {
 
     if (degrees === undefined || degrees === null)
