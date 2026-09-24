@@ -1685,8 +1685,11 @@ ${getAuroraStars(auroraScore)}
 
 Plocka kantareller:
 <strong style="font-size:18px;">
-🍄🍄🍄☆☆
+${getMushroomStars(
+    window.mushroomData?.[currentLocation]?.score ?? 0
+)}
 </strong>
+
 </div>
 
 <div style="
@@ -1886,16 +1889,15 @@ function getAuroraStars(score){
 
 }
     
-    function getMushroomStars(score){
+function getMushroomStars(score){
 
     const level =
-        Math.max(
-            1,
-            Math.ceil(score / 20)
-        );
+        Math.floor(score / 20);
 
-    return "🍄".repeat(level) +
-           "☆".repeat(5 - level);
+    return (
+        "🍄".repeat(level) +
+        "☆".repeat(5 - level)
+    );
 
 }
 
@@ -2669,12 +2671,36 @@ if(btn){
 }
 
 }
+async function loadMushroomData(){
 
+    try{
+
+        const response =
+            await fetch("mushroom_index.json");
+
+        window.mushroomData =
+            await response.json();
+
+    }
+    catch(err){
+
+        console.error(
+            "Kunde inte läsa mushroom_index.json",
+            err
+        );
+
+        window.mushroomData = {};
+
+    }
+
+}
 async function loadAllData(){
 
 await Promise.all(
 models.map(loadWeather)
 );
+
+await loadMushroomData();
 
 showHour(forecastIndex);
 
