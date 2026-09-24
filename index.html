@@ -1450,14 +1450,14 @@ if(idx === -1)
 const code =
     model.data.hourly.weathercode?.[idx];
 
-            if(code !== undefined){
+if(
+    typeof code !== "number"
+)
+    return;
 
 votes[code] =
     (votes[code] ?? 0)
     + (weights[model.model] ?? 0);
-
-
-            }
 
         });
 
