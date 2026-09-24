@@ -1889,16 +1889,26 @@ function getAuroraStars(score){
     
 function getMushroomStars(score){
 
-    const level =
-        Math.floor(score / 25);
+    if(score >= 85)
+        return "🍄🍄🍄🍄🍄";
 
-    return (
-        "🍄".repeat(level) +
-        "☆".repeat(5 - level)
-    );
+    if(score >= 70)
+        return "🍄🍄🍄🍄☆";
+
+    if(score >= 55)
+        return "🍄🍄🍄☆☆";
+
+    if(score >= 40)
+        return "🍄🍄☆☆☆";
+
+    if(score >= 20)
+        return "🍄☆☆☆☆";
+
+    return "☆☆☆☆☆";
 
 }
-    function getMushroomDisplay(){
+
+function getMushroomDisplay(){
 
     const data =
         window.mushroomData?.[currentLocation];
