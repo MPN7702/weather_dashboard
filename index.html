@@ -1346,11 +1346,14 @@ models.forEach(model => {
         if(idx === -1)
             return;
 
-        const code =
-            hourly.weathercode?.[idx];
+const code =
+    model.data.hourly.weathercode?.[idx];
 
-        if(code === undefined)
-            return;
+if(
+    code === undefined ||
+    code === null
+)
+    return;
 
         weatherVotes[code] =
             (weatherVotes[code] ?? 0)
