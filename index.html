@@ -1673,10 +1673,14 @@ margin:12px 0;
 ">
 
 ✨ Stjärnklart:
-<strong>${getStars(nightScore)}</strong>
+<strong style="font-size:18px;">
+${getStars(nightScore)}
+</strong>
 <br>
 🌌 Norrskenschans:
-<strong>${getStars(auroraScore)}</strong>
+<strong style="font-size:18px;">
+${getAuroraStars(auroraScore)}
+</strong>
 
 </div>
 
@@ -1852,20 +1856,32 @@ function getWindDirection(degrees) {
         Math.round(degrees / 45) % 8
     ];
 }
-    function getStars(score){
+function getStars(score){
 
-    const stars =
+    const level =
         Math.max(
             1,
             Math.ceil(score / 20)
         );
 
-    return (
-        "★".repeat(stars) +
-        "☆".repeat(5 - stars)
-    );
+    return "🌙".repeat(level) +
+           "☆".repeat(5 - level);
 
 }
+
+function getAuroraStars(score){
+
+    const level =
+        Math.max(
+            1,
+            Math.ceil(score / 20)
+        );
+
+    return "🌌".repeat(level) +
+           "☆".repeat(5 - level);
+
+}
+``
 function getWindArrow(degrees) {
 
     if (degrees === undefined || degrees === null)
