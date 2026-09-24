@@ -559,68 +559,69 @@ for name, lat, lon in LOCATIONS:
             "rain": 0,
             "wind": 0
         }
-try:
+    try:
 
-    start_date = (
-        datetime.utcnow() - timedelta(days=14)
-    ).strftime("%Y-%m-%d")
+        start_date = (
+            datetime.utcnow() - timedelta(days=14)
+        ).strftime("%Y-%m-%d")
 
-    end_date = (
-        datetime.utcnow() - timedelta(days=1)
-    ).strftime("%Y-%m-%d")
+        end_date = (
+            datetime.utcnow() - timedelta(days=1)
+        ).strftime("%Y-%m-%d")
 
-    history_url = (
-        "https://archive-api.open-meteo.com/v1/archive"
-        f"?latitude={lat}"
-        f"&longitude={lon}"
-        f"&start_date={start_date}"
-        f"&end_date={end_date}"
-        "&daily=temperature_2m_mean,precipitation_sum"
-        "&timezone=auto"
-    )
-
-    history = fetch_json(history_url)
-
-    rain14 = sum(
-        history["daily"]["precipitation_sum"]
-    )
-
-    temp14 = (
-        sum(
-            history["daily"]["temperature_2m_mean"]
+        history_url = (
+            "https://archive-api.open-meteo.com/v1/archive"
+            f"?latitude={lat}"
+            f"&longitude={lon}"
+            f"&start_date={start_date}"
+            f"&end_date={end_date}"
+            "&daily=temperature_2m_mean,precipitation_sum"
+            "&timezone=auto"
         )
-        /
-        len(
-            history["daily"]["temperature_2m_mean"]
+
+        history = fetch_json(history_url)
+
+        rain14 = sum(
+            history["daily"]["precipitation_sum"]
         )
-    )
 
-    forecast_rain = sum(
-        place["weekly"]["daily"]["precipitation_sum"][:7]
-    )
+        temp14 = (
+            sum(
+                history["daily"]["temperature_2m_mean"]
+            )
+            /
+            len(
+                history["daily"]["temperature_2m_mean"]
+            )
+        )
 
-    score = calculate_mushroom_index(
-        rain14,
-        temp14,
-        forecast_rain,
-        datetime.now().month
-    )
+        forecast_rain = sum(
+            place["weekly"]["daily"]["precipitation_sum"][:7]
+        )
 
-    mushroom_index[name] = {
-        "score": score,
-        "rain14": round(rain14, 1),
-        "temp14": round(temp14, 1)
-    }
+        score = calculate_mushroom_index(
+            rain14,
+            temp14,
+            forecast_rain,
+            datetime.now().month
+        )
 
-except Exception as e:
+        mushroom_index[name] = {
+            "score": score,
+            "rain14": round(rain14, 1),
+            "temp14": round(temp14, 1)
+        }
 
-    print(
-        f"Kantarellindex misslyckades för {name}: {e}"
-    )
+    except Exception as e:
 
-    mushroom_index[name] = {
-        "score": 0
-    }
+        print(
+            f"Kantarellindex misslyckades för {name}: {e}"
+        )
+
+        mushroom_index[name] = {
+            "score": 0
+        }
+
     weather[name] = place
 
 with open("weather.json", "w", encoding="utf-8") as f:
