@@ -395,7 +395,8 @@ def calculate_mushroom_index(rain14, temp14, forecast_rain, month):
     elif temp14 <= 22:
         temp_score = 50
     else:
-        temp_score = 0
+ else:
+    temp_score = 0
 
     season_scores = {
         5: 0,
@@ -403,8 +404,7 @@ def calculate_mushroom_index(rain14, temp14, forecast_rain, month):
         7: 60,
         8: 100,
         9: 100,
-        10: 40,
-        11: 0
+        10: 40
     }
 
     season_score = season_scores.get(month, 0)
@@ -606,8 +606,16 @@ for name, lat, lon in LOCATIONS:
             datetime.now().month
         )
 
+        month = datetime.now().month
+
+        if month in [11, 12, 1, 2, 3, 4]:
+            season_closed = True
+        else:
+            season_closed = False
+        
         mushroom_index[name] = {
             "score": score,
+            "season_closed": season_closed,
             "rain14": round(rain14, 1),
             "temp14": round(temp14, 1)
         }
