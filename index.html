@@ -1350,8 +1350,7 @@ const code =
     model.data.hourly.weathercode?.[idx];
 
 if(
-    code === undefined ||
-    code === null
+    typeof code !== "number"
 )
     return;
 
