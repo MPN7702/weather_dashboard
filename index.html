@@ -1460,7 +1460,11 @@ votes[code] =
         });
 
     }
-
+console.log(
+    currentDay,
+    label,
+    votes
+);
     const topCode =
         Object.entries(votes)
             .sort((a,b)=>b[1]-a[1])[0]?.[0];
