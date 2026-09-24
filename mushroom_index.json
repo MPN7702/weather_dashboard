@@ -1,1 +1,162 @@
-
+{
+  "Sysslebäck": {
+    "score": 69,
+    "rain14": 32.4,
+    "temp14": 9.5
+  },
+  "Höljes": {
+    "score": 69,
+    "rain14": 31.0,
+    "temp14": 10.2
+  },
+  "Likenäs": {
+    "score": 69,
+    "rain14": 30.1,
+    "temp14": 9.8
+  },
+  "Branäs": {
+    "score": 69,
+    "rain14": 30.1,
+    "temp14": 9.8
+  },
+  "Stöllet": {
+    "score": 69,
+    "rain14": 26.3,
+    "temp14": 11.6
+  },
+  "Ambjörby": {
+    "score": 69,
+    "rain14": 26.7,
+    "temp14": 10.4
+  },
+  "Vitsand": {
+    "score": 69,
+    "rain14": 27.6,
+    "temp14": 10.2
+  },
+  "Torsby": {
+    "score": 69,
+    "rain14": 23.0,
+    "temp14": 11.7
+  },
+  "Östmark": {
+    "score": 69,
+    "rain14": 22.7,
+    "temp14": 11.3
+  },
+  "Värnäs": {
+    "score": 69,
+    "rain14": 24.6,
+    "temp14": 10.9
+  },
+  "Lekvattnet": {
+    "score": 75,
+    "rain14": 25.6,
+    "temp14": 12.2
+  },
+  "Bograngen": {
+    "score": 69,
+    "rain14": 24.0,
+    "temp14": 10.7
+  },
+  "Sunne": {
+    "score": 90,
+    "rain14": 44.9,
+    "temp14": 12.6
+  },
+  "Munkfors": {
+    "score": 80,
+    "rain14": 49.1,
+    "temp14": 12.2
+  },
+  "Hagfors": {
+    "score": 74,
+    "rain14": 44.4,
+    "temp14": 11.4
+  },
+  "Ekshärad": {
+    "score": 59,
+    "rain14": 32.7,
+    "temp14": 11.1
+  },
+  "Råda": {
+    "score": 74,
+    "rain14": 45.2,
+    "temp14": 11.6
+  },
+  "Forshaga": {
+    "score": 75,
+    "rain14": 32.9,
+    "temp14": 12.7
+  },
+  "Kil": {
+    "score": 75,
+    "rain14": 28.3,
+    "temp14": 12.5
+  },
+  "Filipstad": {
+    "score": 74,
+    "rain14": 46.3,
+    "temp14": 12.0
+  },
+  "Storfors": {
+    "score": 90,
+    "rain14": 50.6,
+    "temp14": 12.0
+  },
+  "Kristinehamn": {
+    "score": 90,
+    "rain14": 59.3,
+    "temp14": 13.1
+  },
+  "Lesjöfors": {
+    "score": 59,
+    "rain14": 37.4,
+    "temp14": 11.1
+  },
+  "Nykroppa": {
+    "score": 84,
+    "rain14": 46.3,
+    "temp14": 12.0
+  },
+  "Karlstad": {
+    "score": 90,
+    "rain14": 40.8,
+    "temp14": 13.3
+  },
+  "Grums": {
+    "score": 65,
+    "rain14": 32.1,
+    "temp14": 12.8
+  },
+  "Säffle": {
+    "score": 65,
+    "rain14": 37.2,
+    "temp14": 13.2
+  },
+  "Arvika": {
+    "score": 65,
+    "rain14": 36.9,
+    "temp14": 12.7
+  },
+  "Charlottenberg": {
+    "score": 75,
+    "rain14": 21.8,
+    "temp14": 12.1
+  },
+  "Åmotfors": {
+    "score": 75,
+    "rain14": 27.1,
+    "temp14": 12.4
+  },
+  "Edane": {
+    "score": 80,
+    "rain14": 43.0,
+    "temp14": 12.2
+  },
+  "Vålberg": {
+    "score": 65,
+    "rain14": 26.8,
+    "temp14": 12.6
+  }
+}
