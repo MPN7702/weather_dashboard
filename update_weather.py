@@ -394,8 +394,8 @@ def calculate_mushroom_index(rain14, temp14, forecast_rain, month):
         temp_score = 100
     elif temp14 <= 22:
         temp_score = 50
- else:
-    temp_score = 0
+    else:
+        temp_score = 0
 
     season_scores = {
         5: 0,
