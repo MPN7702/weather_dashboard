@@ -550,7 +550,7 @@ text-align:center;
         <br>
         • Soluppgång och solnedgång
         <br>
-        • Stjärnklart- och norrskensindikator
+        • Stjärnklart och kantarellindex
 
         <br><br>
 
@@ -1848,18 +1848,6 @@ function getStars(score){
 
 }
 
-function getAuroraStars(score){
-    
-    const level =
-        Math.max(
-            1,
-            Math.ceil(score / 20)
-        );
-
-    return "🌌".repeat(level) +
-           "☆".repeat(5 - level);
-
-}
     
 function getMushroomStars(score){
 
