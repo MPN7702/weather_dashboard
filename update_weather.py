@@ -422,9 +422,7 @@ def calculate_mushroom_index(rain14, temp14, forecast_rain, month):
         forecast_score * 0.10
     )
 
-    score *= 0.80
-
-    return round(score)
+return round(score)
 def save_forecast_snapshot(weather):
     print("save_forecast_snapshot körs")
 
