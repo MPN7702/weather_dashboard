@@ -1125,25 +1125,23 @@ if history_file.exists():
     ) as f:
         history = json.load(f)
 
-    if "day1" not in history:
-        history["day1"] = {}
-
-    if "day2" not in history:
-        history["day2"] = {}
-
-    if "day3" not in history:
-        history["day3"] = {}
-
-    if "actual" not in history:
-        history["actual"] = {}
-
 else:
-    history = {
-        "day1": {},
-        "day2": {},
-        "day3": {},
-        "actual": {}
-    }
+    history = {}
+
+if "day1" not in history:
+    history["day1"] = {}
+
+if "day2" not in history:
+    history["day2"] = {}
+
+if "day3" not in history:
+    history["day3"] = {}
+
+if "actual" not in history:
+    history["actual"] = {}
+
+if "model_stats" not in history:
+    history["model_stats"] = {}
 
 weekly = weather["Torsby"]["weekly"]["daily"]
 
