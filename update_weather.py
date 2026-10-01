@@ -1124,6 +1124,19 @@ if history_file.exists():
         encoding="utf-8"
     ) as f:
         history = json.load(f)
+
+    if "day1" not in history:
+        history["day1"] = {}
+
+    if "day2" not in history:
+        history["day2"] = {}
+
+    if "day3" not in history:
+        history["day3"] = {}
+
+    if "actual" not in history:
+        history["actual"] = {}
+
 else:
     history = {
         "day1": {},
@@ -1131,6 +1144,7 @@ else:
         "day3": {},
         "actual": {}
     }
+``
 
 weekly = weather["Torsby"]["weekly"]["daily"]
 
