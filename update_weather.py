@@ -1144,7 +1144,6 @@ else:
         "day3": {},
         "actual": {}
     }
-``
 
 weekly = weather["Torsby"]["weekly"]["daily"]
 
