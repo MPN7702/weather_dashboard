@@ -2,6 +2,7 @@ import json
 import requests
 from datetime import datetime, timedelta
 from pathlib import Path
+mushroom_index = {}
 
 LOCATIONS = [
 
@@ -943,7 +944,60 @@ def calculate_model_stats(history):
             reverse=True
         )
     )
+def calculate_mushroom_index(rain14, temp14, forecast_rain, month):
 
+    if rain14 < 10:
+        rain_score = 0
+    elif rain14 < 20:
+        rain_score = 20
+    elif rain14 < 40:
+        rain_score = 50
+    elif rain14 < 70:
+        rain_score = 80
+    else:
+        rain_score = 100
+
+    if temp14 < 5:
+        temp_score = 0
+    elif temp14 < 8:
+        temp_score = 25
+    elif temp14 < 12:
+        temp_score = 75
+    elif temp14 <= 18:
+        temp_score = 100
+    elif temp14 <= 22:
+        temp_score = 50
+    else:
+        temp_score = 0
+
+    season_scores = {
+        5: 0,
+        6: 20,
+        7: 60,
+        8: 100,
+        9: 100,
+        10: 40
+    }
+
+    season_score = season_scores.get(month, 0)
+
+    if forecast_rain < 5:
+        forecast_score = 0
+    elif forecast_rain < 20:
+        forecast_score = 100
+    else:
+        forecast_score = 60
+
+    score = (
+        rain_score * 0.50 +
+        temp_score * 0.25 +
+        season_score * 0.15 +
+        forecast_score * 0.10
+    )
+
+    return round(score)
+    
+    
 weather = {
     "updated": datetime.utcnow().strftime(
         "%Y-%m-%dT%H:%M:%SZ"
@@ -977,6 +1031,76 @@ for name, lat, lon in LOCATIONS:
 
     place["weekly"] = fetch_weekly(lat, lon)
 
+    try:
+
+        start_date = (
+            datetime.utcnow() - timedelta(days=14)
+        ).strftime("%Y-%m-%d")
+
+        end_date = (
+            datetime.utcnow() - timedelta(days=1)
+        ).strftime("%Y-%m-%d")
+
+        history_url = (
+            "https://archive-api.open-meteo.com/v1/archive"
+            f"?latitude={lat}"
+            f"&longitude={lon}"
+            f"&start_date={start_date}"
+            f"&end_date={end_date}"
+            "&daily=temperature_2m_mean,precipitation_sum"
+            "&timezone=auto"
+        )
+
+        history_data = fetch_json(history_url)
+
+        rain14 = sum(
+            history_data["daily"]["precipitation_sum"]
+        )
+
+        temp14 = (
+            sum(
+                history_data["daily"]["temperature_2m_mean"]
+            )
+            /
+            len(
+                history_data["daily"]["temperature_2m_mean"]
+            )
+        )
+
+        forecast_rain = sum(
+            place["weekly"]["daily"]["precipitation_sum"][:7]
+        )
+
+        score = calculate_mushroom_index(
+            rain14,
+            temp14,
+            forecast_rain,
+            datetime.now().month
+        )
+
+        season_closed = (
+            datetime.now().month
+            in [11, 12, 1, 2, 3, 4]
+        )
+
+        mushroom_index[name] = {
+            "score": score,
+            "season_closed": season_closed,
+            "rain14": round(rain14, 1),
+            "temp14": round(temp14, 1)
+        }
+
+    except Exception as e:
+
+        print(
+            f"Kantarellindex misslyckades för {name}: {e}"
+        )
+
+        mushroom_index[name] = {
+            "score": 0,
+            "season_closed": False
+        }
+
     weather[name] = place
 print("Dag 1-3 prognoser för Torsby:")
 
@@ -991,11 +1115,11 @@ for i in range(3):
         weekly["precipitation_sum"][i]
     )
 
-history_file = Path("forecast-history.json")
+history_file = Path("forecast_history.json")
 
 if history_file.exists():
     with open(
-        "forecast-history.json",
+        "forecast_history.json",
         "r",
         encoding="utf-8"
     ) as f:
@@ -1087,7 +1211,7 @@ print(
 )
 
 with open(
-    "forecast-history.json",
+    "forecast_history.json",
     "w",
     encoding="utf-8"
 ) as f:
@@ -1104,5 +1228,18 @@ with open("weather.json", "w", encoding="utf-8") as f:
         ensure_ascii=False,
         separators=(",", ":")
     )
+with open(
+    "mushroom_index.json",
+    "w",
+    encoding="utf-8"
+) as f:
 
+    json.dump(
+        mushroom_index,
+        f,
+        ensure_ascii=False,
+        indent=2
+    )
 print("weather.json skapad")
+print("forecast_history.json skapad")
+print("mushroom_index.json skapad")
