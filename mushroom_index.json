@@ -78,13 +78,13 @@
     "temp14": 12.5
   },
   "Munkfors": {
-    "score": 66,
+    "score": 56,
     "season_closed": false,
     "rain14": 31.6,
     "temp14": 12.2
   },
   "Hagfors": {
-    "score": 60,
+    "score": 50,
     "season_closed": false,
     "rain14": 20.4,
     "temp14": 11.3
@@ -96,67 +96,67 @@
     "temp14": 11.0
   },
   "Råda": {
-    "score": 60,
+    "score": 50,
     "season_closed": false,
     "rain14": 23.6,
     "temp14": 11.4
   },
   "Forshaga": {
-    "score": 51,
+    "score": 41,
     "season_closed": false,
     "rain14": 16.5,
     "temp14": 12.6
   },
   "Kil": {
-    "score": 51,
+    "score": 41,
     "season_closed": false,
     "rain14": 14.8,
     "temp14": 12.5
   },
   "Filipstad": {
-    "score": 60,
+    "score": 50,
     "season_closed": false,
     "rain14": 20.8,
     "temp14": 11.6
   },
   "Storfors": {
-    "score": 60,
+    "score": 50,
     "season_closed": false,
     "rain14": 24.9,
     "temp14": 11.7
   },
   "Kristinehamn": {
-    "score": 62,
+    "score": 56,
     "season_closed": false,
     "rain14": 26.3,
     "temp14": 12.9
   },
   "Lesjöfors": {
-    "score": 60,
+    "score": 50,
     "season_closed": false,
     "rain14": 20.4,
     "temp14": 10.9
   },
   "Nykroppa": {
-    "score": 60,
+    "score": 50,
     "season_closed": false,
     "rain14": 20.8,
     "temp14": 11.6
   },
   "Karlstad": {
-    "score": 51,
+    "score": 41,
     "season_closed": false,
     "rain14": 17.7,
     "temp14": 13.2
   },
   "Grums": {
-    "score": 51,
+    "score": 41,
     "season_closed": false,
     "rain14": 12.5,
     "temp14": 12.7
   },
   "Säffle": {
-    "score": 66,
+    "score": 56,
     "season_closed": false,
     "rain14": 20.2,
     "temp14": 13.2
@@ -174,7 +174,7 @@
     "temp14": 12.0
   },
   "Åmotfors": {
-    "score": 47,
+    "score": 51,
     "season_closed": false,
     "rain14": 14.9,
     "temp14": 12.3
@@ -186,7 +186,7 @@
     "temp14": 12.1
   },
   "Vålberg": {
-    "score": 51,
+    "score": 41,
     "season_closed": false,
     "rain14": 12.1,
     "temp14": 12.6
