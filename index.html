@@ -1604,25 +1604,39 @@ if(Number(rainAmount) >= 10)
 {
     fishingScore -= 2;
 }
-            const weatherCode =
-    Number.isFinite(sortedWeatherCodes[0])
-        ? sortedWeatherCodes[0]
-        : 0;
+/* Trevlig fiskedag baserat på översikten */
 
-/* Trevlig fiskedag = fint väder */
+[
+    weatherDescriptions[0],
+    weatherDescriptions[1],
+    weatherDescriptions[2]
+].forEach(period => {
 
-if(weatherCode === 0)        // Klart
-{
-    fishingScore += 3;
-}
-else if(weatherCode === 1)   // Mest klart
-{
-    fishingScore += 2;
-}
-else if(weatherCode === 2)   // Delvis molnigt
-{
-    fishingScore += 1;
-}
+    if(!period)
+        return;
+
+    if(period.includes("☀️ Klart"))
+    {
+        fishingScore += 2;
+    }
+    else if(period.includes("🌤️ Mest klart"))
+    {
+        fishingScore += 1;
+    }
+    else if(period.includes("☁️ Mulet"))
+    {
+        fishingScore -= 2;
+    }
+    else if(period.includes("🌧️"))
+    {
+        fishingScore -= 2;
+    }
+    else if(period.includes("⚡"))
+    {
+        fishingScore -= 4;
+    }
+
+});
 
 html += `
                 <div class="forecast-day">
