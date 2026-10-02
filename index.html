@@ -1597,6 +1597,26 @@ else if(Number(rainAmount) >= 15)
 {
     fishingScore -= 1;
 }
+            const weatherCode =
+    Number.isFinite(sortedWeatherCodes[0])
+        ? sortedWeatherCodes[0]
+        : 0;
+
+/* Trevlig fiskedag = fint väder */
+
+if(weatherCode === 0)        // Klart
+{
+    fishingScore += 2;
+}
+else if(weatherCode === 1)   // Mest klart
+{
+    fishingScore += 2;
+}
+else if(weatherCode === 2)   // Delvis molnigt
+{
+    fishingScore += 1;
+}
+
 html += `
                 <div class="forecast-day">
 
