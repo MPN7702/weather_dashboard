@@ -1623,9 +1623,13 @@ if(Number(rainAmount) >= 10)
     {
         fishingScore += 1;
     }
+    else if(period.includes("⛅ Delvis molnigt"))
+    {
+        fishingScore += 0;
+    }
     else if(period.includes("☁️ Mulet"))
     {
-        fishingScore -= 2;
+        fishingScore -= 1;
     }
     else if(period.includes("🌧️"))
     {
@@ -1633,10 +1637,11 @@ if(Number(rainAmount) >= 10)
     }
     else if(period.includes("⚡"))
     {
-        fishingScore -= 4;
+        fishingScore -= 3;
     }
 
 });
+
 
 html += `
                 <div class="forecast-day">
