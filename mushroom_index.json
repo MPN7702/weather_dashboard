@@ -72,13 +72,13 @@
     "temp14": 10.5
   },
   "Sunne": {
-    "score": 66,
+    "score": 56,
     "season_closed": false,
     "rain14": 23.3,
     "temp14": 12.5
   },
   "Munkfors": {
-    "score": 56,
+    "score": 66,
     "season_closed": false,
     "rain14": 31.6,
     "temp14": 12.2
@@ -150,7 +150,7 @@
     "temp14": 13.2
   },
   "Grums": {
-    "score": 41,
+    "score": 51,
     "season_closed": false,
     "rain14": 12.5,
     "temp14": 12.7
