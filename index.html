@@ -1568,34 +1568,40 @@ nightScore = Math.max(
 
 let fishingScore = 0;
 
-if(Number(maxTemp) >= 12 &&
+/* Temperatur */
+
+if(Number(maxTemp) >= 15 &&
    Number(maxTemp) <= 22)
 {
     fishingScore += 2;
 }
-else if(Number(maxTemp) >= 8 &&
+else if(Number(maxTemp) >= 10 &&
         Number(maxTemp) <= 25)
 {
     fishingScore += 1;
 }
 
+/* Vind */
+
 if(Number(windSpeed) >= 1 &&
-   Number(windSpeed) <= 6)
+   Number(windSpeed) <= 4)
 {
     fishingScore += 2;
 }
-else if(Number(windSpeed) <= 9)
+else if(Number(windSpeed) <= 7)
 {
     fishingScore += 1;
 }
 
-if(Number(rainAmount) <= 2)
+/* Regn */
+
+if(Number(rainAmount) <= 1)
 {
     fishingScore += 1;
 }
-else if(Number(rainAmount) >= 15)
+else if(Number(rainAmount) >= 10)
 {
-    fishingScore -= 1;
+    fishingScore -= 2;
 }
             const weatherCode =
     Number.isFinite(sortedWeatherCodes[0])
