@@ -376,7 +376,6 @@ def fetch_weekly(lat, lon):
 "surface_pressure_mean,"
 "sunrise,"
 "sunset"
-f"&start_date={datetime.now().strftime('%Y-%m-%d')}"
 "&timezone=auto"
 "&forecast_days=7"
     )
