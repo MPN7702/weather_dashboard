@@ -376,7 +376,8 @@ def fetch_weekly(lat, lon):
 "surface_pressure_mean,"
 "sunrise,"
 "sunset"
-        "&timezone=auto"
+        f"&start_date={datetime.now().strftime('%Y-%m-%d')}"
+"&timezone=auto"
         "&forecast_days=7"
     )
 
@@ -1011,30 +1012,17 @@ for name, lat, lon in LOCATIONS:
 
     place = {}
 
-    for model in OPENMETEO_MODELS:
-        place[model] = fetch_openmeteo(
-            lat,
-            lon,
-            model
-        )
-
-    smhi_raw = fetch_json(
-        f"https://smhi-proxy.mr-magoo21.workers.dev/?lat={lat}&lon={lon}"
-    )
-
-    yr_raw = fetch_json(
-        f"https://yr-proxy.mr-magoo21.workers.dev/?lat={lat}&lon={lon}"
-    )
+    ...
 
     place["smhi"] = convert_smhi(smhi_raw)
     place["yr"] = convert_yr(yr_raw)
 
     place["weekly"] = fetch_weekly(lat, lon)
 
-        print(
-            name,
-            place["weekly"]["daily"]["time"][:3]
-        )
+    print(
+        name,
+        place["weekly"]["daily"]["time"][:3]
+    )
 
     try:
 
