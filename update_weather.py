@@ -1031,6 +1031,11 @@ for name, lat, lon in LOCATIONS:
 
     place["weekly"] = fetch_weekly(lat, lon)
 
+        print(
+            name,
+            place["weekly"]["daily"]["time"][:3]
+        )
+
     try:
 
         start_date = (
