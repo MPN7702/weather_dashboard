@@ -1602,19 +1602,21 @@ else if(Number(windSpeed) >= 11)
 
 /* Regn */
 
-if(Number(rainAmount) <= 1)
+if(Number(rainAmount) === 0)
 {
     fishingScore += 1;
 }
-
-if(Number(rainAmount) >= 3)
+else if(Number(rainAmount) < 3)
 {
     fishingScore -= 1;
 }
-
-if(Number(rainAmount) >= 10)
+else if(Number(rainAmount) < 10)
 {
     fishingScore -= 2;
+}
+else
+{
+    fishingScore -= 3;
 }
 /* Trevlig fiskedag baserat på översikten */
 
