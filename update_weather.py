@@ -1083,10 +1083,26 @@ for name, lat, lon in LOCATIONS:
             datetime.now().month
         )
 
+        frost_nights = 0
+
+        for temp in place["weekly"]["daily"]["temperature_2m_min"][:7]:
+
+            if temp <= -2:
+                frost_nights += 1
+
+        if frost_nights >= 1:
+            score = round(score * 0.75)
+
+        if frost_nights >= 2:
+            score = round(score * 0.50)
+
         season_closed = (
             datetime.now().month
             in [11, 12, 1, 2, 3, 4]
         )
+
+        if frost_nights >= 3:
+            season_closed = True
 
         mushroom_index[name] = {
             "score": score,
