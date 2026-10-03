@@ -1571,13 +1571,33 @@ let fishingScore = 0;
 /* Vind */
 
 if(Number(windSpeed) >= 1 &&
-   Number(windSpeed) <= 4)
+   Number(windSpeed) <= 2)
 {
     fishingScore += 2;
 }
-else if(Number(windSpeed) <= 7)
+else if(Number(windSpeed) >= 3 &&
+        Number(windSpeed) <= 4)
 {
     fishingScore += 1;
+}
+else if(Number(windSpeed) >= 5 &&
+        Number(windSpeed) <= 6)
+{
+    fishingScore += 0;
+}
+else if(Number(windSpeed) >= 7 &&
+        Number(windSpeed) <= 8)
+{
+    fishingScore -= 1;
+}
+else if(Number(windSpeed) >= 9 &&
+        Number(windSpeed) <= 10)
+{
+    fishingScore -= 3;
+}
+else if(Number(windSpeed) >= 11)
+{
+    fishingScore -= 5;
 }
 
 /* Regn */
