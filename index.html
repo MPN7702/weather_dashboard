@@ -1627,22 +1627,22 @@ if(Number(rainAmount) >= 10)
     if(!period)
         return;
 
-    if(period.includes("☀️ Klart"))
-    {
-        fishingScore += 2;
-    }
-    else if(period.includes("🌤️ Mest klart"))
-    {
-        fishingScore += 1;
-    }
-    else if(period.includes("⛅ Delvis molnigt"))
-    {
-        fishingScore += 0;
-    }
-    else if(period.includes("☁️ Mulet"))
-    {
-        fishingScore -= 1;
-    }
+if(period.includes("☀️ Klart"))
+{
+    fishingScore += 3;
+}
+else if(period.includes("🌤️ Mest klart"))
+{
+    fishingScore += 2;
+}
+else if(period.includes("⛅ Delvis molnigt"))
+{
+    fishingScore += 1;
+}
+else if(period.includes("☁️ Mulet"))
+{
+    fishingScore += 0;
+}
     else if(period.includes("🌧️"))
     {
         fishingScore -= 2;
