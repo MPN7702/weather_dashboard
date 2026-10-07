@@ -1,12 +1,12 @@
 {
   "Sysslebäck": {
-    "score": 42,
+    "score": 21,
     "season_closed": false,
     "rain14": 21.7,
     "temp14": 9.4
   },
   "Höljes": {
-    "score": 56,
+    "score": 42,
     "season_closed": false,
     "rain14": 23.6,
     "temp14": 10.2
@@ -36,7 +36,7 @@
     "temp14": 10.4
   },
   "Vitsand": {
-    "score": 42,
+    "score": 56,
     "season_closed": false,
     "rain14": 20.2,
     "temp14": 10.1
