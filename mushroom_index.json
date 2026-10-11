@@ -1,6 +1,6 @@
 {
   "Sysslebäck": {
-    "score": 68,
+    "score": 51,
     "season_closed": false,
     "rain14": 75.0,
     "temp14": 7.6
@@ -60,7 +60,7 @@
     "temp14": 9.1
   },
   "Lekvattnet": {
-    "score": 81,
+    "score": 85,
     "season_closed": false,
     "rain14": 94.9,
     "temp14": 10.3
@@ -168,7 +168,7 @@
     "temp14": 10.7
   },
   "Charlottenberg": {
-    "score": 81,
+    "score": 85,
     "season_closed": false,
     "rain14": 91.1,
     "temp14": 10.1
@@ -180,7 +180,7 @@
     "temp14": 10.4
   },
   "Edane": {
-    "score": 85,
+    "score": 81,
     "season_closed": false,
     "rain14": 95.2,
     "temp14": 10.3
