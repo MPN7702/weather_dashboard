@@ -1,60 +1,60 @@
 {
   "Sysslebäck": {
-    "score": 27,
+    "score": 51,
     "season_closed": false,
     "rain14": 75.5,
     "temp14": 6.5
   },
   "Höljes": {
-    "score": 62,
+    "score": 58,
     "season_closed": false,
     "rain14": 63.8,
     "temp14": 7.3
   },
   "Likenäs": {
-    "score": 72,
+    "score": 51,
     "season_closed": false,
     "rain14": 86.1,
     "temp14": 6.7
   },
   "Branäs": {
-    "score": 72,
+    "score": 51,
     "season_closed": false,
     "rain14": 86.1,
     "temp14": 6.7
   },
   "Stöllet": {
-    "score": 85,
+    "score": 81,
     "season_closed": false,
     "rain14": 92.4,
     "temp14": 8.6
   },
   "Ambjörby": {
-    "score": 72,
+    "score": 26,
     "season_closed": false,
     "rain14": 89.0,
     "temp14": 7.5
   },
   "Vitsand": {
-    "score": 27,
+    "score": 51,
     "season_closed": false,
     "rain14": 77.7,
     "temp14": 7.2
   },
   "Torsby": {
-    "score": 85,
+    "score": 61,
     "season_closed": false,
     "rain14": 94.7,
     "temp14": 8.8
   },
   "Östmark": {
-    "score": 81,
+    "score": 61,
     "season_closed": false,
     "rain14": 90.5,
     "temp14": 8.4
   },
   "Värnäs": {
-    "score": 85,
+    "score": 61,
     "season_closed": false,
     "rain14": 88.2,
     "temp14": 8.1
@@ -66,7 +66,7 @@
     "temp14": 9.1
   },
   "Bograngen": {
-    "score": 72,
+    "score": 68,
     "season_closed": false,
     "rain14": 88.5,
     "temp14": 7.4
@@ -78,25 +78,25 @@
     "temp14": 9.7
   },
   "Munkfors": {
-    "score": 85,
+    "score": 61,
     "season_closed": false,
     "rain14": 106.3,
     "temp14": 9.4
   },
   "Hagfors": {
-    "score": 85,
+    "score": 81,
     "season_closed": false,
     "rain14": 92.6,
     "temp14": 8.6
   },
   "Ekshärad": {
-    "score": 85,
+    "score": 81,
     "season_closed": false,
     "rain14": 90.3,
     "temp14": 8.2
   },
   "Råda": {
-    "score": 85,
+    "score": 81,
     "season_closed": false,
     "rain14": 98.0,
     "temp14": 8.8
@@ -132,7 +132,7 @@
     "temp14": 10.5
   },
   "Lesjöfors": {
-    "score": 64,
+    "score": 61,
     "season_closed": false,
     "rain14": 76.4,
     "temp14": 8.3
@@ -168,7 +168,7 @@
     "temp14": 9.6
   },
   "Charlottenberg": {
-    "score": 85,
+    "score": 61,
     "season_closed": false,
     "rain14": 97.5,
     "temp14": 8.9
