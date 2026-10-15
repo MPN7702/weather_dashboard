@@ -72,7 +72,7 @@
     "temp14": 6.5
   },
   "Sunne": {
-    "score": 85,
+    "score": 75,
     "season_closed": false,
     "rain14": 120.1,
     "temp14": 8.9
@@ -84,7 +84,7 @@
     "temp14": 8.5
   },
   "Hagfors": {
-    "score": 72,
+    "score": 62,
     "season_closed": false,
     "rain14": 104.8,
     "temp14": 7.7
@@ -96,7 +96,7 @@
     "temp14": 7.3
   },
   "Råda": {
-    "score": 72,
+    "score": 62,
     "season_closed": false,
     "rain14": 108.8,
     "temp14": 7.9
@@ -114,19 +114,19 @@
     "temp14": 9.1
   },
   "Filipstad": {
-    "score": 85,
+    "score": 75,
     "season_closed": false,
     "rain14": 82.0,
     "temp14": 8.5
   },
   "Storfors": {
-    "score": 81,
+    "score": 85,
     "season_closed": false,
     "rain14": 83.8,
     "temp14": 8.7
   },
   "Kristinehamn": {
-    "score": 81,
+    "score": 85,
     "season_closed": false,
     "rain14": 81.8,
     "temp14": 9.8
@@ -162,7 +162,7 @@
     "temp14": 9.9
   },
   "Arvika": {
-    "score": 85,
+    "score": 75,
     "season_closed": false,
     "rain14": 113.1,
     "temp14": 8.9
