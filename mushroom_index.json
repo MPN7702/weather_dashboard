@@ -66,7 +66,7 @@
     "temp14": 7.9
   },
   "Bograngen": {
-    "score": 72,
+    "score": 68,
     "season_closed": false,
     "rain14": 98.8,
     "temp14": 6.1
@@ -108,19 +108,19 @@
     "temp14": 8.9
   },
   "Kil": {
-    "score": 85,
+    "score": 81,
     "season_closed": false,
     "rain14": 98.4,
     "temp14": 8.7
   },
   "Filipstad": {
-    "score": 85,
+    "score": 75,
     "season_closed": false,
     "rain14": 82.7,
     "temp14": 8.1
   },
   "Storfors": {
-    "score": 85,
+    "score": 75,
     "season_closed": false,
     "rain14": 84.0,
     "temp14": 8.2
@@ -138,7 +138,7 @@
     "temp14": 7.0
   },
   "Nykroppa": {
-    "score": 85,
+    "score": 75,
     "season_closed": false,
     "rain14": 82.7,
     "temp14": 8.1
@@ -168,7 +168,7 @@
     "temp14": 8.5
   },
   "Charlottenberg": {
-    "score": 72,
+    "score": 68,
     "season_closed": false,
     "rain14": 102.4,
     "temp14": 7.7
