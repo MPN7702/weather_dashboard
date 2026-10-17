@@ -1,12 +1,12 @@
 {
   "Sysslebäck": {
-    "score": 68,
+    "score": 72,
     "season_closed": false,
     "rain14": 89.7,
     "temp14": 5.0
   },
   "Höljes": {
-    "score": 68,
+    "score": 72,
     "season_closed": false,
     "rain14": 77.8,
     "temp14": 5.8
@@ -36,7 +36,7 @@
     "temp14": 6.0
   },
   "Vitsand": {
-    "score": 68,
+    "score": 72,
     "season_closed": false,
     "rain14": 91.9,
     "temp14": 5.8
@@ -48,13 +48,13 @@
     "temp14": 7.4
   },
   "Östmark": {
-    "score": 68,
+    "score": 72,
     "season_closed": false,
     "rain14": 103.6,
     "temp14": 6.9
   },
   "Värnäs": {
-    "score": 68,
+    "score": 72,
     "season_closed": false,
     "rain14": 101.4,
     "temp14": 6.6
@@ -66,7 +66,7 @@
     "temp14": 7.9
   },
   "Bograngen": {
-    "score": 68,
+    "score": 72,
     "season_closed": false,
     "rain14": 98.8,
     "temp14": 6.1
@@ -168,7 +168,7 @@
     "temp14": 8.5
   },
   "Charlottenberg": {
-    "score": 54,
+    "score": 72,
     "season_closed": false,
     "rain14": 102.4,
     "temp14": 7.7
