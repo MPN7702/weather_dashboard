@@ -6,7 +6,7 @@
     "temp14": 4.5
   },
   "Höljes": {
-    "score": 54,
+    "score": 51,
     "season_closed": false,
     "rain14": 75.2,
     "temp14": 5.2
@@ -36,13 +36,13 @@
     "temp14": 5.4
   },
   "Vitsand": {
-    "score": 26,
+    "score": 68,
     "season_closed": false,
     "rain14": 90.0,
     "temp14": 5.2
   },
   "Torsby": {
-    "score": 51,
+    "score": 26,
     "season_closed": false,
     "rain14": 106.1,
     "temp14": 6.8
@@ -60,7 +60,7 @@
     "temp14": 6.0
   },
   "Lekvattnet": {
-    "score": 68,
+    "score": 72,
     "season_closed": false,
     "rain14": 108.6,
     "temp14": 7.4
@@ -84,13 +84,13 @@
     "temp14": 7.6
   },
   "Hagfors": {
-    "score": 54,
+    "score": 51,
     "season_closed": false,
     "rain14": 111.2,
     "temp14": 6.8
   },
   "Ekshärad": {
-    "score": 27,
+    "score": 26,
     "season_closed": false,
     "rain14": 103.4,
     "temp14": 6.3
@@ -102,7 +102,7 @@
     "temp14": 7.0
   },
   "Forshaga": {
-    "score": 30,
+    "score": 61,
     "season_closed": false,
     "rain14": 92.4,
     "temp14": 8.4
@@ -126,7 +126,7 @@
     "temp14": 7.8
   },
   "Kristinehamn": {
-    "score": 85,
+    "score": 81,
     "season_closed": false,
     "rain14": 81.3,
     "temp14": 8.9
