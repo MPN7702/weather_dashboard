@@ -90,8 +90,10 @@
     "temp14": 6.3
   },
   "Ekshärad": {
-    "score": 0,
-    "season_closed": false
+    "score": 68,
+    "season_closed": false,
+    "rain14": 101.9,
+    "temp14": 5.8
   },
   "Råda": {
     "score": 68,
@@ -106,7 +108,7 @@
     "temp14": 7.9
   },
   "Kil": {
-    "score": 51,
+    "score": 68,
     "season_closed": false,
     "rain14": 96.4,
     "temp14": 7.7
@@ -166,7 +168,7 @@
     "temp14": 7.6
   },
   "Charlottenberg": {
-    "score": 51,
+    "score": 68,
     "season_closed": false,
     "rain14": 98.9,
     "temp14": 6.6
