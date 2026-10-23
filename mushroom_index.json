@@ -2,7 +2,7 @@
   "Sysslebäck": {
     "score": 52,
     "season_closed": false,
-    "rain14": 52.8,
+    "rain14": 53.1,
     "temp14": 3.0
   },
   "Höljes": {
@@ -14,181 +14,181 @@
   "Likenäs": {
     "score": 52,
     "season_closed": false,
-    "rain14": 56.8,
+    "rain14": 57.4,
     "temp14": 3.2
   },
   "Branäs": {
     "score": 52,
     "season_closed": false,
-    "rain14": 56.8,
+    "rain14": 57.4,
     "temp14": 3.2
   },
   "Stöllet": {
     "score": 58,
     "season_closed": false,
-    "rain14": 59.5,
+    "rain14": 61.2,
     "temp14": 5.2
   },
   "Ambjörby": {
     "score": 52,
     "season_closed": false,
-    "rain14": 53.1,
+    "rain14": 54.1,
     "temp14": 3.8
   },
   "Vitsand": {
     "score": 52,
     "season_closed": false,
-    "rain14": 53.4,
+    "rain14": 54.0,
     "temp14": 3.6
   },
   "Torsby": {
     "score": 58,
     "season_closed": false,
-    "rain14": 59.8,
+    "rain14": 61.7,
     "temp14": 5.1
   },
   "Östmark": {
     "score": 52,
     "season_closed": false,
-    "rain14": 57.4,
+    "rain14": 59.0,
     "temp14": 4.7
   },
   "Värnäs": {
     "score": 52,
     "season_closed": false,
-    "rain14": 59.6,
+    "rain14": 61.0,
     "temp14": 4.4
   },
   "Lekvattnet": {
     "score": 68,
     "season_closed": false,
-    "rain14": 74.1,
+    "rain14": 75.7,
     "temp14": 6.0
   },
   "Bograngen": {
     "score": 52,
     "season_closed": false,
-    "rain14": 64.6,
+    "rain14": 65.5,
     "temp14": 4.1
   },
   "Sunne": {
     "score": 68,
     "season_closed": false,
-    "rain14": 83.1,
+    "rain14": 85.3,
     "temp14": 6.5
   },
   "Munkfors": {
     "score": 68,
     "season_closed": false,
-    "rain14": 84.7,
+    "rain14": 86.7,
     "temp14": 6.0
   },
   "Hagfors": {
     "score": 68,
     "season_closed": false,
-    "rain14": 70.0,
+    "rain14": 72.3,
     "temp14": 5.2
   },
   "Ekshärad": {
     "score": 52,
     "season_closed": false,
-    "rain14": 58.1,
+    "rain14": 60.2,
     "temp14": 4.8
   },
   "Råda": {
-    "score": 58,
+    "score": 68,
     "season_closed": false,
-    "rain14": 69.5,
+    "rain14": 72.2,
     "temp14": 5.3
   },
   "Forshaga": {
     "score": 68,
     "season_closed": false,
-    "rain14": 81.1,
+    "rain14": 81.8,
     "temp14": 6.7
   },
   "Kil": {
     "score": 68,
     "season_closed": false,
-    "rain14": 82.3,
+    "rain14": 83.5,
     "temp14": 6.5
   },
   "Filipstad": {
-    "score": 58,
+    "score": 68,
     "season_closed": false,
-    "rain14": 69.9,
+    "rain14": 70.2,
     "temp14": 6.1
   },
   "Storfors": {
-    "score": 58,
+    "score": 68,
     "season_closed": false,
-    "rain14": 69.8,
+    "rain14": 70.1,
     "temp14": 6.2
   },
   "Kristinehamn": {
     "score": 58,
     "season_closed": false,
-    "rain14": 67.5,
+    "rain14": 67.3,
     "temp14": 7.3
   },
   "Lesjöfors": {
     "score": 62,
     "season_closed": false,
-    "rain14": 74.4,
+    "rain14": 76.4,
     "temp14": 4.9
   },
   "Nykroppa": {
-    "score": 58,
+    "score": 68,
     "season_closed": false,
-    "rain14": 69.9,
+    "rain14": 70.2,
     "temp14": 6.1
   },
   "Karlstad": {
     "score": 68,
     "season_closed": false,
-    "rain14": 85.9,
+    "rain14": 86.6,
     "temp14": 7.2
   },
   "Grums": {
     "score": 68,
     "season_closed": false,
-    "rain14": 84.3,
+    "rain14": 86.0,
     "temp14": 6.8
   },
   "Säffle": {
     "score": 68,
     "season_closed": false,
-    "rain14": 82.0,
+    "rain14": 88.3,
     "temp14": 7.4
   },
   "Arvika": {
     "score": 68,
     "season_closed": false,
-    "rain14": 80.1,
+    "rain14": 82.4,
     "temp14": 6.7
   },
   "Charlottenberg": {
     "score": 58,
     "season_closed": false,
-    "rain14": 65.4,
+    "rain14": 66.7,
     "temp14": 5.5
   },
   "Åmotfors": {
     "score": 68,
     "season_closed": false,
-    "rain14": 77.4,
+    "rain14": 79.5,
     "temp14": 6.3
   },
   "Edane": {
     "score": 68,
     "season_closed": false,
-    "rain14": 92.2,
+    "rain14": 94.4,
     "temp14": 6.2
   },
   "Vålberg": {
     "score": 68,
     "season_closed": false,
-    "rain14": 83.7,
+    "rain14": 85.6,
     "temp14": 6.5
   }
 }
