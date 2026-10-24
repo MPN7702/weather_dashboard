@@ -102,24 +102,34 @@
     "temp14": 5.4
   },
   "Forshaga": {
-    "score": 0,
-    "season_closed": false
+    "score": 68,
+    "season_closed": false,
+    "rain14": 79.8,
+    "temp14": 6.8
   },
   "Kil": {
-    "score": 0,
-    "season_closed": false
+    "score": 68,
+    "season_closed": false,
+    "rain14": 82.2,
+    "temp14": 6.6
   },
   "Filipstad": {
-    "score": 0,
-    "season_closed": false
+    "score": 68,
+    "season_closed": false,
+    "rain14": 75.1,
+    "temp14": 6.3
   },
   "Storfors": {
-    "score": 0,
-    "season_closed": false
+    "score": 68,
+    "season_closed": false,
+    "rain14": 72.2,
+    "temp14": 6.3
   },
   "Kristinehamn": {
-    "score": 0,
-    "season_closed": false
+    "score": 58,
+    "season_closed": false,
+    "rain14": 67.1,
+    "temp14": 7.4
   },
   "Lesjöfors": {
     "score": 68,
