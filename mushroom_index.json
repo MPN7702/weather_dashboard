@@ -1,12 +1,12 @@
 {
   "Sysslebäck": {
-    "score": 52,
+    "score": 20,
     "season_closed": false,
     "rain14": 56.4,
     "temp14": 3.7
   },
   "Höljes": {
-    "score": 52,
+    "score": 20,
     "season_closed": false,
     "rain14": 53.6,
     "temp14": 4.4
@@ -30,13 +30,13 @@
     "temp14": 5.8
   },
   "Ambjörby": {
-    "score": 52,
+    "score": 39,
     "season_closed": false,
     "rain14": 54.6,
     "temp14": 4.4
   },
   "Vitsand": {
-    "score": 52,
+    "score": 20,
     "season_closed": false,
     "rain14": 55.8,
     "temp14": 4.2
@@ -144,7 +144,7 @@
     "temp14": 6.5
   },
   "Karlstad": {
-    "score": 58,
+    "score": 62,
     "season_closed": false,
     "rain14": 60.7,
     "temp14": 7.6
