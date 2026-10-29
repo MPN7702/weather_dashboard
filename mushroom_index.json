@@ -12,12 +12,16 @@
     "temp14": 5.5
   },
   "Likenäs": {
-    "score": 0,
-    "season_closed": false
+    "score": 56,
+    "season_closed": false,
+    "rain14": 75.8,
+    "temp14": 4.9
   },
   "Branäs": {
-    "score": 0,
-    "season_closed": false
+    "score": 56,
+    "season_closed": false,
+    "rain14": 75.8,
+    "temp14": 4.9
   },
   "Stöllet": {
     "score": 52,
@@ -50,7 +54,7 @@
     "temp14": 6.0
   },
   "Värnäs": {
-    "score": 62,
+    "score": 52,
     "season_closed": false,
     "rain14": 69.5,
     "temp14": 5.8
@@ -122,7 +126,7 @@
     "temp14": 7.2
   },
   "Kristinehamn": {
-    "score": 65,
+    "score": 75,
     "season_closed": false,
     "rain14": 52.7,
     "temp14": 8.3
@@ -164,7 +168,7 @@
     "temp14": 7.9
   },
   "Charlottenberg": {
-    "score": 72,
+    "score": 62,
     "season_closed": false,
     "rain14": 73.6,
     "temp14": 6.9
