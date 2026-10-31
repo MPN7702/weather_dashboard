@@ -1,6 +1,6 @@
 {
   "Sysslebäck": {
-    "score": 56,
+    "score": 42,
     "season_closed": false,
     "rain14": 72.0,
     "temp14": 4.5
@@ -18,7 +18,7 @@
     "temp14": 4.7
   },
   "Branäs": {
-    "score": 56,
+    "score": 42,
     "season_closed": false,
     "rain14": 73.3,
     "temp14": 4.7
@@ -30,7 +30,7 @@
     "temp14": 6.4
   },
   "Ambjörby": {
-    "score": 52,
+    "score": 39,
     "season_closed": false,
     "rain14": 68.7,
     "temp14": 5.0
@@ -42,7 +42,7 @@
     "temp14": 5.0
   },
   "Torsby": {
-    "score": 52,
+    "score": 39,
     "season_closed": false,
     "rain14": 60.9,
     "temp14": 5.9
@@ -90,7 +90,7 @@
     "temp14": 6.1
   },
   "Ekshärad": {
-    "score": 52,
+    "score": 39,
     "season_closed": false,
     "rain14": 63.8,
     "temp14": 5.8
@@ -126,7 +126,7 @@
     "temp14": 6.8
   },
   "Kristinehamn": {
-    "score": 52,
+    "score": 62,
     "season_closed": false,
     "rain14": 50.0,
     "temp14": 7.8
@@ -156,7 +156,7 @@
     "temp14": 7.6
   },
   "Säffle": {
-    "score": 65,
+    "score": 56,
     "season_closed": false,
     "rain14": 64.8,
     "temp14": 8.1
