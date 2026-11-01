@@ -1,6 +1,6 @@
 {
   "Sysslebäck": {
-    "score": 50,
+    "score": 19,
     "season_closed": true,
     "rain14": 72.0,
     "temp14": 4.4
@@ -12,13 +12,13 @@
     "temp14": 5.2
   },
   "Likenäs": {
-    "score": 38,
+    "score": 19,
     "season_closed": true,
     "rain14": 73.3,
     "temp14": 4.6
   },
   "Branäs": {
-    "score": 38,
+    "score": 19,
     "season_closed": true,
     "rain14": 73.3,
     "temp14": 4.6
@@ -30,13 +30,13 @@
     "temp14": 6.2
   },
   "Ambjörby": {
-    "score": 40,
+    "score": 15,
     "season_closed": true,
     "rain14": 68.7,
     "temp14": 4.9
   },
   "Vitsand": {
-    "score": 38,
+    "score": 19,
     "season_closed": true,
     "rain14": 74.0,
     "temp14": 4.8
