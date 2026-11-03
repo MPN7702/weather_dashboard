@@ -6,7 +6,7 @@
     "temp14": 4.7
   },
   "Höljes": {
-    "score": 34,
+    "score": 17,
     "season_closed": true,
     "rain14": 66.7,
     "temp14": 5.4
@@ -24,7 +24,7 @@
     "temp14": 4.9
   },
   "Stöllet": {
-    "score": 46,
+    "score": 34,
     "season_closed": true,
     "rain14": 69.9,
     "temp14": 6.6
@@ -42,13 +42,13 @@
     "temp14": 5.2
   },
   "Torsby": {
-    "score": 17,
+    "score": 34,
     "season_closed": true,
     "rain14": 61.7,
     "temp14": 6.3
   },
   "Östmark": {
-    "score": 46,
+    "score": 34,
     "season_closed": true,
     "rain14": 65.0,
     "temp14": 5.9
@@ -66,7 +66,7 @@
     "temp14": 7.2
   },
   "Bograngen": {
-    "score": 42,
+    "score": 21,
     "season_closed": true,
     "rain14": 75.1,
     "temp14": 5.4
@@ -168,7 +168,7 @@
     "temp14": 7.7
   },
   "Charlottenberg": {
-    "score": 42,
+    "score": 21,
     "season_closed": true,
     "rain14": 72.6,
     "temp14": 6.9
