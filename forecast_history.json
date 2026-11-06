@@ -8933,7 +8933,7 @@
     },
     "2026-11-06": {
       "minTemp": -4.7,
-      "maxTemp": 1.9,
+      "maxTemp": 2.0,
       "rainAmount": 0.0,
       "windSpeed": 2.8,
       "rainHours": [],
@@ -8946,7 +8946,7 @@
       "actual_days": 53,
       "temp_error": 1.05,
       "min_temp_error": 1.16,
-      "max_temp_error": 0.94,
+      "max_temp_error": 0.93,
       "min_temp_bias": 0.24,
       "max_temp_bias": 0.42,
       "rain_error": 1.52,

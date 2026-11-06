@@ -1,12 +1,12 @@
 {
   "Sysslebäck": {
-    "score": 19,
+    "score": 15,
     "season_closed": true,
     "rain14": 46.6,
     "temp14": 3.8
   },
   "Höljes": {
-    "score": 19,
+    "score": 15,
     "season_closed": true,
     "rain14": 41.8,
     "temp14": 4.3
@@ -66,13 +66,13 @@
     "temp14": 5.9
   },
   "Bograngen": {
-    "score": 19,
+    "score": 15,
     "season_closed": true,
     "rain14": 45.2,
     "temp14": 4.4
   },
   "Sunne": {
-    "score": 42,
+    "score": 21,
     "season_closed": true,
     "rain14": 40.0,
     "temp14": 6.5
@@ -102,19 +102,19 @@
     "temp14": 5.2
   },
   "Forshaga": {
-    "score": 31,
+    "score": 16,
     "season_closed": true,
     "rain14": 37.5,
     "temp14": 6.7
   },
   "Kil": {
-    "score": 41,
+    "score": 16,
     "season_closed": true,
     "rain14": 35.3,
     "temp14": 6.6
   },
   "Filipstad": {
-    "score": 31,
+    "score": 16,
     "season_closed": true,
     "rain14": 39.6,
     "temp14": 5.8
@@ -126,7 +126,7 @@
     "temp14": 5.8
   },
   "Kristinehamn": {
-    "score": 31,
+    "score": 37,
     "season_closed": true,
     "rain14": 28.1,
     "temp14": 6.8
@@ -138,7 +138,7 @@
     "temp14": 5.1
   },
   "Nykroppa": {
-    "score": 31,
+    "score": 16,
     "season_closed": true,
     "rain14": 39.6,
     "temp14": 5.8
@@ -150,7 +150,7 @@
     "temp14": 7.4
   },
   "Grums": {
-    "score": 31,
+    "score": 41,
     "season_closed": true,
     "rain14": 33.5,
     "temp14": 7.1
@@ -162,7 +162,7 @@
     "temp14": 7.5
   },
   "Arvika": {
-    "score": 42,
+    "score": 56,
     "season_closed": true,
     "rain14": 42.4,
     "temp14": 6.6
@@ -174,19 +174,19 @@
     "temp14": 5.6
   },
   "Åmotfors": {
-    "score": 42,
+    "score": 56,
     "season_closed": true,
     "rain14": 42.4,
     "temp14": 6.3
   },
   "Edane": {
-    "score": 42,
+    "score": 56,
     "season_closed": true,
     "rain14": 42.5,
     "temp14": 6.1
   },
   "Vålberg": {
-    "score": 41,
+    "score": 31,
     "season_closed": true,
     "rain14": 33.5,
     "temp14": 6.8
