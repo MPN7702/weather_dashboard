@@ -1,18 +1,18 @@
 {
   "Sysslebäck": {
-    "score": 13,
+    "score": 10,
     "season_closed": true,
     "rain14": 40.0,
     "temp14": 3.1
   },
   "Höljes": {
-    "score": 13,
+    "score": 10,
     "season_closed": true,
     "rain14": 35.8,
     "temp14": 3.7
   },
   "Likenäs": {
-    "score": 13,
+    "score": 10,
     "season_closed": true,
     "rain14": 39.1,
     "temp14": 3.4
@@ -36,7 +36,7 @@
     "temp14": 3.6
   },
   "Vitsand": {
-    "score": 19,
+    "score": 15,
     "season_closed": true,
     "rain14": 42.9,
     "temp14": 3.6
@@ -162,7 +162,7 @@
     "temp14": 7.0
   },
   "Arvika": {
-    "score": 23,
+    "score": 12,
     "season_closed": true,
     "rain14": 38.1,
     "temp14": 6.2
