@@ -1,60 +1,46 @@
 {
   "Sysslebäck": {
-    "score": 4,
-    "season_closed": true,
-    "rain14": 3.4,
-    "temp14": 0.7
+    "score": 0,
+    "season_closed": false
   },
   "Höljes": {
-    "score": 4,
-    "season_closed": true,
-    "rain14": 3.2,
-    "temp14": 1.2
+    "score": 0,
+    "season_closed": false
   },
   "Likenäs": {
-    "score": 4,
-    "season_closed": true,
-    "rain14": 3.4,
-    "temp14": 0.9
+    "score": 0,
+    "season_closed": false
   },
   "Branäs": {
-    "score": 2,
-    "season_closed": true,
-    "rain14": 3.4,
-    "temp14": 0.9
+    "score": 0,
+    "season_closed": false
   },
   "Stöllet": {
-    "score": 4,
-    "season_closed": true,
-    "rain14": 3.5,
-    "temp14": 2.4
+    "score": 0,
+    "season_closed": false
   },
   "Ambjörby": {
-    "score": 4,
-    "season_closed": true,
-    "rain14": 3.6,
-    "temp14": 1.0
+    "score": 0,
+    "season_closed": false
   },
   "Vitsand": {
-    "score": 2,
-    "season_closed": true,
-    "rain14": 3.5,
-    "temp14": 1.1
+    "score": 0,
+    "season_closed": false
   },
   "Torsby": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 2.8,
     "temp14": 2.0
   },
   "Östmark": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 2.7,
     "temp14": 1.7
   },
   "Värnäs": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 3.1,
     "temp14": 1.5
@@ -78,19 +64,19 @@
     "temp14": 3.9
   },
   "Munkfors": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 3.1,
     "temp14": 2.8
   },
   "Hagfors": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 2.1,
     "temp14": 2.3
   },
   "Ekshärad": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 3.0,
     "temp14": 1.9
@@ -102,55 +88,55 @@
     "temp14": 2.2
   },
   "Forshaga": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 1.9,
     "temp14": 3.9
   },
   "Kil": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 1.6,
     "temp14": 3.7
   },
   "Filipstad": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 3.2,
     "temp14": 3.2
   },
   "Storfors": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 3.5,
     "temp14": 3.1
   },
   "Kristinehamn": {
-    "score": 10,
+    "score": 6,
     "season_closed": true,
     "rain14": 4.9,
     "temp14": 4.4
   },
   "Lesjöfors": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 2.0,
     "temp14": 2.4
   },
   "Nykroppa": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 3.2,
     "temp14": 3.2
   },
   "Karlstad": {
-    "score": 10,
+    "score": 6,
     "season_closed": true,
     "rain14": 2.2,
     "temp14": 4.7
   },
   "Grums": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 1.2,
     "temp14": 4.5
@@ -162,7 +148,7 @@
     "temp14": 5.2
   },
   "Arvika": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 1.5,
     "temp14": 4.1
@@ -174,19 +160,19 @@
     "temp14": 2.5
   },
   "Åmotfors": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 2.3,
     "temp14": 3.7
   },
   "Edane": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 1.7,
     "temp14": 3.3
   },
   "Vålberg": {
-    "score": 4,
+    "score": 2,
     "season_closed": true,
     "rain14": 1.3,
     "temp14": 4.0
