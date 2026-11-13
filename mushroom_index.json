@@ -72,7 +72,7 @@
     "temp14": 0.4
   },
   "Sunne": {
-    "score": 4,
+    "score": 8,
     "season_closed": true,
     "rain14": 9.9,
     "temp14": 2.8
@@ -144,7 +144,7 @@
     "temp14": 2.2
   },
   "Karlstad": {
-    "score": 8,
+    "score": 15,
     "season_closed": true,
     "rain14": 12.4,
     "temp14": 3.5
@@ -162,7 +162,7 @@
     "temp14": 4.2
   },
   "Arvika": {
-    "score": 8,
+    "score": 15,
     "season_closed": true,
     "rain14": 11.4,
     "temp14": 3.1
@@ -174,7 +174,7 @@
     "temp14": 1.4
   },
   "Åmotfors": {
-    "score": 4,
+    "score": 8,
     "season_closed": true,
     "rain14": 9.6,
     "temp14": 2.6
