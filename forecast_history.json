@@ -10392,7 +10392,7 @@
       "minTemp": 2.1,
       "maxTemp": 6.0,
       "rainAmount": 0.5,
-      "windSpeed": 17.5,
+      "windSpeed": 17.7,
       "rainHours": [
         "13:00",
         "14:00",
@@ -10411,7 +10411,7 @@
       "min_temp_bias": 0.31,
       "max_temp_bias": 0.46,
       "rain_error": 1.37,
-      "wind_error": 2.46,
+      "wind_error": 2.47,
       "wind_bias": -2.11,
       "rain_bias": -0.38,
       "rain_timing_score": 78.7,
