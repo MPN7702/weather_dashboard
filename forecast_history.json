@@ -11680,7 +11680,7 @@
     },
     "2026-11-26": {
       "minTemp": -12.6,
-      "maxTemp": -3.9,
+      "maxTemp": -3.7,
       "rainAmount": 0.0,
       "windSpeed": 5.7,
       "rainHours": [],
@@ -11770,7 +11770,7 @@
       "min_temp_error": 1.41,
       "max_temp_error": 0.94,
       "min_temp_bias": 0.79,
-      "max_temp_bias": 0.41,
+      "max_temp_bias": 0.4,
       "rain_error": 1.32,
       "wind_error": 2.8,
       "wind_bias": -2.5,
