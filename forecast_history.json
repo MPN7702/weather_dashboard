@@ -3670,6 +3670,40 @@
         "rainHours": [],
         "weathercode": 2
       }
+    },
+    "2026-11-28": {
+      "smhi": {
+        "minTemp": -5.8,
+        "maxTemp": -2.7,
+        "rainAmount": 0.0,
+        "windSpeed": 4.3,
+        "rainHours": [],
+        "weathercode": 3
+      },
+      "yr": {
+        "minTemp": -5.2,
+        "maxTemp": -0.1,
+        "rainAmount": 0.0,
+        "windSpeed": 4.0,
+        "rainHours": [],
+        "weathercode": 2
+      },
+      "dmi_seamless": {
+        "minTemp": -3.7,
+        "maxTemp": -0.2,
+        "rainAmount": 0.0,
+        "windSpeed": 6.3,
+        "rainHours": [],
+        "weathercode": 3
+      },
+      "icon_eu": {
+        "minTemp": -5.1,
+        "maxTemp": -1.6,
+        "rainAmount": 0.0,
+        "windSpeed": 4.9,
+        "rainHours": [],
+        "weathercode": 3
+      }
     }
   },
   "day2": {
@@ -7333,6 +7367,84 @@
         "rainHours": [],
         "weathercode": 3
       }
+    },
+    "2026-11-29": {
+      "smhi": {
+        "minTemp": -4.2,
+        "maxTemp": -1.4,
+        "rainAmount": 4.0,
+        "windSpeed": 10.2,
+        "rainHours": [
+          "14:00",
+          "15:00",
+          "16:00",
+          "17:00",
+          "18:00",
+          "19:00",
+          "20:00",
+          "21:00",
+          "22:00",
+          "23:00"
+        ],
+        "weathercode": 3
+      },
+      "yr": {
+        "minTemp": -3.8,
+        "maxTemp": 0.2,
+        "rainAmount": 4.6,
+        "windSpeed": 9.8,
+        "rainHours": [
+          "13:00",
+          "14:00",
+          "15:00",
+          "16:00",
+          "17:00",
+          "18:00",
+          "19:00",
+          "20:00",
+          "21:00",
+          "22:00",
+          "23:00"
+        ],
+        "weathercode": 3
+      },
+      "dmi_seamless": {
+        "minTemp": -2.5,
+        "maxTemp": 0.1,
+        "rainAmount": 6.6,
+        "windSpeed": 9.5,
+        "rainHours": [
+          "14:00",
+          "15:00",
+          "16:00",
+          "17:00",
+          "18:00",
+          "19:00",
+          "20:00",
+          "21:00",
+          "22:00",
+          "23:00"
+        ],
+        "weathercode": 3
+      },
+      "icon_eu": {
+        "minTemp": -4.0,
+        "maxTemp": -1.2,
+        "rainAmount": 5.3,
+        "windSpeed": 9.0,
+        "rainHours": [
+          "15:00",
+          "16:00",
+          "17:00",
+          "18:00",
+          "19:00",
+          "20:00",
+          "21:00",
+          "22:00",
+          "23:00"
+        ],
+        "weathercode": 3
+      }
     }
   },
   "day3": {
@@ -10840,6 +10952,65 @@
         ],
         "weathercode": 3
       }
+    },
+    "2026-11-30": {
+      "smhi": {
+        "minTemp": -1.3,
+        "maxTemp": 2.3,
+        "rainAmount": 1.5,
+        "windSpeed": 9.0,
+        "rainHours": [
+          "00:00",
+          "01:00",
+          "02:00",
+          "03:00",
+          "04:00",
+          "07:00",
+          "08:00",
+          "09:00"
+        ],
+        "weathercode": 3
+      },
+      "yr": {
+        "minTemp": 0.2,
+        "maxTemp": 2.9,
+        "rainAmount": 0.7,
+        "windSpeed": 8.6,
+        "rainHours": [
+          "00:00",
+          "01:00",
+          "02:00"
+        ],
+        "weathercode": 3
+      },
+      "dmi_seamless": {
+        "minTemp": -0.2,
+        "maxTemp": 3.0,
+        "rainAmount": 0.7,
+        "windSpeed": 10.5,
+        "rainHours": [
+          "00:00",
+          "20:00",
+          "22:00",
+          "23:00"
+        ],
+        "weathercode": 3
+      },
+      "icon_eu": {
+        "minTemp": -1.4,
+        "maxTemp": 3.3,
+        "rainAmount": 0.6,
+        "windSpeed": 7.4,
+        "rainHours": [
+          "00:00",
+          "01:00",
+          "19:00",
+          "20:00",
+          "21:00",
+          "23:00"
+        ],
+        "weathercode": 3
+      }
     }
   },
   "actual": {
@@ -11826,25 +11997,33 @@
       "minTemp": -6.6,
       "maxTemp": -4.1,
       "rainAmount": 0.0,
-      "windSpeed": 3.7,
+      "windSpeed": 3.5,
+      "rainHours": [],
+      "weathercode": 3
+    },
+    "2026-11-28": {
+      "minTemp": -5.9,
+      "maxTemp": -2.9,
+      "rainAmount": 0.0,
+      "windSpeed": 6.0,
       "rainHours": [],
       "weathercode": 3
     }
   },
   "model_stats": {
     "dmi_seamless": {
-      "samples": 219,
-      "actual_days": 74,
-      "temp_error": 1.05,
+      "samples": 222,
+      "actual_days": 75,
+      "temp_error": 1.07,
       "min_temp_error": 1.2,
-      "max_temp_error": 0.91,
-      "min_temp_bias": 0.25,
-      "max_temp_bias": 0.45,
-      "rain_error": 1.23,
-      "wind_error": 2.58,
-      "wind_bias": -2.25,
-      "rain_bias": -0.3,
-      "rain_timing_score": 78.8,
+      "max_temp_error": 0.93,
+      "min_temp_bias": 0.27,
+      "max_temp_bias": 0.48,
+      "rain_error": 1.21,
+      "wind_error": 2.55,
+      "wind_bias": -2.22,
+      "rain_bias": -0.29,
+      "rain_timing_score": 79.1,
       "rain_avg_deviation": 0.4,
       "rain_precision": 31.6,
       "rain_recall": 72.3,
@@ -11852,49 +12031,24 @@
       "rain_hits": 256,
       "rain_predicted_hours": 811,
       "rain_actual_hours": 354,
-      "weather_hits": 154,
-      "weather_total": 213,
-      "weather_accuracy": 72.3,
-      "score": 85.9
-    },
-    "icon_eu": {
-      "samples": 219,
-      "actual_days": 74,
-      "temp_error": 1.01,
-      "min_temp_error": 1.21,
-      "max_temp_error": 0.8,
-      "min_temp_bias": 0.26,
-      "max_temp_bias": 0.04,
-      "rain_error": 1.39,
-      "wind_error": 2.42,
-      "wind_bias": -2.28,
-      "rain_bias": -0.23,
-      "rain_timing_score": 76.1,
-      "rain_avg_deviation": 0.1,
-      "rain_precision": 30.1,
-      "rain_recall": 70.9,
-      "rain_f1": 42.3,
-      "rain_hits": 251,
-      "rain_predicted_hours": 834,
-      "rain_actual_hours": 354,
-      "weather_hits": 105,
-      "weather_total": 213,
-      "weather_accuracy": 49.3,
-      "score": 84.3
+      "weather_hits": 157,
+      "weather_total": 216,
+      "weather_accuracy": 72.7,
+      "score": 86.1
     },
     "smhi": {
-      "samples": 219,
-      "actual_days": 74,
-      "temp_error": 1.05,
+      "samples": 222,
+      "actual_days": 75,
+      "temp_error": 1.04,
       "min_temp_error": 1.31,
       "max_temp_error": 0.78,
-      "min_temp_bias": 0.0,
+      "min_temp_bias": -0.0,
       "max_temp_bias": 0.13,
-      "rain_error": 1.18,
-      "wind_error": 2.73,
-      "wind_bias": -2.39,
+      "rain_error": 1.17,
+      "wind_error": 2.71,
+      "wind_bias": -2.37,
       "rain_bias": -0.45,
-      "rain_timing_score": 75.3,
+      "rain_timing_score": 75.7,
       "rain_avg_deviation": -0.3,
       "rain_precision": 30.7,
       "rain_recall": 70.3,
@@ -11902,24 +12056,49 @@
       "rain_hits": 249,
       "rain_predicted_hours": 810,
       "rain_actual_hours": 354,
-      "weather_hits": 137,
-      "weather_total": 213,
-      "weather_accuracy": 64.3,
-      "score": 84.2
+      "weather_hits": 140,
+      "weather_total": 216,
+      "weather_accuracy": 64.8,
+      "score": 84.5
+    },
+    "icon_eu": {
+      "samples": 222,
+      "actual_days": 75,
+      "temp_error": 1.01,
+      "min_temp_error": 1.21,
+      "max_temp_error": 0.81,
+      "min_temp_bias": 0.26,
+      "max_temp_bias": 0.05,
+      "rain_error": 1.37,
+      "wind_error": 2.4,
+      "wind_bias": -2.26,
+      "rain_bias": -0.23,
+      "rain_timing_score": 76.4,
+      "rain_avg_deviation": 0.1,
+      "rain_precision": 30.1,
+      "rain_recall": 70.9,
+      "rain_f1": 42.3,
+      "rain_hits": 251,
+      "rain_predicted_hours": 834,
+      "rain_actual_hours": 354,
+      "weather_hits": 108,
+      "weather_total": 216,
+      "weather_accuracy": 50.0,
+      "score": 84.5
     },
     "yr": {
-      "samples": 219,
-      "actual_days": 74,
-      "temp_error": 1.17,
-      "min_temp_error": 1.41,
-      "max_temp_error": 0.94,
+      "samples": 222,
+      "actual_days": 75,
+      "temp_error": 1.18,
+      "min_temp_error": 1.4,
+      "max_temp_error": 0.97,
       "min_temp_bias": 0.76,
-      "max_temp_bias": 0.42,
-      "rain_error": 1.3,
-      "wind_error": 2.79,
-      "wind_bias": -2.49,
-      "rain_bias": -0.77,
-      "rain_timing_score": 67.0,
+      "max_temp_bias": 0.45,
+      "rain_error": 1.28,
+      "wind_error": 2.77,
+      "wind_bias": -2.48,
+      "rain_bias": -0.76,
+      "rain_timing_score": 67.5,
       "rain_avg_deviation": 1.4,
       "rain_precision": 39.6,
       "rain_recall": 55.6,
@@ -11927,10 +12106,10 @@
       "rain_hits": 197,
       "rain_predicted_hours": 497,
       "rain_actual_hours": 354,
-      "weather_hits": 145,
-      "weather_total": 213,
-      "weather_accuracy": 68.1,
-      "score": 79.7
+      "weather_hits": 148,
+      "weather_total": 216,
+      "weather_accuracy": 68.5,
+      "score": 80.0
     }
   }
 }
